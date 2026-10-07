@@ -2,13 +2,31 @@
   "name": "agent-admission-assessment",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@11.25.0",
   "type": "module",
   "description": "Ethereum research Agent tool admission and result verification framework.",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "start": "node src/server.js",
     "dev": "node --watch src/server.js",
     "test": "node --test",
-    "check": "node --check src/server.js && node --check src/worker.js && node --check src/domain.js"
+    "check": "node scripts/check-schema.js && tsc --noEmit",
+    "compile:contract": "node scripts/compile-contract.js"
+  },
+  "dependencies": {
+    "@noble/hashes": "2.4.0",
+    "@openzeppelin/contracts": "5.6.1",
+    "ajv": "8.20.0",
+    "ajv-formats": "3.0.1",
+    "canonicalize": "5.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "26.6.4",
+    "json-schema-to-typescript": "16.0.0",
+    "prettier": "3.9.9",
+    "solc": "0.8.37",
+    "typescript": "7.0.2"
   }
 }

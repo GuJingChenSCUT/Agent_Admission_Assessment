@@ -1,12 +1,20 @@
-import { makeRuleCheck, mandatoryChecksPass } from './domain.js';
-
+import { makeRuleCheck } from './domain.js';
 export function verifyProviderResponse({ task, snapshot, service, response }) {
+  const obs = response?.observation, wei = response?.balanceWei;
+  const format = typeof wei === 'string' && /^(0|[1-9][0-9]{0,77})$/.test(wei) && BigInt(wei) < (1n << 256n);
+  const scope = obs?.address?.toLowerCase() === task.spec.address.toLowerCase()
+    && (obs.sourceChainId === undefined || obs.sourceChainId === '1') && (obs.asset === undefined || obs.asset === 'ETH');
+  const block = typeof obs?.blockHash === 'string' && obs.blockHash.toLowerCase() === snapshot.blockHash.toLowerCase();
+  const referenceAgrees = snapshot.references?.length === 2 && snapshot.references.every(r => r.balanceWei === snapshot.references[0].balanceWei);
   const checks = [
-    makeRuleCheck('response_schema', response && typeof response.balanceWei === 'string' ? 'PASS' : 'FAIL', true, response ? 'RESPONSE_SCHEMA_VALID' : 'RESPONSE_SCHEMA_INVALID', 'decimal wei string', response?.balanceWei ?? null),
-    makeRuleCheck('response_scope', response?.observation?.address?.toLowerCase() === task.spec.address.toLowerCase() ? 'PASS' : 'FAIL', true, response?.observation?.address ? 'REQUEST_SCOPE_MATCH' : 'REQUEST_SCOPE_MISSING', task.spec.address, response?.observation?.address ?? null),
-    makeRuleCheck('snapshot_match', response?.observation?.blockHash?.toLowerCase() === snapshot.blockHash.toLowerCase() ? 'PASS' : 'FAIL', true, response?.observation?.blockHash ? 'SNAPSHOT_MATCH' : 'SNAPSHOT_MISMATCH', snapshot.blockHash, response?.observation?.blockHash ?? null),
-    makeRuleCheck('balance_match', response?.balanceWei === snapshot.references[0].balanceWei ? 'PASS' : 'FAIL', true, response?.balanceWei === snapshot.references[0].balanceWei ? 'BALANCE_MATCH' : 'DATA_BALANCE_MISMATCH', snapshot.references[0].balanceWei, response?.balanceWei ?? null),
-    makeRuleCheck('remote_deployment_provenance', 'NOT_CHECKED', false, 'PROVENANCE_NOT_AVAILABLE', 'proved remote deployment', null, 'NOT_AVAILABLE')
+    makeRuleCheck('response_schema', format ? 'PASS' : 'FAIL', true, format ? 'INTEGER_FORMAT_VALID' : 'INVALID_WEI', 'uint256 decimal string', typeof wei === 'string' ? wei.slice(0,100) : null),
+    makeRuleCheck('response_scope', scope ? 'PASS' : 'FAIL', true, scope ? 'SCOPE_MATCH' : 'DATA_SCOPE_MISMATCH', task.spec.address, obs?.address || null),
+    makeRuleCheck('snapshot_match', block ? 'PASS' : 'FAIL', true, block ? 'SNAPSHOT_MATCH' : 'DATA_SNAPSHOT_MISMATCH', snapshot.blockHash, obs?.blockHash || null),
+    makeRuleCheck('balance_match', !block || !scope || !format ? 'NOT_CHECKED' : !referenceAgrees ? 'INCONCLUSIVE' : wei === snapshot.references[0].balanceWei ? 'PASS' : 'FAIL',
+      true, !block ? 'CROSS_BLOCK_COMPARISON_SKIPPED' : !scope || !format ? 'INVALID_RESPONSE_COMPARISON_SKIPPED' : !referenceAgrees ? 'REFERENCE_BALANCE_CONFLICT' : wei === snapshot.references[0].balanceWei ? 'BALANCE_MATCH' : 'DATA_BALANCE_MISMATCH',
+      snapshot.references[0]?.balanceWei || null, block && format ? wei : null, 'REFERENCE_RPC')
   ];
-  return { serviceId: service.id, manifestHash: service.manifestHash, checks, passed: mandatoryChecksPass(checks), decision: mandatoryChecksPass(checks) ? 'ALLOW' : 'REJECT' };
+  const passed = checks.every(c => c.status === 'PASS');
+  return { serviceId: service.id, manifestHash: service.manifestHash, checks, passed, decision: passed ? 'ALLOW' : checks.some(c => c.status === 'FAIL') ? 'REJECT' : 'QUARANTINE' };
 }
+

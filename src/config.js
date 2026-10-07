@@ -1,6 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 
+if (fs.existsSync('.env')) process.loadEnvFile('.env');
+
 const intEnv = (name, fallback) => {
   const value = Number.parseInt(process.env[name] ?? '', 10);
   return Number.isFinite(value) && value > 0 ? value : fallback;

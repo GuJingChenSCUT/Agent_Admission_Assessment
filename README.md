@@ -1,41 +1,65 @@
 # Agent Admission Assessment
 
-面向以太坊研究 Agent 的工具与依赖准入、受限调用、固定区块结果验收和公共证据框架。当前实现严格收窄到设计基线的 P0：Ethereum 主网原生 ETH 余额，只读、`FINALIZED_AT_RUN`、最多两次候选调用和一次切换。
-
-## 当前实现边界
-
-- `SAMPLE` 模式提供可重复的离线演示，明确标记构造数据，不伪装成在线 RPC 或已上链结果。
-- `LIVE` 模式只有在配置两家参考 RPC 与获准服务端点后才会运行；缺少任何必需来源时进入 `QUARANTINED`。
-- 模型不持有执行凭据，也不能改变任务范围、候选服务、预算、停止状态或发布状态。本仓库先提供结构化编排入口，模型适配器可按 `docs/design/contracts/skill_contracts.yaml` 接入。
-- 证据报告的开发哈希使用 Node 内置 `sha256` 并标注 `hashAlgorithm: sha256-dev-only`。生产部署必须替换为经过验证的 RFC 8785 JCS + Ethereum Keccak-256 实现，未替换前不能宣称符合链上登记合同。
-- `chain-contracts/EvidenceRegistry.sol` 是自定义追加式登记合约草案，未部署、未审计、未连接 BOT Chain。
+面向以太坊研究 Agent 的工具准入与数据验收框架。基于 2026-10-07 设计包，提供可以实际运行的本地后端与中文工作台。
 
 ## 运行
 
-```powershell
-Copy-Item .env.example .env
-npm start
+需要 Node.js 24+、pnpm 11.25.0。
+
+```sh
+pnpm install --frozen-lockfile
+pnpm start
 ```
 
-打开 `http://localhost:8787/` 查看控制台，或打开 `/prototype.html` 查看设计包中的离线交互原型。
+打开 http://127.0.0.1:8787 。默认 SAMPLE，界面中的地址、区块、余额与检查观测为构造数据；不调用模型、RPC、OSV、钱包或主网。原始离线原型在 /prototype.html 。
 
-API 的最小闭环如下：
+可选配置复制 `.env.example` 为 `.env`。服务只监听本机回环地址，使用本地浏览器会话和 CSRF；不具备生产账户系统。重启后需新建浏览器会话，历史私有任务保留在本地数据库中，暂不提供跨会话恢复 UI。
 
-1. `POST /v1/tasks` 创建任务草稿。
-2. 缺少地址时调用 `POST /v1/tasks/:taskId/clarifications`；完整任务调用 `POST /v1/tasks/:taskId/approve`。
-3. 通过 `GET /v1/tasks/:taskId` 和 `/events` 查看确定性运行状态。
-4. 运行中调用 `POST /v1/tasks/:taskId/stop`；停止请求不等待模型或外部调用。
-5. 终态调用 `/evidence` 和 `/public-preview`，摘要核对与公开发布仍是独立步骤。
+## 已实现
+
+- Ethereum 原生 ETH / finalized 任务范围提案、补答、版本摘要与 nonce 批准。
+- SQLite WAL 短事务、幂等批准、停止 epoch、工作器代际隔离和中断隔离恢复。
+- 内部 HS256 单次票据绑定调用者、任务、参数、策略、服务清单和快照；预算随消费原子扣除。
+- 同区块结果逐项验收；旧区块拒绝，跨区块金额不比较；最多切换一次。
+- 六个 SAMPLE 场景；真实后端 API、会话隔离、CSRF、原始响应私有保存。
+- 对齐设计 schema 的公开报告，JCS / Keccak-256 内容核对、篡改检测和下载。
+- EIP-712 自定义 EvidenceRegistry 合约源码与编译脚本；未部署、未审计。
+- 测试、CI、Agent TypeScript 接口边界与设计文档归档。
+
+## 当前阻断项
+
+**这是一份可运行的框架，不是已完成真实主网集成的比赛成品。** LIVE 在创建任务时返回配置错误；不会静默换成 SAMPLE。在线模型/eve 适配、OSV 生产接入、真实候选能力探测、受限网络出口、Ethereum/ERC-8004 身份绑定、独立签名器和 BOT 主网部署均未验收。参考 RPC 模块仅作为未联调适配器提供。
+
+公共发布 API 在签名器未配置时返回 503，不广播交易。合约需验证 BOT 677 对 Cancun EVM 的支持后才能部署；编译成功不代表目标链兼容或安全审计通过。
 
 ## 验证
 
-```powershell
-npm test
-npm run check
+```sh
+pnpm test
+pnpm run check
+pnpm run compile:contract
 ```
 
-设计文件、原始附件和生成检查工具位于 `docs/design/`；用户原始材料和空仓库元数据的不可变备份位于 `backups/20261007-before-implementation/`。
+当前测试涵盖正常/失败/切换、参考冲突、版本变化、幂等与过期批准、票据重放、停止竞争、SQLite 回滚、进程中断、跨会话访问和报告篡改。测试数不等于设计包全部 57 项验收完成。
 
-## 证据与部署声明
+## 目录
 
-本版本不包含在线模型、真实 RPC 联调、签名器、BOT 主网交易或已部署合约。提交比赛材料时，必须以实际 trace、合约地址、交易回执和区块浏览器链接替换对应的 BLOCKED 项。
+| 目录 | 内容 |
+| --- | --- |
+| src/ | Control API、持久化、运行器、网关、验收和证据 |
+| agent/ | 编排运行时适配端口；没有任意 shell 或钱包能力 |
+| web/ | 接入后端的中文工作台与原始 SAMPLE 原型 |
+| chain-contracts/ | 自定义 EIP-712 登记合约 |
+| scripts/、test/ | 合同检查、编译和测试 |
+| docs/design/ | 原始 PRD、机器合同、图谱、场景目录及设计核查记录 |
+| docs/ | 实现基线、API、验证记录和后续接入计划 |
+
+原始材料已在本地 `backups/20261007-before-implementation/` 保存并计算 SHA-256；备份及旧 Git 元数据不作为运行输入。
+设计包的旧核查报告只证明原设计文件，不能当成本次后端验收。
+所有依据、边界与模块映射见 [实现基线](docs/implementation-baseline.md)，实际 API 见 [API 说明](docs/API.md)。
+
+## 协议与来源
+
+依据 Ethereum JSON-RPC、EIP-1898、RFC 8785、RFC 8725、OpenZeppelin EIP-712/ECDSA 等原始规范。完整参考链接保留在设计包和实现基线中。
+自定义合约不宣称 ERC-8004 兼容；公开哈希不证明报告内容真实；两个 RPC 一致不构成密码学状态证明。
+

@@ -1,22 +1,18 @@
 import crypto from 'node:crypto';
+import canonicalize from 'canonicalize';
+import { keccak_256 } from '@noble/hashes/sha3.js';
 import { config } from './config.js';
 
 export const TASK_STATUSES = Object.freeze(['NEEDS_INPUT', 'AWAITING_APPROVAL', 'QUEUED', 'RUNNING', 'STOP_REQUESTED', 'SUCCEEDED', 'FAILED', 'QUARANTINED', 'CANCELLED']);
 export const CHECK_STATUSES = Object.freeze(['PASS', 'FAIL', 'INCONCLUSIVE', 'ERROR', 'NOT_CHECKED']);
 export const TERMINAL_STATUSES = Object.freeze(['SUCCEEDED', 'FAILED', 'QUARANTINED', 'CANCELLED']);
 
-const UNSUPPORTED_RE = /(erc[-\s]?20|usdt|usdc|transfer|转账|发送交易|solana|polygon|bitcoin|bnb|bot\s*chain|其他链)/i;
+const UNSUPPORTED_RE = /(https?:|erc[-\s]?20|usdt|usdc|transfer|转账|发送交易|solana|polygon|bitcoin|bnb|bot\s*chain|arbitrum|optimism|sepolia|base\b|其他链|历史|昨天|yesterday|latest|pending)/i;
 const ADDRESS_RE = /^0x[0-9a-fA-F]{40}$/;
 
-export function canonicalJson(value) {
-  if (value === null || typeof value !== 'object') return JSON.stringify(value);
-  if (Array.isArray(value)) return `[${value.map(canonicalJson).join(',')}]`;
-  return `{${Object.keys(value).sort().map(key => `${JSON.stringify(key)}:${canonicalJson(value[key])}`).join(',')}}`;
-}
+export function canonicalJson(value) { const output = canonicalize(value); if (output === undefined) throw new Error('NON_CANONICAL_JSON_VALUE'); return output; }
 
-export function hashCanonical(value) {
-  return `0x${crypto.createHash('sha256').update(canonicalJson(value), 'utf8').digest('hex')}`;
-}
+export function hashCanonical(value) { return `0x${Buffer.from(keccak_256(new TextEncoder().encode(canonicalJson(value)))).toString('hex')}`; }
 
 export function parseIntent(text, allowFallback = true) {
   const input = String(text || '').trim();
@@ -56,7 +52,8 @@ export function makeTask({ owner, text, allowFallback = true, mode = config.exec
   const parsed = parseIntent(text, allowFallback);
   const spec = taskSpecFromDraft(parsed);
   const now = new Date().toISOString();
-  return { taskId, owner, revision: 1, status: spec ? 'AWAITING_APPROVAL' : 'NEEDS_INPUT', phase: 'PLAN', mode, scenario, draft: parsed, spec, specHash: spec ? hashCanonical(spec) : null, runId: null, stopEpoch: 0, policyEpoch: 1, createdAt: now, updatedAt: now, approvedAt: null, snapshot: null, attempts: [], acceptedFact: null, report: null, events: [], counters: { checks: 0, providerCalls: 0, fallbacks: 0 }, stopRequestedAt: null, idempotency: {} };
+  const executionMode = ['SAMPLE', 'LIVE'].includes(String(mode).toUpperCase()) ? String(mode).toUpperCase() : 'SAMPLE';
+  return { taskId, owner, revision: 1, status: spec ? 'AWAITING_APPROVAL' : 'NEEDS_INPUT', phase: 'PLAN', mode: executionMode, scenario, draft: parsed, spec, specHash: spec ? hashCanonical(spec) : null, policyHash: hashCanonical(config.policy), runId: null, stopEpoch: 0, policyEpoch: 1, createdAt: now, updatedAt: now, approvedAt: null, snapshot: null, attempts: [], acceptedFact: null, report: null, events: [], counters: { checks: 0, providerCalls: 0, fallbacks: 0 }, stopRequestedAt: null, idempotency: {} };
 }
 
 export function transition(task, next, phase = task.phase) {
