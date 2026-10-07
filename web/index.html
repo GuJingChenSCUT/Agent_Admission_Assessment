@@ -1,8 +1,334 @@
 <!doctype html>
-<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Agent 准入工作台</title><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
-<body><aside><div class="brand">◇ Agent Admission</div><p>ETH WUHAN · ENGINEERING 0.2</p><nav><a href="#workspace">01 任务工作台</a><a href="#evidence">02 证据核对</a><a href="#readiness">03 部署清单</a><a href="/prototype.html">原始交互设计 ↗</a></nav><small>授权 → 准入 → 验收 → 证据<br>每次观测都有明确范围</small></aside>
-<main><div id="banner" class="banner" role="status">正在连接本地服务…</div><header><p class="eyebrow">CONTROLLED ETHEREUM RESEARCH</p><h1>让每次工具调用有依据</h1><p class="muted">批准具体范围，核对固定区块，仅采用通过验收的事实。</p></header><div id="error" class="error" role="alert" hidden></div>
-<div class="grid" id="workspace"><section class="card"><h2>定义这次查询</h2><label for="intent">你的研究任务</label><textarea id="intent">请核对 0x2222222222222222222222222222222222222222 的 ETH 余额，使用执行时 finalized 区块。</textarea><label class="check"><input type="checkbox" id="fallback" checked>允许在原范围内切换一次备用服务</label><label for="scenario">SAMPLE 场景</label><select id="scenario"><option value="stale_primary">首选旧区块 → 切换备用</option><option value="normal">正常查询</option><option value="both_fail">两个服务均失败</option><option value="reference_conflict">参考来源冲突</option><option value="manifest_changed">首选清单变化</option><option value="optional_missing">远程来源缺失</option></select><button id="create" class="primary">生成任务范围</button><div id="clarification" hidden><p id="question"></p><label for="answer">补充任务（含唯一地址）</label><input id="answer"><button id="clarify">提交补答</button></div><div id="scope" hidden><h3>批准前核对</h3><dl id="fields"></dl><p class="note">只授权当前版本；证据默认私有，未接入公开签名器。</p><button id="approve" class="primary">批准本次范围</button></div></section>
-<section class="card"><div class="row"><h2>运行与验收</h2><span id="status" class="pill">尚未创建</span></div><p id="budget" class="muted">候选 0 / 2 · 调用 0 / 2 · 切换 0 / 1</p><button id="stop" disabled class="danger">停止任务</button><p id="stop-note" class="muted" aria-live="polite"></p><ol id="events" aria-live="polite"></ol><div id="fact" class="result" hidden><span>SAMPLE 已验收结果 · 构造数据</span><strong id="amount"></strong><p id="fact-meta"></p></div></section></div>
-<section id="evidence" class="card section"><div class="row"><h2>证据核对</h2><button id="load-evidence" disabled>读取私有证据</button></div><p>内容摘要、签名主体与链上状态分别核对。摘要相同不证明数据真实。</p><div class="row"><span id="integrity" class="pill">内容：尚未核对</span><span class="pill">签名：未连接</span><span class="pill">BOT：未部署</span></div><div class="row"><button id="verify" disabled>核对内容摘要</button><button id="tamper" disabled>篡改一份副本</button><button id="download" disabled>下载报告</button></div><div id="checks"></div><pre id="report">终态后生成不可变报告。</pre></section>
-<section id="readiness" class="card section"><h2>部署与接入状态</h2><p>运行模式、外部集成与未完成项以实际状态展示。</p><dl id="deployment"></dl></section><footer>Ethereum 数据链 1 · 设计登记链 BOT 677 · 本地 SAMPLE 不产生主网交易</footer></main></body></html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#112c2a" />
+    <title>Agent Admission · 工具准入工作台</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#workspace">跳至任务工作台</a>
+    <aside class="sidebar">
+      <a class="brand" href="#workspace"
+        ><span class="brand-mark" aria-hidden="true">a·</span
+        ><span>Agent Admission<small>工具准入与数据验收</small></span></a
+      >
+      <p class="nav-caption">RESEARCH CONSOLE</p>
+      <nav aria-label="主导航">
+        <a class="nav-link active" href="#workspace" aria-current="location"
+          ><span>01</span>任务工作台<span class="nav-arrow">↗</span></a
+        >
+        <a class="nav-link" href="#evidence"
+          ><span>02</span>证据核对<span class="nav-arrow">↗</span></a
+        >
+        <a class="nav-link" href="#connections"
+          ><span>03</span>接入渠道<span class="nav-arrow">↗</span></a
+        >
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="network-dot">Ethereum · Chain 1</div>
+        <p>范围先行，证据随后。<br />每次调用都有可追溯的边界。</p>
+        <a href="/prototype.html" target="_blank" rel="noopener"
+          >查看原始设计 ↗</a
+        ><small>ETH WUHAN 2026 · P0</small>
+      </div>
+    </aside>
+    <main>
+      <div class="topbar">
+        <span>工作空间 <span class="slash">/</span> 以太坊研究</span
+        ><span id="connection" class="pill">连接中</span>
+      </div>
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">TRUST THROUGH VERIFICATION</p>
+          <h1>让工具调用，经得起核对。</h1>
+          <p class="muted">
+            定义研究范围，检查候选服务，留下可复核的验收记录。
+          </p>
+        </div>
+        <a class="text-link" href="#connections"
+          >外部服务如何接入 <span>↗</span></a
+        >
+      </header>
+      <div id="banner" class="banner" role="status">正在连接本地服务…</div>
+      <div id="error" class="error" role="alert" hidden></div>
+      <section class="overview" aria-label="本次执行边界">
+        <div>
+          <span>数据范围</span><strong>Ethereum <small>原生 ETH</small></strong>
+        </div>
+        <div>
+          <span>验收基准</span
+          ><strong>Finalized <small>固定区块</small></strong>
+        </div>
+        <div>
+          <span>执行上限</span
+          ><strong>2 次调用 <small>最多切换 1 次</small></strong>
+        </div>
+        <div>
+          <span>证据可见性</span
+          ><strong>仅当前会话 <small>未发布到链上</small></strong>
+        </div>
+      </section>
+      <section
+        id="workspace"
+        class="page-section"
+        aria-labelledby="workspace-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">01 / WORKSPACE</p>
+            <h2 id="workspace-title">一次查询，一条证据链</h2>
+          </div>
+          <span class="muted small">只读操作 · 需批准后执行</span>
+        </div>
+        <ol class="pipeline" id="pipeline" aria-label="任务进度">
+          <li data-stage="0" class="current"><span>1</span>定义范围</li>
+          <li data-stage="1"><span>2</span>批准执行</li>
+          <li data-stage="2"><span>3</span>准入与验收</li>
+          <li data-stage="3"><span>4</span>生成证据</li>
+        </ol>
+        <div class="workspace-grid">
+          <section class="card task-card" aria-labelledby="task-title">
+            <div class="card-heading">
+              <h3 id="task-title">定义这次查询</h3>
+              <span class="tag">READ ONLY</span>
+            </div>
+            <form id="task-form">
+              <label for="intent">研究任务</label
+              ><textarea
+                id="intent"
+                rows="4"
+                maxlength="4096"
+                required
+                aria-describedby="intent-help"
+              >
+请核对 0x2222222222222222222222222222222222222222 的 ETH 余额，使用执行时 finalized 区块。</textarea>
+              <p id="intent-help" class="field-help">
+                输入一个以太坊地址。目前支持原生 ETH 余额查询。
+              </p>
+              <label class="check"
+                ><input type="checkbox" id="fallback" checked /><span
+                  >允许切换备用服务<small
+                    >首选未通过时，在同一地址、区块和预算内再尝试一次。</small
+                  ></span
+                ></label
+              >
+              <div id="scenario-control">
+                <label for="scenario"
+                  >演示场景 <span class="label-note">SAMPLE</span></label
+                ><select id="scenario" aria-describedby="scenario-help">
+                  <option value="stale_primary">
+                    首选返回旧区块 → 切换备用
+                  </option>
+                  <option value="normal">正常查询 · 首选通过</option>
+                  <option value="both_fail">两个服务均未通过</option>
+                  <option value="reference_conflict">
+                    参考来源冲突 · 隔离结果
+                  </option>
+                  <option value="manifest_changed">首选服务清单发生变化</option>
+                  <option value="optional_missing">远程来源证明缺失</option>
+                </select>
+                <p id="scenario-help" class="field-help">
+                  观察系统如何拒绝过期数据，并在批准范围内切换服务。
+                </p>
+              </div>
+              <button
+                id="create"
+                type="submit"
+                class="primary full-width"
+                disabled
+              >
+                生成任务范围 →
+              </button>
+            </form>
+            <form id="clarification" class="inset" hidden>
+              <h4>还需要一点信息</h4>
+              <p id="question"></p>
+              <label for="answer">补充任务（含唯一地址）</label
+              ><input id="answer" maxlength="4096" required /><button
+                id="clarify"
+                type="submit"
+              >
+                提交补答
+              </button>
+            </form>
+            <div id="scope" class="inset" hidden>
+              <div class="card-heading">
+                <h4>批准前核对</h4>
+                <span id="revision" class="tag"></span>
+              </div>
+              <dl id="fields"></dl>
+              <p class="field-help">
+                批准仅适用于当前版本与所示范围。原始响应保存在本机。
+              </p>
+              <button id="approve" class="primary full-width">
+                批准本次范围并执行 →
+              </button>
+            </div>
+          </section>
+          <section class="card run-card" aria-labelledby="run-title">
+            <div class="card-heading">
+              <h3 id="run-title">运行与验收</h3>
+              <span id="status" class="pill" role="status">尚未创建</span>
+            </div>
+            <p id="task-id" class="mono muted small">等待新的研究任务</p>
+            <p id="budget" class="budget">
+              候选 0 / 2 · 调用 0 / 2 · 切换 0 / 1
+            </p>
+            <div id="run-empty" class="empty-state">
+              <span class="empty-symbol" aria-hidden="true">◎</span>
+              <h4>从一个可核对的问题开始</h4>
+              <p>
+                生成范围并批准后，这里将显示<br />服务准入、结果验收与切换记录。
+              </p>
+            </div>
+            <div
+              id="providers"
+              class="providers"
+              aria-label="候选服务状态"
+            ></div>
+            <div id="fact" class="result" hidden>
+              <span id="fact-label">已验收结果</span
+              ><strong id="amount"></strong>
+              <p id="fact-meta"></p>
+            </div>
+            <p id="outcome" class="outcome" aria-live="polite" hidden></p>
+            <details id="event-details" hidden open>
+              <summary>执行记录 <span id="event-count"></span></summary>
+              <ol id="events"></ol>
+            </details>
+            <div class="run-actions">
+              <button id="refresh" class="quiet" disabled>刷新状态</button
+              ><button id="stop" class="danger" disabled>停止任务</button>
+            </div>
+            <p id="stop-note" class="field-help" role="status"></p>
+          </section>
+        </div>
+      </section>
+      <section
+        id="evidence"
+        class="page-section"
+        aria-labelledby="evidence-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">02 / EVIDENCE</p>
+            <h2 id="evidence-title">结论之外，保留依据</h2>
+          </div>
+          <button id="load-evidence" disabled>重新读取证据</button>
+        </div>
+        <div class="card">
+          <div class="evidence-grid">
+            <div class="evidence-item">
+              <span class="number-label">01 · 内容完整性</span
+              ><strong id="integrity" role="status">尚未核对</strong>
+              <p>核对报告内容与保存的摘要是否一致。</p>
+            </div>
+            <div class="evidence-item">
+              <span class="number-label">02 · 签名主体</span
+              ><strong>未连接签名器</strong>
+              <p>当前报告没有经过签名主体确认。</p>
+            </div>
+            <div class="evidence-item">
+              <span class="number-label">03 · 链上登记</span
+              ><strong>尚未部署</strong>
+              <p>BOT Chain 677 尚无可核验登记记录。</p>
+            </div>
+          </div>
+          <div id="evidence-empty" class="empty-inline">
+            完成或停止一次已批准的任务后，在这里读取证据。
+          </div>
+          <div id="evidence-body" hidden>
+            <div class="report-id">
+              <span>报告摘要</span><code id="report-hash"></code>
+            </div>
+            <div class="actions">
+              <button id="verify" class="primary" disabled>核对内容摘要</button
+              ><button id="download" disabled>下载 JSON 报告 ↓</button
+              ><button id="tamper" class="quiet" disabled>测试篡改检测</button>
+            </div>
+            <p id="verify-detail" class="field-help" role="status"></p>
+            <div id="checks"></div>
+            <details class="raw-report">
+              <summary>查看原始报告 JSON</summary>
+              <pre id="report"></pre>
+            </details>
+          </div>
+          <p class="evidence-note">
+            摘要一致仅说明内容未变化；数据真实性、签名与链上登记需要分别验证。篡改测试只修改副本。
+          </p>
+        </div>
+      </section>
+      <section
+        id="connections"
+        class="page-section"
+        aria-labelledby="connections-title"
+      >
+        <div class="section-heading">
+          <div>
+            <p class="eyebrow">03 / CONNECTIONS</p>
+            <h2 id="connections-title">外部 Agent 与工具，从哪里来？</h2>
+          </div>
+          <span class="pill">接入能力目录</span>
+        </div>
+        <p class="section-intro">
+          前端通过本地控制 API
+          提交任务。后端发现候选、检查权限与能力，取得批准后才调用外部服务。当前版本使用构造数据演示此流程。
+        </p>
+        <div class="connection-flow" aria-label="服务调用路径">
+          <div>
+            <span>01</span><strong>前端工作台</strong
+            ><small>任务提案与人工批准</small>
+          </div>
+          <b aria-hidden="true">→</b>
+          <div>
+            <span>02</span><strong>后端控制与准入</strong
+            ><small>固定范围、检查与调用预算</small>
+          </div>
+          <b aria-hidden="true">→</b>
+          <div>
+            <span>03</span><strong>受限调用网关</strong
+            ><small>单次授权，接入已配置服务</small>
+          </div>
+          <b aria-hidden="true">→</b>
+          <div>
+            <span>04</span><strong>结果验收</strong
+            ><small>拒绝异常，保存证据</small>
+          </div>
+        </div>
+        <div class="catalog-bar">
+          <p id="catalog-summary" class="muted small">正在读取接入状态…</p>
+          <div class="filters" role="group" aria-label="筛选接入能力">
+            <button data-filter="all" aria-pressed="true">全部</button
+            ><button data-filter="adapter" aria-pressed="false">
+              已有适配器</button
+            ><button data-filter="planned" aria-pressed="false">待实现</button>
+          </div>
+        </div>
+        <div id="integrations" class="integration-grid"></div>
+        <p id="catalog-empty" class="empty-inline" hidden>
+          此分类暂无接入能力。
+        </p>
+        <div class="card section">
+          <h3>本次候选服务</h3>
+          <p class="field-help">
+            这是配置清单，不是互联网搜索结果。填写 RPC 地址不会自动启用 LIVE。
+          </p>
+          <div id="service-catalog" class="service-catalog"></div>
+        </div>
+        <details id="readiness" class="card section readiness">
+          <summary>查看部署就绪明细</summary>
+          <dl id="deployment"></dl>
+        </details>
+      </section>
+      <footer>
+        <span>Agent Admission Assessment</span
+        ><span
+          >Ethereum 数据链 1 · 设计登记链 BOT 677 · 本地演示不产生主网交易</span
+        >
+      </footer>
+    </main>
+  </body>
+</html>

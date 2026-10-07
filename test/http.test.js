@@ -41,3 +41,24 @@ test('HTTP: LIVE mode fails closed instead of using SAMPLE fixtures', async t =>
   const task = await fetch(`http://127.0.0.1:${app.server.address().port}/v1/tasks`, { method: 'POST', headers: { cookie, 'content-type': 'application/json', 'x-csrf-token': session.csrfToken }, body: JSON.stringify({ text: '核对 0x2222222222222222222222222222222222222222 的 ETH 余额' }) });
   assert.equal(task.status, 503); assert.equal((await task.json()).error, 'LIVE_MODEL_ADAPTER_NOT_CONFIGURED');
 });
+
+test('HTTP: integration inventory requires session and never exposes endpoints or claims LIVE readiness', async t => {
+  const app = createApplication({ store: new TaskStore(':memory:'), mode: 'LIVE' });
+  await new Promise(resolve => app.server.listen(0, '127.0.0.1', resolve));
+  t.after(async () => { app.server.closeAllConnections(); await new Promise(resolve => app.server.close(resolve)); app.store.close(); });
+  const base = 'http://127.0.0.1:' + app.server.address().port;
+  assert.equal((await fetch(base + '/v1/integrations')).status, 401);
+  const session = await fetch(base + '/v1/session');
+  const headers = { cookie: session.headers.get('set-cookie').split(';')[0] };
+  const response = await fetch(base + '/v1/integrations', { headers });
+  assert.equal(response.status, 200);
+  const inventory = await response.json();
+  assert.equal(inventory.liveReady, false);
+  assert.equal(inventory.executionMode, 'LIVE');
+  for (const service of inventory.services) {
+    assert.equal(service.status, 'NOT_VALIDATED');
+    assert.deepEqual(Object.keys(service).sort(), ['chainId','endpointConfigured','id','name','operation','source','status','transport'].sort());
+    assert.equal(typeof service.endpointConfigured, 'boolean');
+  }
+  assert.equal((await fetch(base + '/v1/integrations', { headers: { ...headers, origin: 'https://untrusted.example' } })).status, 403);
+});

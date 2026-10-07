@@ -12,6 +12,7 @@
 | --- | --- | --- |
 | GET | `/v1/session` | 建立本地会话，返回 CSRF 与运行模式 |
 | GET | `/v1/deployment` | 读取真实就绪状态，不计算综合安全分数 |
+| GET | `/v1/integrations` | 会话内只读接入能力目录与候选元数据；不抓取外部服务，不返回 RPC 地址、密钥或健康检查结论 |
 | POST | `/v1/tasks` | `text`、`allowFallback`、SAMPLE `scenario`；创建草稿 |
 | GET | `/v1/tasks/:id` | owner 隔离的任务视图；不返回 ticket、owner 或原件 |
 | POST | `/v1/tasks/:id/clarifications` | `{revision,text}`；旧 revision 拒绝 |

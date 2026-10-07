@@ -9,6 +9,7 @@ import { runTask, recoverInterrupted } from './runtime.js';
 import { buildPublicReport } from './evidence.js';
 import { validateDefinition } from './schema.js';
 import { parseStrictJson } from './strict-json.js';
+import { integrationInventory } from './integrations.js';
 
 const view = ({ owner, tickets, idempotency, ...task }) => task;
 function shape(body, allowed, required = []) {
@@ -54,6 +55,7 @@ export function createApplication({ store = new TaskStore(), mode = config.execu
       if (!session) throw fault('SESSION_REQUIRED', 401);
       if (req.method !== 'GET' && req.headers['x-csrf-token'] !== session.csrf) throw fault('CSRF_REQUIRED', 403);
       const owner = session.owner;
+      if (pathname === '/v1/integrations' && req.method === 'GET') return json(200, integrationInventory(mode));
       if (pathname === '/v1/deployment' && req.method === 'GET') return json(200, { mode, database: 'SQLITE_WAL', model: 'BLOCKED_NOT_CONFIGURED', rpc: mode === 'SAMPLE' ? 'SAMPLE_FIXTURES' : 'NOT_VALIDATED', dependencyScan: 'ADAPTER_ONLY', registry: 'UNDEPLOYED', publicSigning: 'BLOCKED', ethereumIdentity: 'NOT_IMPLEMENTED', authentication: 'LOCAL_SESSION_ONLY', production: 'NOT_READY' });
       if (pathname === '/v1/tasks' && req.method === 'POST') {
         if (mode !== 'SAMPLE') throw fault('LIVE_MODEL_ADAPTER_NOT_CONFIGURED', 503);
