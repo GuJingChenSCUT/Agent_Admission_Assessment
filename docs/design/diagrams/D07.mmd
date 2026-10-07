@@ -1,0 +1,28 @@
+flowchart TD
+  restart["restart 进程退出、部署中断、超时租约"]
+  storage{"storage 数据库完整性、可写性与队列一致性"}
+  freeze["freeze 数据库异常时停止新执行与新签名"]
+  lease["lease 增加 leaseGeneration，旧代际失效"]
+  committed{"committed 是否已有合法终态"}
+  return["return 重复命令返回既有结果"]
+  stored{"stored 是否有同一 Attempt 的完整私有响应"}
+  verify["verify 只重算校验，不重发外部请求"]
+  sent{"sent 票据是否已消费并登记调用开始"}
+  dispatch["dispatch 未消费时仍需核对当前授权和 epochs"]
+  uncertain["uncertain 已消费且无响应"]
+  next{"next 在剩余预算和固定 Snapshot 内"}
+  fallback["fallback 最多一次备用切换"]
+  quarantine["quarantine 无法恢复必需证据时保留不确定性"]
+  restart --> storage
+  storage -->|"no"| freeze
+  storage -->|"yes"| lease
+  lease --> committed
+  committed -->|"yes"| return
+  committed -->|"no"| stored
+  stored -->|"yes"| verify
+  stored -->|"no"| sent
+  sent -->|"no"| dispatch
+  sent -->|"yes"| uncertain
+  uncertain --> next
+  next -->|"yes"| fallback
+  next -->|"no"| quarantine

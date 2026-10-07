@@ -1,0 +1,34 @@
+flowchart TD
+  ui["ui 用户输入、补答、批准和停止"]
+  control["control 认证、版本、批准、停止和当前任务状态"]
+  agent["agent 单个编排 Agent，只输出提案和解释"]
+  db["db 任务真相、幂等、执行命令、租约与证据引用"]
+  worker["worker 领取执行权并推进固定阶段"]
+  inspect["inspect 静态依赖、清单、能力与 required 检查"]
+  gateway["gateway 凭据、停止 epoch、策略 epoch、租约代…"]
+  provider["provider 管理员登记的两个候选"]
+  reference["reference 两个配置上独立的 RPC 运营者、同一参考区块"]
+  verify["verify 按明确规则核对范围、数量、请求区块与参考结果"]
+  evidence["evidence 私有原件与可公开报告"]
+  publish["publish 独立公开批准和持久登记命令"]
+  signer["signer 固定链、合约、方法和预算"]
+  chain["chain 登记事件、回执和当前主链核查"]
+  ethid["ethid GCC 主线的身份适配停点"]
+  ui -->|"request / stop"| control
+  control -->|"scope"| agent
+  agent -->|"proposal"| control
+  control -->|"atomic state"| db
+  db -->|"run command"| worker
+  worker -->|"admission"| inspect
+  inspect -->|"decision"| gateway
+  worker -->|"fixed snapshot"| reference
+  gateway -->|"bounded call"| provider
+  provider -->|"untrusted result"| verify
+  reference -->|"reference observations"| verify
+  verify -->|"guarded fact commit"| db
+  verify -->|"checks + facts"| evidence
+  evidence -->|"report + approval"| publish
+  control -->|"exact-hash consent"| publish
+  publish -->|"approved claim"| signer
+  signer -->|"persist then send"| chain
+  ethid -->|"identity reference"| inspect

@@ -1,0 +1,181 @@
+{
+  "version": "1",
+  "status": "TEST_PLAN_NOT_BACKEND_EXECUTION",
+  "cases": [
+    {
+      "caseId": "AC01",
+      "scenario": "normal",
+      "given": "Both reference operators agree; primary returns matching result",
+      "expected": "SUCCEEDED; one provider call; required checks PASS",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC02",
+      "scenario": "stale_primary",
+      "given": "Primary reports another block; fallback approved",
+      "expected": "Primary FAIL snapshot; balance compare skipped; backup succeeds at same Snapshot",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC03",
+      "scenario": "both_fail",
+      "given": "Both candidates fail mandatory verification",
+      "expected": "FAILED; acceptedFact null; <=2 calls",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC04",
+      "scenario": "reference_conflict",
+      "given": "Reference block hashes disagree",
+      "expected": "QUARANTINED; no provider call; no malicious-provider claim",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC05",
+      "scenario": "manifest_changed",
+      "given": "Manifest changes after pinned registration",
+      "expected": "Reject primary before call; no old ticket reuse",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC06",
+      "scenario": "optional_missing",
+      "given": "Remote deployment SBOM unavailable under default policy",
+      "expected": "Optional NOT_CHECKED; may succeed; explicit limitation",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC07",
+      "scenario": "required_missing",
+      "given": "Configured required provenance missing",
+      "expected": "QUARANTINE, no ALLOW",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC08",
+      "scenario": "missing_address",
+      "given": "Intent lacks address",
+      "expected": "NEEDS_INPUT; no task approval or invocation",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC09",
+      "scenario": "approval_revision",
+      "given": "Approve older revision or expired nonce",
+      "expected": "409; no run outbox",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC10",
+      "scenario": "duplicate_approval",
+      "given": "Same Idempotency-Key repeated",
+      "expected": "Same run; changed body 409",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC11",
+      "scenario": "ticket_replay",
+      "given": "Reuse jti, wrong caller, expired or wrong arguments",
+      "expected": "Reject; no unauthorized additional invocation",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC12",
+      "scenario": "stop_during_invoke",
+      "given": "Stop ACK commits before result returns",
+      "expected": "CANCELLED; response LATE_DISCARDED; no fallback or fact",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC13",
+      "scenario": "stop_after_success",
+      "given": "Success committed first",
+      "expected": "SUCCEEDED unchanged; ALREADY_TERMINAL",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC14",
+      "scenario": "recovery",
+      "given": "Worker crashes after consuming ticket",
+      "expected": "No blind replay; budget consumed; restore persisted state",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC15",
+      "scenario": "report_tamper",
+      "given": "Change balance without updating claimed hash",
+      "expected": "Integrity FAIL",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC16",
+      "scenario": "publication_tamper",
+      "given": "Report changed after preview",
+      "expected": "409 HASH_MISMATCH; no signature or broadcast",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC17",
+      "scenario": "broadcast_timeout",
+      "given": "Send times out after signed tx persisted",
+      "expected": "UNKNOWN; query original txHash; no unrelated new nonce",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC18",
+      "scenario": "wrong_receipt",
+      "given": "Success receipt for different registry or event",
+      "expected": "Not CONFIRMED",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC19",
+      "scenario": "unsupported_scope",
+      "given": "User asks for ERC20 or transaction send",
+      "expected": "UNSUPPORTED_SCOPE; no query",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC20",
+      "scenario": "reference_balance_conflict",
+      "given": "Same block; reference balances disagree",
+      "expected": "INCONCLUSIVE; do not accept provider by simple majority",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC21",
+      "scenario": "stale_approval_after_edit",
+      "given": "Change address after approval preview",
+      "expected": "Revision/hash/nonce replaced; prior approval invalid",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC22",
+      "scenario": "ui_accessibility",
+      "given": "Keyboard and 360/1024/1440 widths",
+      "expected": "Visible focus; label associations; no horizontal overflow",
+      "layer": "UI_AND_BACKEND"
+    },
+    {
+      "caseId": "AC23",
+      "scenario": "tool_injection",
+      "given": "Provider returns instructions to change policy, publish or run shell",
+      "expected": "Treat as data; no mounted dangerous tool; facts only from verifier",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC24",
+      "scenario": "egress_rebinding",
+      "given": "Configured service redirects or resolves to unauthorized address",
+      "expected": "Deny before connection; revalidate each redirect/resolution; size-bound decompressed response",
+      "layer": "BACKEND_REQUIRED"
+    },
+    {
+      "caseId": "AC25",
+      "scenario": "cross_owner",
+      "given": "Another authenticated owner requests task/evidence/artifact",
+      "expected": "404 or policy-consistent denial; no private object or nonce leaked",
+      "layer": "BACKEND_REQUIRED"
+    }
+  ]
+}

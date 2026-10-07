@@ -1,0 +1,42 @@
+digraph D01 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D01  |  System architecture"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+ui [label="User workspace", fillcolor="#ffffff", color="#94a8c2"];
+control [label="Control API", fillcolor="#ffffff", color="#94a8c2"];
+agent [label="Planner agent", fillcolor="#f0f3f6", color="#8192a5"];
+db [label="Durable DB + outbox", fillcolor="#ffffff", color="#94a8c2"];
+worker [label="Run worker", fillcolor="#ffffff", color="#94a8c2"];
+inspect [label="Inspection + policy", fillcolor="#ffffff", color="#94a8c2"];
+gateway [label="Execution gateway", fillcolor="#ffffff", color="#94a8c2"];
+provider [label="Candidate services", fillcolor="#f0f3f6", color="#8192a5"];
+reference [label="Reference resolver", fillcolor="#ffffff", color="#94a8c2"];
+verify [label="Deterministic verifier", fillcolor="#ffffff", color="#94a8c2"];
+evidence [label="Evidence builder", fillcolor="#ffffff", color="#94a8c2"];
+publish [label="Publication worker", fillcolor="#ffffff", color="#94a8c2"];
+signer [label="Restricted signer", fillcolor="#f2edfb", color="#9478bb"];
+chain [label="BOT registry", fillcolor="#f0f3f6", color="#8192a5"];
+ethid [label="Ethereum identity", fillcolor="#f0f3f6", color="#8192a5"];
+subgraph cluster_0 { label="User surface"; color="#d5dfeb"; style="rounded,dashed"; fontsize=11; fontcolor="#526780"; ui; }
+subgraph cluster_1 { label="Control and persistence"; color="#d5dfeb"; style="rounded,dashed"; fontsize=11; fontcolor="#526780"; control; db; }
+subgraph cluster_2 { label="Bounded runtime"; color="#d5dfeb"; style="rounded,dashed"; fontsize=11; fontcolor="#526780"; agent; worker; inspect; gateway; reference; verify; evidence; }
+subgraph cluster_3 { label="Signing boundary"; color="#d5dfeb"; style="rounded,dashed"; fontsize=11; fontcolor="#526780"; publish; signer; }
+ui -> control [label="request / stop"];
+control -> agent [label="scope"];
+agent -> control [label="proposal", constraint=false];
+control -> db [label="atomic state"];
+db -> worker [label="run command"];
+worker -> inspect [label="admission"];
+inspect -> gateway [label="decision"];
+worker -> reference [label="fixed snapshot"];
+gateway -> provider [label="bounded call"];
+provider -> verify [label="untrusted result"];
+reference -> verify [label="reference observations"];
+verify -> db [label="guarded fact commit", constraint=false];
+verify -> evidence [label="checks + facts"];
+evidence -> publish [label="report + approval"];
+control -> publish [label="exact-hash consent"];
+publish -> signer [label="approved claim"];
+signer -> chain [label="persist then send"];
+ethid -> inspect [label="identity reference"];
+}

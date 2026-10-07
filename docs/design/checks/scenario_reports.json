@@ -1,0 +1,2476 @@
+[
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "SUCCEEDED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "PASSED",
+        "decision": "ALLOW",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_BALANCE_MATCH",
+            "expected": "42125000000000000000",
+            "observed": "42125000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": {
+      "sourceChainId": "1",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "balanceWei": "42125000000000000000",
+      "serviceId": "svc_primary"
+    },
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "SUCCEEDED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "FAILED",
+        "decision": "REJECT",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "FAIL",
+            "reasonCode": "DATA_SNAPSHOT_MISMATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x5555555555555555555555555555555555555555555555555555555555555555",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "NOT_CHECKED",
+            "reasonCode": "CROSS_BLOCK_COMPARISON_SKIPPED",
+            "expected": "同区块余额",
+            "observed": null,
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      },
+      {
+        "attemptId": "att_sample1_2",
+        "serviceId": "svc_backup",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "PASSED",
+        "decision": "ALLOW",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_2_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_BALANCE_MATCH",
+            "expected": "42125000000000000000",
+            "observed": "42125000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": {
+      "sourceChainId": "1",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "balanceWei": "42125000000000000000",
+      "serviceId": "svc_backup"
+    },
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "FAILED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "FAILED",
+        "decision": "REJECT",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "FAIL",
+            "reasonCode": "DATA_BALANCE_MISMATCH",
+            "expected": "42125000000000000000",
+            "observed": "42126000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      },
+      {
+        "attemptId": "att_sample1_2",
+        "serviceId": "svc_backup",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "FAILED",
+        "decision": "REJECT",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_2_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "FAIL",
+            "reasonCode": "DATA_BALANCE_MISMATCH",
+            "expected": "42125000000000000000",
+            "observed": "42126000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": null,
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "QUARANTINED",
+    "snapshot": null,
+    "attempts": [],
+    "acceptedFact": null,
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "SUCCEEDED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "REJECTED",
+        "decision": "REJECT",
+        "providerCallConsumed": false,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "FAIL",
+            "reasonCode": "MANIFEST_CHANGED",
+            "expected": "固定版本摘要",
+            "observed": "构造的变更摘要",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:01Z"
+      },
+      {
+        "attemptId": "att_sample1_2",
+        "serviceId": "svc_backup",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "PASSED",
+        "decision": "ALLOW",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_2_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_2_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_BALANCE_MATCH",
+            "expected": "42125000000000000000",
+            "observed": "42125000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": {
+      "sourceChainId": "1",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "balanceWei": "42125000000000000000",
+      "serviceId": "svc_backup"
+    },
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "SUCCEEDED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "PASSED",
+        "decision": "ALLOW",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": null,
+            "sourceClass": "NOT_AVAILABLE",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_BALANCE_MATCH",
+            "expected": "42125000000000000000",
+            "observed": "42125000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": {
+      "sourceChainId": "1",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "balanceWei": "42125000000000000000",
+      "serviceId": "svc_primary"
+    },
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 0,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x9d58875cff8903b067d42dbaf02c5477b6a2b7d57d51faa73eadd095264d907e",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xb158531c2c9cd5df63206839d3fe779c6a9453709540db77437eca5617ee5414",
+    "result": "FAILED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "FAILED",
+        "decision": "REJECT",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "FAIL",
+            "reasonCode": "DATA_SNAPSHOT_MISMATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x5555555555555555555555555555555555555555555555555555555555555555",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "NOT_CHECKED",
+            "reasonCode": "CROSS_BLOCK_COMPARISON_SKIPPED",
+            "expected": "同区块余额",
+            "observed": null,
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": null,
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "SUCCEEDED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "PASSED",
+        "decision": "ALLOW",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_BALANCE_MATCH",
+            "expected": "42125000000000000000",
+            "observed": "42125000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": {
+      "sourceChainId": "1",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "balanceWei": "42125000000000000000",
+      "serviceId": "svc_primary"
+    },
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "CANCELLED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "LATE_DISCARDED",
+        "decision": "QUARANTINE",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": null,
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "SUCCEEDED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "PASSED",
+        "decision": "ALLOW",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_BALANCE_MATCH",
+            "expected": "42125000000000000000",
+            "observed": "42125000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": {
+      "sourceChainId": "1",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "balanceWei": "42125000000000000000",
+      "serviceId": "svc_primary"
+    },
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  },
+  {
+    "schemaVersion": "1",
+    "reportId": "rpt_sample0001",
+    "executionMode": "SAMPLE",
+    "taskSpec": {
+      "version": "1",
+      "sourceChainId": "1",
+      "operation": "NATIVE_BALANCE",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "snapshotPolicy": {
+        "mode": "FINALIZED_AT_RUN"
+      },
+      "candidateServiceIds": [
+        "svc_primary",
+        "svc_backup"
+      ],
+      "limits": {
+        "maxCandidateChecks": 2,
+        "maxProviderCalls": 2,
+        "maxFallbacks": 1,
+        "maxModelRounds": 4,
+        "maxOutputTokensPerRound": 2048
+      }
+    },
+    "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+    "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+    "subjects": [
+      {
+        "serviceId": "svc_primary",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://primary.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      },
+      {
+        "serviceId": "svc_backup",
+        "namespace": "agent-admission:sample:v1",
+        "transport": "MCP",
+        "serviceOrigin": "https://backup.example.invalid",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "ethereumIdentity": null,
+        "identityStatus": "NOT_CHECKED"
+      }
+    ],
+    "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+    "result": "SUCCEEDED",
+    "snapshot": {
+      "sourceChainId": "1",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "blockTimestamp": "2026-10-07T09:45:00Z",
+      "capturedAt": "2026-10-07T10:00:00Z",
+      "tag": "finalized",
+      "assurance": "RPC_CROSS_CHECKED",
+      "references": [
+        {
+          "sourceId": "ref_a",
+          "operatorId": "operator_a",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        },
+        {
+          "sourceId": "ref_b",
+          "operatorId": "operator_b",
+          "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "fetchedAt": "2026-10-07T10:00:00Z",
+          "balanceWei": "42125000000000000000"
+        }
+      ]
+    },
+    "attempts": [
+      {
+        "attemptId": "att_sample1_1",
+        "serviceId": "svc_primary",
+        "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+        "status": "PASSED",
+        "decision": "ALLOW",
+        "providerCallConsumed": true,
+        "checks": [
+          {
+            "checkId": "chk_sample_1_manifest_pin",
+            "ruleId": "manifest_pin",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_manifest_pin"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_capability_match",
+            "ruleId": "capability_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_capability_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_client_dependency_policy",
+            "ruleId": "client_dependency_policy",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_ADVISORY_RESULT",
+            "expected": "固定客户端锁文件",
+            "observed": "构造的“未检索到公告”结果，未查询 OSV",
+            "sourceClass": "VERIFIED_ARTIFACT",
+            "evidenceRefs": [
+              "ev_sample_client_dependency_policy"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_remote_deployment_provenance",
+            "ruleId": "remote_deployment_provenance",
+            "required": false,
+            "status": "NOT_CHECKED",
+            "reasonCode": "PROVENANCE_NOT_VERIFIED",
+            "expected": "远程部署证明",
+            "observed": "服务方声明不等于证明",
+            "sourceClass": "PROVIDER_DECLARED",
+            "evidenceRefs": [],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_schema",
+            "ruleId": "response_schema",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_schema"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_response_scope",
+            "ruleId": "response_scope",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_MATCH",
+            "expected": "本次样例策略",
+            "observed": "符合样例策略",
+            "sourceClass": "SYSTEM_OBSERVED",
+            "evidenceRefs": [
+              "ev_sample_response_scope"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_snapshot_match",
+            "ruleId": "snapshot_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_SNAPSHOT_MATCH",
+            "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_snapshot_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          },
+          {
+            "checkId": "chk_sample_1_balance_match",
+            "ruleId": "balance_match",
+            "required": true,
+            "status": "PASS",
+            "reasonCode": "SAMPLE_BALANCE_MATCH",
+            "expected": "42125000000000000000",
+            "observed": "42125000000000000000",
+            "sourceClass": "REFERENCE_RPC",
+            "evidenceRefs": [
+              "ev_sample_balance_match"
+            ],
+            "checkedAt": "2026-10-07T10:00:00Z"
+          }
+        ],
+        "responseDigest": null,
+        "observation": null,
+        "startedAt": "2026-10-07T10:00:00Z",
+        "finishedAt": "2026-10-07T10:00:02Z"
+      }
+    ],
+    "acceptedFact": {
+      "sourceChainId": "1",
+      "asset": "ETH",
+      "address": "0x2222222222222222222222222222222222222222",
+      "blockNumber": "24500000",
+      "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+      "balanceWei": "42125000000000000000",
+      "serviceId": "svc_primary"
+    },
+    "observedAt": "2026-10-07T10:00:02Z",
+    "expiresAt": "2026-10-08T10:00:02Z",
+    "limitations": [
+      "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+      "No live model, RPC, OSV, signature or registry verification occurred.",
+      "Remote deployment provenance is not verified.",
+      "Reference cross-checking is not a cryptographic state proof.",
+      "These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof."
+    ]
+  }
+]

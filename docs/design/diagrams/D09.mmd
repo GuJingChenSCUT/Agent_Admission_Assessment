@@ -1,0 +1,28 @@
+flowchart TD
+  preview["preview 用户看到公开字段"]
+  approve["approve 独立 nonce 与幂等键"]
+  queued["queued 批准和 publication outbox 原…"]
+  signed["signed 保存签名 bytes、txHash、nonce …"]
+  broadcast["broadcast RPC 接收不等于链上成功"]
+  unknown["unknown 超时或网络分歧"]
+  confirm["confirm 收据、合约、事件及确认策略"]
+  success["success 在记录的核查时间符合确认策略"]
+  failed["failed 明确 revert 或不匹配事件"]
+  cancel["cancel 仅能取消尚未广播且确认无发送竞争的工作"]
+  observe["observe 公开核验时检查 blockHash 与撤销"]
+  current["current 当前链状态独立展示，不篡改历史报告"]
+  preview --> approve
+  approve --> queued
+  queued --> signed
+  queued -->|"cancel before signing"| cancel
+  signed -->|"send"| broadcast
+  signed -->|"unsent + exclusive lock"| cancel
+  signed -->|"send uncertain"| unknown
+  broadcast --> confirm
+  broadcast -->|"timeout"| unknown
+  unknown -->|"original tx found"| confirm
+  confirm -->|"policy met"| success
+  confirm -->|"revert / mismatch"| failed
+  confirm -->|"conflict"| unknown
+  success --> observe
+  observe --> current

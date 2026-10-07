@@ -1,0 +1,137 @@
+version: '1'
+runtimeBlueprint: eve, Node >=24; adapter may retain an existing stack
+prompt: ../agent/instructions.md
+modelVisible:
+- name: task_get_scope
+  inputSchema: domain.schema.json#/$defs/TaskIdInput
+  outputSchema: domain.schema.json#/$defs/ApprovedScope
+  permission: run-context-bound; owner not supplied by model
+  effect: Read scope bound to current authenticated run
+  errors:
+  - NOT_FOUND
+  - STATE_CONFLICT
+  - BUDGET_EXCEEDED
+  maxCallsPerRound: 1
+- name: service_list_eligible
+  inputSchema: domain.schema.json#/$defs/TaskIdInput
+  outputSchema: domain.schema.json#/$defs/EligibleServices
+  permission: run-context-bound; owner not supplied by model
+  effect: Read normalized allowlisted capabilities
+  errors:
+  - NOT_FOUND
+  - STATE_CONFLICT
+  - BUDGET_EXCEEDED
+  maxCallsPerRound: 1
+- name: task_propose_service
+  inputSchema: domain.schema.json#/$defs/ServiceChoiceInput
+  outputSchema: domain.schema.json#/$defs/ServiceChoiceResult
+  permission: run-context-bound; owner not supplied by model
+  effect: Suggest only; does not issue ticket or invoke provider
+  errors:
+  - NOT_FOUND
+  - STATE_CONFLICT
+  - BUDGET_EXCEEDED
+  maxCallsPerRound: 1
+- name: task_get_verified_result
+  inputSchema: domain.schema.json#/$defs/TaskIdInput
+  outputSchema: domain.schema.json#/$defs/VerifiedResult
+  permission: run-context-bound; owner not supplied by model
+  effect: Return only accepted facts or current status
+  errors:
+  - NOT_FOUND
+  - STATE_CONFLICT
+  - BUDGET_EXCEEDED
+  maxCallsPerRound: 1
+- name: evidence_get_summary
+  inputSchema: domain.schema.json#/$defs/TaskIdInput
+  outputSchema: domain.schema.json#/$defs/EvidenceSummary
+  permission: run-context-bound; owner not supplied by model
+  effect: Read redacted rule checks only
+  errors:
+  - NOT_FOUND
+  - STATE_CONFLICT
+  - BUDGET_EXCEEDED
+  maxCallsPerRound: 1
+internalOnly:
+- name: admission_evaluate
+  caller: run_worker
+  input:
+  - runId
+  - serviceId
+  - manifestHash
+  output:
+  - decision
+  - RuleCheck[]
+  - ticketId?
+  invariants:
+  - current stopEpoch
+  - approved spec
+  - required checks PASS
+  - candidate budget
+- name: gateway_invoke
+  caller: run_worker
+  input:
+  - ticketId
+  output:
+  - attemptId
+  - responseDigest
+  invariants:
+  - atomic one-time consume
+  - current stopEpoch and policyEpoch
+  - current leaseGeneration
+  - method/args exact
+  - provider-call budget
+- name: reference_resolve
+  caller: reference_worker
+  input:
+  - runId
+  output:
+  - Snapshot or REFERENCE_CONFLICT
+  invariants:
+  - two configured operators
+  - same canonical finalized hash
+  - no majority shortcut
+- name: result_verify
+  caller: run_worker
+  input:
+  - attemptId
+  - snapshotId
+  output:
+  - RuleCheck[]
+  - acceptedFact?
+  invariants:
+  - same block before balance compare
+  - atomic result commit
+  - late response excluded
+- name: evidence_build
+  caller: evidence_worker
+  input:
+  - terminal runId
+  output:
+  - PublicReport
+  - reportHash
+  - private artifact refs
+  invariants:
+  - no secrets
+  - no self-hash
+  - immutable JCS
+- name: sign_publication
+  caller: publication_worker
+  input:
+  - approved publicationId
+  output:
+  - SignatureEnvelope
+  - signed transaction hash
+  invariants:
+  - exact approved hash
+  - fixed chain and registry
+  - persist before broadcast
+notMounted:
+- shell
+- self-modification
+- arbitrary URL fetch
+- wallet
+- publication approval
+- policy editing
+- raw gateway
+enforcedByServer: true

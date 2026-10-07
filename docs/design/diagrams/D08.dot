@@ -1,0 +1,29 @@
+digraph D08 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D08  |  Evidence and public verification"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+raw [label="Private raw artifacts", fillcolor="#ffffff", color="#94a8c2"];
+bundle [label="Build immutable public\nreport", fillcolor="#ffffff", color="#94a8c2"];
+hash [label="Canonicalize + hash", fillcolor="#ffffff", color="#94a8c2"];
+integrity [label="Content hash matches?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+reject [label="Integrity FAIL", fillcolor="#fcebed", color="#bd6876"];
+signature [label="Signer + domain", fillcolor="#ffffff", color="#94a8c2"];
+anchor [label="Current chain\nobservation", fillcolor="#ffffff", color="#94a8c2"];
+time [label="Validity + revocation", fillcolor="#ffffff", color="#94a8c2"];
+scope [label="Scope + assurance", fillcolor="#ffffff", color="#94a8c2"];
+vector [label="Verification vector", fillcolor="#ffffff", color="#94a8c2"];
+reuse [label="Historical selection\nsignal", fillcolor="#ffffff", color="#94a8c2"];
+raw -> bundle;
+bundle -> hash;
+hash -> integrity;
+integrity -> reject [label="no"];
+integrity -> signature [label="yes"];
+integrity -> anchor [label="yes"];
+integrity -> time [label="yes"];
+integrity -> scope [label="yes"];
+signature -> vector;
+anchor -> vector;
+time -> vector;
+scope -> vector;
+vector -> reuse;
+}

@@ -1,0 +1,25 @@
+digraph D06 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D06  |  Stop and result race"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+request [label="Stop arrives", fillcolor="#ffffff", color="#94a8c2"];
+state [label="Task already terminal?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+terminal [label="Return terminal fact", fillcolor="#e9f6ee", color="#559b75"];
+epoch [label="Commit stopEpoch +\nrevoke", fillcolor="#ffffff", color="#94a8c2"];
+ack [label="ACK stop request", fillcolor="#ffffff", color="#94a8c2"];
+race [label="Response commit guard", fillcolor="#ffffff", color="#94a8c2"];
+late [label="LATE_DISCARDED", fillcolor="#fff4df", color="#bd9651"];
+cleanup [label="Finish local work", fillcolor="#ffffff", color="#94a8c2"];
+cancel [label="CANCELLED", fillcolor="#ffffff", color="#94a8c2"];
+dbfail [label="Stop not acknowledged", fillcolor="#fcebed", color="#bd6876"];
+request -> state;
+state -> terminal [label="yes"];
+state -> epoch [label="no"];
+epoch -> ack [label="durable"];
+epoch -> dbfail [label="write fails"];
+ack -> race [label="in-flight response"];
+race -> late [label="guard mismatch"];
+late -> cleanup;
+ack -> cleanup [label="no response"];
+cleanup -> cancel;
+}

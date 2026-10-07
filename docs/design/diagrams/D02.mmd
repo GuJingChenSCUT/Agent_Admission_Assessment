@@ -1,0 +1,40 @@
+flowchart TD
+  intent["intent 用户提出原生 ETH 余额需求"]
+  draft["draft 模型提案经后端 schema 与范围校验"]
+  complete{"complete 链、地址、资产、模式是否明确"}
+  clarify["clarify 补答或选择唯一地址"]
+  approve["approve 展示范围、候选、限额、版本和摘要"]
+  queue["queue 批准和 run outbox 在同一事务中提交"]
+  ref["ref 固定参考区块并交叉核对"]
+  ready{"ready 参考链、区块和余额能否闭合"}
+  admit["admit 检查当前候选的能力、来源和依赖"]
+  invoke["invoke 网关准入与调用"]
+  accept{"accept 本次验收和提交守卫是否全部通过"}
+  fallback{"fallback 同一范围、同一 Snapshot、剩余候选和预算"}
+  success["success 只有通过验收的事实进入结果"]
+  classify{"classify 没有通过候选时，区分未知与确定失败"}
+  quarantine["quarantine 必需证据未知或冲突，不能给可用事实"]
+  failed["failed 候选确定失败且无剩余获准路线"]
+  report["report 终态证据"]
+  intent --> draft
+  draft --> complete
+  complete -->|"missing"| clarify
+  clarify -->|"answer + revision"| draft
+  complete -->|"complete"| approve
+  approve -->|"exact approval"| queue
+  queue --> ref
+  ref --> ready
+  ready -->|"no"| quarantine
+  ready -->|"yes"| admit
+  admit -->|"ALLOW"| invoke
+  invoke --> accept
+  accept -->|"yes"| success
+  accept -->|"no"| fallback
+  admit -->|"reject / unknown"| fallback
+  fallback -->|"yes: next candidate"| admit
+  fallback -->|"no"| classify
+  classify -->|"yes"| quarantine
+  classify -->|"no"| failed
+  success --> report
+  failed --> report
+  quarantine --> report

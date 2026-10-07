@@ -1,0 +1,110 @@
+[
+  {
+    "id": "D01",
+    "nodes": 15,
+    "edges": 18,
+    "maxHorizontalNodes": 3,
+    "svgViewBox": "0.00 0.00 697.00 973.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D02",
+    "nodes": 17,
+    "edges": 22,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 675.00 1195.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D03",
+    "nodes": 15,
+    "edges": 20,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 713.00 1023.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D04",
+    "nodes": 13,
+    "edges": 14,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 637.00 985.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D05",
+    "nodes": 13,
+    "edges": 17,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 632.00 981.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D06",
+    "nodes": 10,
+    "edges": 10,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 481.00 688.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D07",
+    "nodes": 14,
+    "edges": 13,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 987.00 835.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D08",
+    "nodes": 11,
+    "edges": 13,
+    "maxHorizontalNodes": 5,
+    "svgViewBox": "0.00 0.00 851.00 602.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D09",
+    "nodes": 12,
+    "edges": 15,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 554.00 849.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D10",
+    "nodes": 12,
+    "edges": 12,
+    "maxHorizontalNodes": 3,
+    "svgViewBox": "0.00 0.00 733.00 614.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D11",
+    "nodes": 11,
+    "edges": 13,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 514.00 872.00",
+    "warnings": [],
+    "status": "RENDERED"
+  },
+  {
+    "id": "D12",
+    "nodes": 9,
+    "edges": 10,
+    "maxHorizontalNodes": 2,
+    "svgViewBox": "0.00 0.00 606.00 666.00",
+    "warnings": [],
+    "status": "RENDERED"
+  }
+]

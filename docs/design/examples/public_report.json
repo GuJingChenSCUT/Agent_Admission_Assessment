@@ -1,0 +1,217 @@
+{
+  "schemaVersion": "1",
+  "reportId": "rpt_sample0001",
+  "executionMode": "SAMPLE",
+  "taskSpec": {
+    "version": "1",
+    "sourceChainId": "1",
+    "operation": "NATIVE_BALANCE",
+    "asset": "ETH",
+    "address": "0x2222222222222222222222222222222222222222",
+    "snapshotPolicy": {
+      "mode": "FINALIZED_AT_RUN"
+    },
+    "candidateServiceIds": [
+      "svc_primary",
+      "svc_backup"
+    ],
+    "limits": {
+      "maxCandidateChecks": 2,
+      "maxProviderCalls": 2,
+      "maxFallbacks": 1,
+      "maxModelRounds": 4,
+      "maxOutputTokensPerRound": 2048
+    }
+  },
+  "subjects": [
+    {
+      "serviceId": "svc_primary",
+      "namespace": "agent-admission:sample:v1",
+      "transport": "MCP",
+      "serviceOrigin": "https://primary.example.invalid",
+      "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+      "ethereumIdentity": null,
+      "identityStatus": "NOT_CHECKED"
+    },
+    {
+      "serviceId": "svc_backup",
+      "namespace": "agent-admission:sample:v1",
+      "transport": "MCP",
+      "serviceOrigin": "https://backup.example.invalid",
+      "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+      "ethereumIdentity": null,
+      "identityStatus": "NOT_CHECKED"
+    }
+  ],
+  "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+  "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+  "subjectHash": "0xa24c82423f824b6f42fc33d57259cb20a60294eb8a800f9775aef227f3302f36",
+  "result": "SUCCEEDED",
+  "snapshot": {
+    "sourceChainId": "1",
+    "blockNumber": "24500000",
+    "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+    "blockTimestamp": "2026-10-07T09:45:00Z",
+    "capturedAt": "2026-10-07T10:00:00Z",
+    "tag": "finalized",
+    "assurance": "RPC_CROSS_CHECKED",
+    "references": [
+      {
+        "sourceId": "ref_a",
+        "operatorId": "operator_a",
+        "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+        "fetchedAt": "2026-10-07T10:00:00Z",
+        "balanceWei": "42125000000000000000"
+      },
+      {
+        "sourceId": "ref_b",
+        "operatorId": "operator_b",
+        "observedBlockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+        "fetchedAt": "2026-10-07T10:00:00Z",
+        "balanceWei": "42125000000000000000"
+      }
+    ]
+  },
+  "attempts": [
+    {
+      "attemptId": "att_sample0001",
+      "serviceId": "svc_primary",
+      "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+      "status": "PASSED",
+      "decision": "ALLOW",
+      "providerCallConsumed": true,
+      "checks": [
+        {
+          "checkId": "chk_sample_0",
+          "ruleId": "manifest_pin",
+          "required": true,
+          "status": "PASS",
+          "reasonCode": "SAMPLE_MATCH",
+          "expected": "SAMPLE expected value",
+          "observed": "SAMPLE expected value",
+          "sourceClass": "REFERENCE_RPC",
+          "evidenceRefs": [
+            "ev_sample_reference"
+          ],
+          "checkedAt": "2026-10-07T10:00:00Z"
+        },
+        {
+          "checkId": "chk_sample_1",
+          "ruleId": "capability_match",
+          "required": true,
+          "status": "PASS",
+          "reasonCode": "SAMPLE_MATCH",
+          "expected": "SAMPLE expected value",
+          "observed": "SAMPLE expected value",
+          "sourceClass": "REFERENCE_RPC",
+          "evidenceRefs": [
+            "ev_sample_reference"
+          ],
+          "checkedAt": "2026-10-07T10:00:00Z"
+        },
+        {
+          "checkId": "chk_sample_2",
+          "ruleId": "client_dependency_policy",
+          "required": true,
+          "status": "PASS",
+          "reasonCode": "SAMPLE_MATCH",
+          "expected": "SAMPLE expected value",
+          "observed": "SAMPLE expected value",
+          "sourceClass": "REFERENCE_RPC",
+          "evidenceRefs": [
+            "ev_sample_reference"
+          ],
+          "checkedAt": "2026-10-07T10:00:00Z"
+        },
+        {
+          "checkId": "chk_sample_3",
+          "ruleId": "response_schema",
+          "required": true,
+          "status": "PASS",
+          "reasonCode": "SAMPLE_MATCH",
+          "expected": "SAMPLE expected value",
+          "observed": "SAMPLE expected value",
+          "sourceClass": "REFERENCE_RPC",
+          "evidenceRefs": [
+            "ev_sample_reference"
+          ],
+          "checkedAt": "2026-10-07T10:00:00Z"
+        },
+        {
+          "checkId": "chk_sample_4",
+          "ruleId": "response_scope",
+          "required": true,
+          "status": "PASS",
+          "reasonCode": "SAMPLE_MATCH",
+          "expected": "SAMPLE expected value",
+          "observed": "SAMPLE expected value",
+          "sourceClass": "REFERENCE_RPC",
+          "evidenceRefs": [
+            "ev_sample_reference"
+          ],
+          "checkedAt": "2026-10-07T10:00:00Z"
+        },
+        {
+          "checkId": "chk_sample_5",
+          "ruleId": "snapshot_match",
+          "required": true,
+          "status": "PASS",
+          "reasonCode": "SAMPLE_MATCH",
+          "expected": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "observed": "0x1111111111111111111111111111111111111111111111111111111111111111",
+          "sourceClass": "REFERENCE_RPC",
+          "evidenceRefs": [
+            "ev_sample_reference"
+          ],
+          "checkedAt": "2026-10-07T10:00:00Z"
+        },
+        {
+          "checkId": "chk_sample_6",
+          "ruleId": "balance_match",
+          "required": true,
+          "status": "PASS",
+          "reasonCode": "SAMPLE_MATCH",
+          "expected": "SAMPLE expected value",
+          "observed": "SAMPLE expected value",
+          "sourceClass": "REFERENCE_RPC",
+          "evidenceRefs": [
+            "ev_sample_reference"
+          ],
+          "checkedAt": "2026-10-07T10:00:00Z"
+        },
+        {
+          "checkId": "chk_sample_provenance",
+          "ruleId": "remote_deployment_provenance",
+          "required": false,
+          "status": "NOT_CHECKED",
+          "reasonCode": "PROVENANCE_NOT_AVAILABLE",
+          "expected": "proved remote deployment",
+          "observed": null,
+          "sourceClass": "NOT_AVAILABLE",
+          "evidenceRefs": [],
+          "checkedAt": "2026-10-07T10:00:00Z"
+        }
+      ],
+      "responseDigest": null,
+      "observation": null,
+      "startedAt": "2026-10-07T10:00:00Z",
+      "finishedAt": "2026-10-07T10:00:01Z"
+    }
+  ],
+  "acceptedFact": {
+    "sourceChainId": "1",
+    "asset": "ETH",
+    "address": "0x2222222222222222222222222222222222222222",
+    "blockNumber": "24500000",
+    "blockHash": "0x1111111111111111111111111111111111111111111111111111111111111111",
+    "balanceWei": "42125000000000000000",
+    "serviceId": "svc_primary"
+  },
+  "observedAt": "2026-10-07T10:00:01Z",
+  "expiresAt": "2026-10-08T10:00:01Z",
+  "limitations": [
+    "All addresses, balances, blocks and observations are synthetic SAMPLE data.",
+    "No live RPC, model, signature or registry verification occurred.",
+    "Remote deployment provenance is not verified."
+  ]
+}

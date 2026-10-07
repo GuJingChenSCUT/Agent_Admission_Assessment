@@ -1,0 +1,119 @@
+{
+  "version": "1",
+  "kind": "INITIAL_CONFIGURATION_NOT_MEASURED",
+  "sourceChainId": "1",
+  "registryChainId": "677",
+  "allowedOperation": "NATIVE_BALANCE",
+  "enabledSnapshotModes": [
+    "FINALIZED_AT_RUN"
+  ],
+  "candidateServiceIds": [
+    "svc_primary",
+    "svc_backup"
+  ],
+  "referenceOperatorIds": [
+    "operator_a",
+    "operator_b"
+  ],
+  "limits": {
+    "maxCandidateChecks": 2,
+    "maxProviderCalls": 2,
+    "maxFallbacks": 1,
+    "maxModelRounds": 4,
+    "maxOutputTokensPerRound": 2048
+  },
+  "timeoutsSeconds": {
+    "approvalNonce": 600,
+    "admissionTicket": 60,
+    "providerRequest": 15,
+    "run": 120
+  },
+  "infrastructureLimits": {
+    "maxReferenceRpcCallsPerRun": 12,
+    "maxAdvisoryHttpRequestsPerRun": 20,
+    "limitExceededAction": "required evidence INCONCLUSIVE; never interpret truncation as empty",
+    "providerBudgetExcludes": "reference, advisory, model and publication operations; all require separate accounting"
+  },
+  "maxReferenceHeadSkewBlocks": "32",
+  "maxProviderResponseBytes": 1048576,
+  "referenceAssurance": "RPC_CROSS_CHECKED",
+  "eip1898Required": true,
+  "checkRules": [
+    {
+      "ruleId": "chain_match",
+      "stage": "REFERENCE",
+      "required": true
+    },
+    {
+      "ruleId": "reference_hash_match",
+      "stage": "REFERENCE",
+      "required": true
+    },
+    {
+      "ruleId": "manifest_pin",
+      "stage": "ADMISSION",
+      "required": true
+    },
+    {
+      "ruleId": "capability_match",
+      "stage": "ADMISSION",
+      "required": true
+    },
+    {
+      "ruleId": "client_dependency_policy",
+      "stage": "ADMISSION",
+      "required": true
+    },
+    {
+      "ruleId": "remote_deployment_provenance",
+      "stage": "ADMISSION",
+      "required": false
+    },
+    {
+      "ruleId": "response_schema",
+      "stage": "VERIFY",
+      "required": true
+    },
+    {
+      "ruleId": "response_scope",
+      "stage": "VERIFY",
+      "required": true
+    },
+    {
+      "ruleId": "snapshot_match",
+      "stage": "VERIFY",
+      "required": true
+    },
+    {
+      "ruleId": "balance_match",
+      "stage": "VERIFY",
+      "required": true
+    }
+  ],
+  "dependencyPolicy": {
+    "source": "OSV",
+    "ecosystem": "npm",
+    "input": "pinned client lockfile only",
+    "unresolvedVersionAction": "QUARANTINE",
+    "advisoryRetrievalFailureAction": "QUARANTINE",
+    "maxCacheAgeSeconds": 3600,
+    "freshnessStatus": "INITIAL_PRODUCT_POLICY_NOT_SOURCE_GUARANTEE",
+    "pagination": "finish every query next_page_token and fetch required advisory records; cap reached => INCONCLUSIVE",
+    "knownAffectedPackageAction": "REJECT",
+    "unknownAffectedRangeAction": "QUARANTINE",
+    "successfulNoAdvisoryMeaning": "no known advisory found at observed time; not deployment safety"
+  },
+  "egress": {
+    "default": "DENY",
+    "targets": "administrator-configured origins; credentials and URLs kept server-side",
+    "redirects": "DENY unless revalidated",
+    "publicEvidenceURI": "never automatically executed"
+  },
+  "publication": {
+    "automatic": false,
+    "confirmations": null,
+    "registryAddress": null,
+    "signerAddress": null,
+    "blockedUntil": "actual BOT mainnet confirmation policy, gas, registry and validator configured"
+  }
+}

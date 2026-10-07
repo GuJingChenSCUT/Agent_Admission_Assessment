@@ -1,0 +1,14 @@
+{
+  "name": "agent-admission-assessment",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Ethereum research Agent tool admission and result verification framework.",
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node --watch src/server.js",
+    "test": "node --test",
+    "check": "node --check src/server.js && node --check src/worker.js && node --check src/domain.js"
+  }
+}

@@ -1,0 +1,119 @@
+{
+  "version": "1",
+  "task": {
+    "NEEDS_INPUT": [
+      "AWAITING_APPROVAL",
+      "CANCELLED"
+    ],
+    "AWAITING_APPROVAL": [
+      "NEEDS_INPUT",
+      "QUEUED",
+      "CANCELLED"
+    ],
+    "QUEUED": [
+      "RUNNING",
+      "STOP_REQUESTED",
+      "FAILED",
+      "QUARANTINED"
+    ],
+    "RUNNING": [
+      "STOP_REQUESTED",
+      "SUCCEEDED",
+      "FAILED",
+      "QUARANTINED"
+    ],
+    "STOP_REQUESTED": [
+      "CANCELLED"
+    ],
+    "SUCCEEDED": [],
+    "FAILED": [],
+    "QUARANTINED": [],
+    "CANCELLED": []
+  },
+  "publication": {
+    "NOT_REQUESTED": [
+      "QUEUED"
+    ],
+    "QUEUED": [
+      "SIGNED",
+      "FAILED",
+      "CANCEL_REQUESTED"
+    ],
+    "SIGNED": [
+      "BROADCAST",
+      "UNKNOWN",
+      "FAILED",
+      "CANCEL_REQUESTED"
+    ],
+    "BROADCAST": [
+      "CONFIRMING",
+      "UNKNOWN",
+      "FAILED"
+    ],
+    "CONFIRMING": [
+      "CONFIRMED",
+      "UNKNOWN",
+      "FAILED"
+    ],
+    "UNKNOWN": [
+      "BROADCAST",
+      "CONFIRMING",
+      "CONFIRMED",
+      "FAILED"
+    ],
+    "FAILED": [],
+    "CONFIRMED": [],
+    "CANCEL_REQUESTED": [
+      "CANCELLED",
+      "BROADCAST",
+      "UNKNOWN"
+    ],
+    "CANCELLED": []
+  },
+  "attempt": {
+    "CHECKING": [
+      "REJECTED",
+      "RUNNING",
+      "INCONCLUSIVE",
+      "CANCEL_REQUESTED"
+    ],
+    "RUNNING": [
+      "PASSED",
+      "FAILED",
+      "INCONCLUSIVE",
+      "CANCEL_REQUESTED"
+    ],
+    "CANCEL_REQUESTED": [
+      "CANCELLED",
+      "LATE_DISCARDED"
+    ],
+    "REJECTED": [],
+    "PASSED": [],
+    "FAILED": [],
+    "INCONCLUSIVE": [],
+    "CANCELLED": [],
+    "LATE_DISCARDED": []
+  },
+  "notes": [
+    "Self-transitions used only for idempotent reads or acknowledgements.",
+    "CAS state, stopEpoch, current policyEpoch and fenced leaseGeneration in dispatch and result transactions.",
+    "PublicReport is immutable. Publication CONFIRMED is historical; current AnchorObservation is independently refreshed.",
+    "REQUEST_BOUND records the actual EIP1898 request; raw eth_getBalance returns a quantity, not a provider block attestation.",
+    "Signed publication cancellation can race broadcast; chain outcomes override local cancellation claims.",
+    "FAILED publication retries create explicit new jobs, not silent resends."
+  ],
+  "serverInvariants": [
+    "required checks must PASS before stage ALLOW",
+    "acceptedFact iff task SUCCEEDED",
+    "approved revision/specHash/nonce must match",
+    "each jti consumed once",
+    "provider calls and fallbacks bounded",
+    "report excludes reportHash/signature/anchor",
+    "LIVE facts cannot originate SAMPLE fixtures",
+    "Decimal balances/chain/block are bounded by uint256; EIP712 observedAt/expiresAt bounded by uint64",
+    "Caller identity comes from worker context, never client or model parameters",
+    "Current leaseGeneration, stopEpoch and policyEpoch guard dispatch and result commits",
+    "LIVE accepted attempts require InvocationObservation linked to private raw request and response digests",
+    "A policyEpoch invalidation quarantines the old Run; no silent policyHash change or resume under relaxed rules"
+  ]
+}

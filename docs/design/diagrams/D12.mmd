@@ -1,0 +1,20 @@
+flowchart TD
+  user["user 链上数据/Agent 平台团队与安全负责人"]
+  pain["pain 接入审查、结果核对、故障切换、事后追溯"]
+  baseline["baseline 直接调用、静态扫描、准入加持续验收"]
+  pilot["pilot 相同样本、来源、任务和故障分布"]
+  measure["measure 完成率、误接纳、误拒绝、时延、成本、人工介入"]
+  value{"value 验证收益是否超过额外查询与运营成本"}
+  narrow["narrow 廉价余额无需第三方验收时收窄商业承诺"]
+  adopt["adopt 自愿复用和付费试点"]
+  moat["moat 开放规则、可重放案例、服务历史与集成积累"]
+  user --> pain
+  pain --> baseline
+  baseline --> pilot
+  pilot --> measure
+  measure --> value
+  value -->|"no"| narrow
+  narrow -->|"reframe"| pain
+  value -->|"yes"| adopt
+  adopt --> moat
+  moat -->|"new evidence"| pilot

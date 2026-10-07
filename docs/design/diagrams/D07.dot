@@ -1,0 +1,32 @@
+digraph D07 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D07  |  Crash recovery"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+restart [label="Worker restart / lease\nexpiry", fillcolor="#ffffff", color="#94a8c2"];
+storage [label="Storage healthy?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+freeze [label="Freeze new dispatch", fillcolor="#fcebed", color="#bd6876"];
+lease [label="Acquire new fenced lease", fillcolor="#ffffff", color="#94a8c2"];
+committed [label="Fact already committed?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+return [label="Return durable outcome", fillcolor="#e9f6ee", color="#559b75"];
+stored [label="Response stored?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+verify [label="Re-run deterministic\nverifier", fillcolor="#ffffff", color="#94a8c2"];
+sent [label="Dispatch committed?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+dispatch [label="Execute pending dispatch", fillcolor="#ffffff", color="#94a8c2"];
+uncertain [label="External outcome unknown", fillcolor="#fff4df", color="#bd9651"];
+next [label="Approved fallback\navailable?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+fallback [label="New candidate + new\nticket", fillcolor="#ffffff", color="#94a8c2"];
+quarantine [label="QUARANTINED", fillcolor="#fff4df", color="#bd9651"];
+restart -> storage;
+storage -> freeze [label="no"];
+storage -> lease [label="yes"];
+lease -> committed;
+committed -> return [label="yes"];
+committed -> stored [label="no"];
+stored -> verify [label="yes"];
+stored -> sent [label="no"];
+sent -> dispatch [label="no"];
+sent -> uncertain [label="yes"];
+uncertain -> next;
+next -> fallback [label="yes"];
+next -> quarantine [label="no"];
+}

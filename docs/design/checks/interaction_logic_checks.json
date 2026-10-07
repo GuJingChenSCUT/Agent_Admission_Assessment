@@ -1,0 +1,61 @@
+{
+  "scope": "Actual embedded scripts with deterministic clock and minimal DOM double. Does not test browser rendering or native DOM behavior.",
+  "tests": [
+    {
+      "name": "normal accepted fact and optional unknown",
+      "status": "PASS"
+    },
+    {
+      "name": "stale snapshot rejected and one fallback",
+      "status": "PASS"
+    },
+    {
+      "name": "all candidates fail and no accepted fact",
+      "status": "PASS"
+    },
+    {
+      "name": "reference conflict avoids provider call",
+      "status": "PASS"
+    },
+    {
+      "name": "manifest changed rejected before invocation",
+      "status": "PASS"
+    },
+    {
+      "name": "optional missing remains NOT_CHECKED",
+      "status": "PASS"
+    },
+    {
+      "name": "fallback disabled obeys approved scope",
+      "status": "PASS"
+    },
+    {
+      "name": "address clarification and scope revision",
+      "status": "PASS"
+    },
+    {
+      "name": "duplicate local approval creates one run",
+      "status": "PASS"
+    },
+    {
+      "name": "stop during invocation discards late result",
+      "status": "PASS"
+    },
+    {
+      "name": "stop after success preserves fact",
+      "status": "PASS"
+    },
+    {
+      "name": "unsupported transaction scope makes no call",
+      "status": "PASS"
+    },
+    {
+      "name": "report tamper detected, old preview blocks publication",
+      "status": "PASS"
+    },
+    {
+      "name": "roving tab handler updates focus and selected state",
+      "status": "PASS"
+    }
+  ]
+}

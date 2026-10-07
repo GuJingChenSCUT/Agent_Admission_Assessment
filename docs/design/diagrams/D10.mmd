@@ -1,0 +1,25 @@
+flowchart TD
+  catalog["catalog RPC、OSV、上游公告、CISA、身份注册与构…"]
+  ingest["ingest 允许列表、速率、重试上限和资源预算"]
+  complete{"complete schema、分页、版本/区间、来源时间与摘要"}
+  incomplete["incomplete 缺页、限流、解析失败或过期"]
+  cache["cache sourceId、sourceVersion、m…"]
+  pin["pin Run 固定使用的来源版本与策略"]
+  join["join CVE/GHSA/OSV alias 去重"]
+  evaluate["evaluate 完整材料交给 D04 确定性规则，按观测给 PA…"]
+  decision{"decision 按任务策略决定阻断与展示"}
+  block["block 必需数据无法闭合"]
+  annotate["annotate 可选缺失明确未验证"]
+  refresh["refresh 到期或变更触发"]
+  catalog --> ingest
+  ingest --> complete
+  complete -->|"yes"| cache
+  complete -->|"no"| incomplete
+  cache --> pin
+  pin --> join
+  incomplete --> decision
+  decision -->|"required"| block
+  decision -->|"optional"| annotate
+  cache --> refresh
+  refresh -->|"update"| ingest
+  join -->|"apply deterministic rules"| evaluate

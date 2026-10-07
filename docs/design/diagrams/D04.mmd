@@ -1,0 +1,28 @@
+flowchart TD
+  subject["subject 固定命名空间、origin、transport、…"]
+  egress["egress HTTPS、获准 origin、解析地址与重定向策略"]
+  safe{"safe 连接目标是否仍在允许范围"}
+  reject["reject 明确禁止或确定失配"]
+  checks["checks 精确版本、完整公告页、声明来源类别"]
+  required{"required 必需检查是否具备可用结果"}
+  unknown["unknown 未知不是通过"]
+  pass{"pass 所有必需规则通过"}
+  ticket["ticket 绑定 spec、snapshot、policy、…"]
+  guard["guard 核验签名、当前权限、过期、预算与单次 jti"]
+  dispatch["dispatch 短事务登记消费、预算和逻辑调用开始"]
+  call["call 无额外跟随重定向"]
+  result["result 返回只作不可信数据"]
+  subject --> egress
+  egress --> safe
+  safe -->|"no"| reject
+  safe -->|"yes"| checks
+  checks --> required
+  required -->|"no"| unknown
+  required -->|"yes"| pass
+  pass -->|"no"| reject
+  pass -->|"yes"| ticket
+  ticket --> guard
+  guard -->|"invalid / revoked"| reject
+  guard -->|"current"| dispatch
+  dispatch --> call
+  call --> result

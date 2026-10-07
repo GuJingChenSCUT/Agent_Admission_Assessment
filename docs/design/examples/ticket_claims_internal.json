@@ -1,0 +1,20 @@
+{
+  "version": "1",
+  "aud": "agent-admission-gateway:v1",
+  "taskId": "tsk_sample0001",
+  "runId": "run_sample0001",
+  "caller": "worker_sample",
+  "taskSpecHash": "0x2bf4cce1ec619d5e5674a494f05a46035fc89163f8c01d56272e09c3488497d4",
+  "snapshotHash": "0x6d34260052b12cc1c079f197293da1f1ede73594f73b717d1919e5dab2eb3559",
+  "serviceId": "svc_primary",
+  "manifestHash": "0x4444444444444444444444444444444444444444444444444444444444444444",
+  "method": "eth_getBalance",
+  "argumentsHash": "0x2a317819ca5bbf169e1cf686a64e560494037320e10199580ee2085e315a7922",
+  "policyHash": "0xacf255acd493ba35e16aae3bf10edc2eb6c4a63ccc1f2bd72c6a223cf8d533c9",
+  "stopEpoch": 0,
+  "policyEpoch": 0,
+  "leaseGeneration": 1,
+  "issuedAt": "2026-10-07T10:00:00Z",
+  "expiresAt": "2026-10-07T10:01:00Z",
+  "jti": "jti_sample0001"
+}

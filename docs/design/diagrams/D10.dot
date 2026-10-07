@@ -1,0 +1,29 @@
+digraph D10 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D10  |  Data ingestion and freshness"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+catalog [label="Source catalog", fillcolor="#ffffff", color="#94a8c2"];
+ingest [label="Bounded ingestion", fillcolor="#ffffff", color="#94a8c2"];
+complete [label="Complete and valid?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+incomplete [label="INCOMPLETE / STALE", fillcolor="#fff4df", color="#bd9651"];
+cache [label="Versioned evidence cache", fillcolor="#ffffff", color="#94a8c2"];
+pin [label="Pin run evidence", fillcolor="#ffffff", color="#94a8c2"];
+join [label="Normalize and\ndeduplicate", fillcolor="#ffffff", color="#94a8c2"];
+evaluate [label="Return resolved evidence", fillcolor="#ffffff", color="#94a8c2"];
+decision [label="Required or optional?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+block [label="QUARANTINE", fillcolor="#fff4df", color="#bd9651"];
+annotate [label="Continue with limitation", fillcolor="#ffffff", color="#94a8c2"];
+refresh [label="Background refresh", fillcolor="#ffffff", color="#94a8c2"];
+catalog -> ingest;
+ingest -> complete;
+complete -> cache [label="yes"];
+complete -> incomplete [label="no"];
+cache -> pin;
+pin -> join;
+incomplete -> decision;
+decision -> block [label="required"];
+decision -> annotate [label="optional"];
+cache -> refresh;
+refresh -> ingest [label="update"];
+join -> evaluate [label="apply deterministic\nrules"];
+}

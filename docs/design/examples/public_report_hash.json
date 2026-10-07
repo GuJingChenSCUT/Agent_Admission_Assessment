@@ -1,0 +1,7 @@
+{
+  "executionMode": "SAMPLE",
+  "algorithm": "keccak256(UTF8(JCS(PublicReport)))",
+  "reportHash": "0x3ced3970521a209bbb1b8379722b47f1dd77a14686968d14fea473dc21b60049",
+  "signature": null,
+  "anchorReceipt": null
+}

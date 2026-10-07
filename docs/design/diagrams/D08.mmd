@@ -1,0 +1,25 @@
+flowchart TD
+  raw["raw 原始请求/响应、查询时间、来源、字节摘要"]
+  bundle["bundle 脱敏后保留范围、Snapshot、Subject…"]
+  hash["hash JCS 与 Keccak-256"]
+  integrity{"integrity 下载的公开对象是否与承诺相符"}
+  reject["reject 停止信任该内容"]
+  signature["signature 登记链、合约、验证者、消息字段与签名"]
+  anchor["anchor receipt、目标合约、事件、区块 hash …"]
+  time["time 有效期、撤销记录及核查时间"]
+  scope["scope 链、地址、Snapshot、方法、规则版本与来源级别"]
+  vector["vector 分别输出 PASS / FAIL / UNKNO…"]
+  reuse["reuse 可参考历史观测"]
+  raw --> bundle
+  bundle --> hash
+  hash --> integrity
+  integrity -->|"no"| reject
+  integrity -->|"yes"| signature
+  integrity -->|"yes"| anchor
+  integrity -->|"yes"| time
+  integrity -->|"yes"| scope
+  signature --> vector
+  anchor --> vector
+  time --> vector
+  scope --> vector
+  vector --> reuse

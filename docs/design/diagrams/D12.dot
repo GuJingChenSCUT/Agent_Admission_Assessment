@@ -1,0 +1,24 @@
+digraph D12 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D12  |  Market validation"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+user [label="Target teams", fillcolor="#ffffff", color="#94a8c2"];
+pain [label="Measure current work", fillcolor="#ffffff", color="#94a8c2"];
+baseline [label="Three baselines", fillcolor="#ffffff", color="#94a8c2"];
+pilot [label="Matched pilot cases", fillcolor="#ffffff", color="#94a8c2"];
+measure [label="Measure utility + cost", fillcolor="#ffffff", color="#94a8c2"];
+value [label="Net value demonstrated?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+narrow [label="Narrow or change use\ncase", fillcolor="#fff4df", color="#bd9651"];
+adopt [label="Repeat paid use", fillcolor="#ffffff", color="#94a8c2"];
+moat [label="Reusable evidence assets", fillcolor="#ffffff", color="#94a8c2"];
+user -> pain;
+pain -> baseline;
+baseline -> pilot;
+pilot -> measure;
+measure -> value;
+value -> narrow [label="no"];
+narrow -> pain [label="reframe"];
+value -> adopt [label="yes"];
+adopt -> moat;
+moat -> pilot [label="new evidence"];
+}

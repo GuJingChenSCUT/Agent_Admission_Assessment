@@ -1,0 +1,33 @@
+{
+  "scope": "Design, graph and static artifact validation only. No backend or actual browser execution.",
+  "tests": [
+    {
+      "name": "57 distinct scenarios retain detection, response, recovery, ownership and planned-only status",
+      "status": "PASS"
+    },
+    {
+      "name": "12 diagram definitions, Mermaid nodes and scenario references are consistent",
+      "status": "PASS"
+    },
+    {
+      "name": "12 SVG files parse, PNGs exist and layouts use at most five aligned nodes",
+      "status": "PASS"
+    },
+    {
+      "name": "Offline atlas has unique embedded SVG IDs, linked controls and 57 complete case cards",
+      "status": "PASS"
+    },
+    {
+      "name": "Atlas inline JavaScript parses; this is not a browser interaction test",
+      "status": "PASS"
+    },
+    {
+      "name": "New fencing, response binding and current-chain contracts preserve evidence separation",
+      "status": "PASS"
+    },
+    {
+      "name": "Atlas, PRD, full scenario document and ten primary references are present",
+      "status": "PASS"
+    }
+  ]
+}

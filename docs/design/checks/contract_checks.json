@@ -1,0 +1,68 @@
+{
+  "scope": "Structural consistency plus local validator for only the schema keywords used here. Not full OpenAPI/JSON Schema standard certification.",
+  "domainDefinitions": 52,
+  "apiPaths": 12,
+  "plannedBackendCases": 25,
+  "tests": [
+    {
+      "name": "All JSON and YAML files parse without duplicate keys",
+      "status": "PASS"
+    },
+    {
+      "name": "All domain references resolve",
+      "status": "PASS"
+    },
+    {
+      "name": "OpenAPI references and component definitions match domain",
+      "status": "PASS"
+    },
+    {
+      "name": "12 API paths have complete parameters, auth and idempotency",
+      "status": "PASS"
+    },
+    {
+      "name": "Five model tools have resolvable narrow contracts",
+      "status": "PASS"
+    },
+    {
+      "name": "State tables match enums and preserve terminal task facts",
+      "status": "PASS"
+    },
+    {
+      "name": "Four JSON fixture types and report business invariants",
+      "status": "PASS"
+    },
+    {
+      "name": "All generated prototype reports obey schema subset and invariants",
+      "status": "PASS"
+    },
+    {
+      "name": "Reject user-supplied owner",
+      "status": "PASS"
+    },
+    {
+      "name": "Reject incomplete approval",
+      "status": "PASS"
+    },
+    {
+      "name": "Reject provider budget over cap",
+      "status": "PASS"
+    },
+    {
+      "name": "Reject numeric balance instead of decimal string",
+      "status": "PASS"
+    },
+    {
+      "name": "Reject extra block number in finalized-at-run policy",
+      "status": "PASS"
+    },
+    {
+      "name": "PRD covers 12 APIs, 16 requirements and 25 planned cases",
+      "status": "PASS"
+    },
+    {
+      "name": "Static HTML labels, IDs, sample disclosure, no external assets",
+      "status": "PASS"
+    }
+  ]
+}

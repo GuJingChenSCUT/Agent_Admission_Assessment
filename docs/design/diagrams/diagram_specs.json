@@ -1,0 +1,2012 @@
+[
+  {
+    "id": "D01",
+    "title": "系统架构与信任边界",
+    "scope": "区分模型建议、后端权限、外部服务和签名权限；箭头表示受控接口，不代表模型可直连。",
+    "nodes": [
+      {
+        "id": "ui",
+        "label": "User workspace",
+        "meaning": "用户输入、补答、批准和停止；没有工具密钥",
+        "kind": "process"
+      },
+      {
+        "id": "control",
+        "label": "Control API",
+        "meaning": "认证、版本、批准、停止和当前任务状态",
+        "kind": "process"
+      },
+      {
+        "id": "agent",
+        "label": "Planner agent",
+        "meaning": "单个编排 Agent，只输出提案和解释",
+        "kind": "external"
+      },
+      {
+        "id": "db",
+        "label": "Durable DB + outbox",
+        "meaning": "任务真相、幂等、执行命令、租约与证据引用",
+        "kind": "process"
+      },
+      {
+        "id": "worker",
+        "label": "Run worker",
+        "meaning": "领取执行权并推进固定阶段",
+        "kind": "process"
+      },
+      {
+        "id": "inspect",
+        "label": "Inspection + policy",
+        "meaning": "静态依赖、清单、能力与 required 检查",
+        "kind": "process"
+      },
+      {
+        "id": "gateway",
+        "label": "Execution gateway",
+        "meaning": "凭据、停止 epoch、策略 epoch、租约代际和预算",
+        "kind": "process"
+      },
+      {
+        "id": "provider",
+        "label": "Candidate services",
+        "meaning": "管理员登记的两个候选；返回内容仍不可信",
+        "kind": "external"
+      },
+      {
+        "id": "reference",
+        "label": "Reference resolver",
+        "meaning": "两个配置上独立的 RPC 运营者、同一参考区块",
+        "kind": "process"
+      },
+      {
+        "id": "verify",
+        "label": "Deterministic verifier",
+        "meaning": "按明确规则核对范围、数量、请求区块与参考结果",
+        "kind": "process"
+      },
+      {
+        "id": "evidence",
+        "label": "Evidence builder",
+        "meaning": "私有原件与可公开报告；规范化与摘要",
+        "kind": "process"
+      },
+      {
+        "id": "publish",
+        "label": "Publication worker",
+        "meaning": "独立公开批准和持久登记命令",
+        "kind": "process"
+      },
+      {
+        "id": "signer",
+        "label": "Restricted signer",
+        "meaning": "固定链、合约、方法和预算；隔离密钥",
+        "kind": "security"
+      },
+      {
+        "id": "chain",
+        "label": "BOT registry",
+        "meaning": "登记事件、回执和当前主链核查",
+        "kind": "external"
+      },
+      {
+        "id": "ethid",
+        "label": "Ethereum identity",
+        "meaning": "GCC 主线的身份适配停点；当前未接入",
+        "kind": "external"
+      }
+    ],
+    "edges": [
+      {
+        "from": "ui",
+        "to": "control",
+        "label": "request / stop"
+      },
+      {
+        "from": "control",
+        "to": "agent",
+        "label": "scope"
+      },
+      {
+        "from": "agent",
+        "to": "control",
+        "label": "proposal"
+      },
+      {
+        "from": "control",
+        "to": "db",
+        "label": "atomic state"
+      },
+      {
+        "from": "db",
+        "to": "worker",
+        "label": "run command"
+      },
+      {
+        "from": "worker",
+        "to": "inspect",
+        "label": "admission"
+      },
+      {
+        "from": "inspect",
+        "to": "gateway",
+        "label": "decision"
+      },
+      {
+        "from": "worker",
+        "to": "reference",
+        "label": "fixed snapshot"
+      },
+      {
+        "from": "gateway",
+        "to": "provider",
+        "label": "bounded call"
+      },
+      {
+        "from": "provider",
+        "to": "verify",
+        "label": "untrusted result"
+      },
+      {
+        "from": "reference",
+        "to": "verify",
+        "label": "reference observations"
+      },
+      {
+        "from": "verify",
+        "to": "db",
+        "label": "guarded fact commit"
+      },
+      {
+        "from": "verify",
+        "to": "evidence",
+        "label": "checks + facts"
+      },
+      {
+        "from": "evidence",
+        "to": "publish",
+        "label": "report + approval"
+      },
+      {
+        "from": "control",
+        "to": "publish",
+        "label": "exact-hash consent"
+      },
+      {
+        "from": "publish",
+        "to": "signer",
+        "label": "approved claim"
+      },
+      {
+        "from": "signer",
+        "to": "chain",
+        "label": "persist then send"
+      },
+      {
+        "from": "ethid",
+        "to": "inspect",
+        "label": "identity reference"
+      }
+    ],
+    "rules": [
+      "模型不持有 gateway ticket、私钥、服务令牌；gateway_invoke 不是模型工具。",
+      "所有外部访问经过各自允许列表；参考源与候选源的独立性要有配置依据。",
+      "Ethereum 数据链、Ethereum 身份位置与 BOT 登记链分别记录；图中的 Ethereum 身份节点是交付阻断项。"
+    ],
+    "groups": [
+      {
+        "name": "User surface",
+        "nodes": [
+          "ui"
+        ]
+      },
+      {
+        "name": "Control and persistence",
+        "nodes": [
+          "control",
+          "db"
+        ]
+      },
+      {
+        "name": "Bounded runtime",
+        "nodes": [
+          "agent",
+          "worker",
+          "inspect",
+          "gateway",
+          "reference",
+          "verify",
+          "evidence"
+        ]
+      },
+      {
+        "name": "Signing boundary",
+        "nodes": [
+          "publish",
+          "signer"
+        ]
+      }
+    ]
+  },
+  {
+    "id": "D02",
+    "title": "任务主流程与终态",
+    "scope": "主流程只描述一个已批准的只读任务；详细准入、停止和恢复分别见 D04、D06、D07。",
+    "nodes": [
+      {
+        "id": "intent",
+        "label": "User intent",
+        "meaning": "用户提出原生 ETH 余额需求",
+        "kind": "process"
+      },
+      {
+        "id": "draft",
+        "label": "Compile task scope",
+        "meaning": "模型提案经后端 schema 与范围校验",
+        "kind": "process"
+      },
+      {
+        "id": "complete",
+        "label": "Scope complete?",
+        "meaning": "链、地址、资产、模式是否明确",
+        "kind": "decision"
+      },
+      {
+        "id": "clarify",
+        "label": "NEEDS_INPUT",
+        "meaning": "补答或选择唯一地址",
+        "kind": "wait"
+      },
+      {
+        "id": "approve",
+        "label": "AWAITING_APPROVAL",
+        "meaning": "展示范围、候选、限额、版本和摘要",
+        "kind": "wait"
+      },
+      {
+        "id": "queue",
+        "label": "QUEUED",
+        "meaning": "批准和 run outbox 在同一事务中提交",
+        "kind": "process"
+      },
+      {
+        "id": "ref",
+        "label": "Resolve reference",
+        "meaning": "固定参考区块并交叉核对",
+        "kind": "process"
+      },
+      {
+        "id": "ready",
+        "label": "Reference agrees?",
+        "meaning": "参考链、区块和余额能否闭合",
+        "kind": "decision"
+      },
+      {
+        "id": "admit",
+        "label": "Admission check",
+        "meaning": "检查当前候选的能力、来源和依赖",
+        "kind": "process"
+      },
+      {
+        "id": "invoke",
+        "label": "Bounded invocation",
+        "meaning": "网关准入与调用",
+        "kind": "process"
+      },
+      {
+        "id": "accept",
+        "label": "Required checks PASS?",
+        "meaning": "本次验收和提交守卫是否全部通过",
+        "kind": "decision"
+      },
+      {
+        "id": "fallback",
+        "label": "Fallback still allowed?",
+        "meaning": "同一范围、同一 Snapshot、剩余候选和预算",
+        "kind": "decision"
+      },
+      {
+        "id": "success",
+        "label": "SUCCEEDED",
+        "meaning": "只有通过验收的事实进入结果",
+        "kind": "success"
+      },
+      {
+        "id": "classify",
+        "label": "Unknown evidence?",
+        "meaning": "没有通过候选时，区分未知与确定失败",
+        "kind": "decision"
+      },
+      {
+        "id": "quarantine",
+        "label": "QUARANTINED",
+        "meaning": "必需证据未知或冲突，不能给可用事实",
+        "kind": "wait"
+      },
+      {
+        "id": "failed",
+        "label": "FAILED",
+        "meaning": "候选确定失败且无剩余获准路线",
+        "kind": "failure"
+      },
+      {
+        "id": "report",
+        "label": "Immutable report",
+        "meaning": "终态证据；公开登记另行批准",
+        "kind": "process"
+      }
+    ],
+    "edges": [
+      {
+        "from": "intent",
+        "to": "draft",
+        "label": ""
+      },
+      {
+        "from": "draft",
+        "to": "complete",
+        "label": ""
+      },
+      {
+        "from": "complete",
+        "to": "clarify",
+        "label": "missing"
+      },
+      {
+        "from": "clarify",
+        "to": "draft",
+        "label": "answer + revision"
+      },
+      {
+        "from": "complete",
+        "to": "approve",
+        "label": "complete"
+      },
+      {
+        "from": "approve",
+        "to": "queue",
+        "label": "exact approval"
+      },
+      {
+        "from": "queue",
+        "to": "ref",
+        "label": ""
+      },
+      {
+        "from": "ref",
+        "to": "ready",
+        "label": ""
+      },
+      {
+        "from": "ready",
+        "to": "quarantine",
+        "label": "no"
+      },
+      {
+        "from": "ready",
+        "to": "admit",
+        "label": "yes"
+      },
+      {
+        "from": "admit",
+        "to": "invoke",
+        "label": "ALLOW"
+      },
+      {
+        "from": "invoke",
+        "to": "accept",
+        "label": ""
+      },
+      {
+        "from": "accept",
+        "to": "success",
+        "label": "yes"
+      },
+      {
+        "from": "accept",
+        "to": "fallback",
+        "label": "no"
+      },
+      {
+        "from": "admit",
+        "to": "fallback",
+        "label": "reject / unknown"
+      },
+      {
+        "from": "fallback",
+        "to": "admit",
+        "label": "yes: next candidate"
+      },
+      {
+        "from": "fallback",
+        "to": "classify",
+        "label": "no"
+      },
+      {
+        "from": "classify",
+        "to": "quarantine",
+        "label": "yes"
+      },
+      {
+        "from": "classify",
+        "to": "failed",
+        "label": "no"
+      },
+      {
+        "from": "success",
+        "to": "report",
+        "label": ""
+      },
+      {
+        "from": "failed",
+        "to": "report",
+        "label": ""
+      },
+      {
+        "from": "quarantine",
+        "to": "report",
+        "label": ""
+      }
+    ],
+    "rules": [
+      "未支持的资产、链或交易请求在生成可批准范围前返回 UNSUPPORTED_SCOPE。",
+      "切换不能增加预算、更改地址或改为 latest；参考冲突不能靠换候选绕过。",
+      "遇到确定性禁止规则立即停止该路线；已识别攻击不应由模型解释后放行。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D03",
+    "title": "参考区块与数据验收",
+    "scope": "原生 eth_getBalance 返回数量，不返回状态证明；请求绑定、服务声明和证明必须分开。",
+    "nodes": [
+      {
+        "id": "scope",
+        "label": "Approved chain + address",
+        "meaning": "已批准 Ethereum 1 和地址",
+        "kind": "process"
+      },
+      {
+        "id": "a",
+        "label": "Reference operator A",
+        "meaning": "读取 chainId、finalized 头、目标区块和余额",
+        "kind": "external"
+      },
+      {
+        "id": "b",
+        "label": "Reference operator B",
+        "meaning": "不同运营者；不能仅以 URL 不同认定独立",
+        "kind": "external"
+      },
+      {
+        "id": "heads",
+        "label": "Compatible finalized heads?",
+        "meaning": "核对链、头偏差和可共同核对高度",
+        "kind": "decision"
+      },
+      {
+        "id": "hash",
+        "label": "Same canonical block hash?",
+        "meaning": "共同高度两边区块 hash 一致",
+        "kind": "decision"
+      },
+      {
+        "id": "balance",
+        "label": "Same reference balance?",
+        "meaning": "在固定 blockHash 对照两份余额",
+        "kind": "decision"
+      },
+      {
+        "id": "snapshot",
+        "label": "Pin immutable Snapshot",
+        "meaning": "保留区块、时间、来源、请求和响应摘要",
+        "kind": "process"
+      },
+      {
+        "id": "candidate",
+        "label": "Parse candidate response",
+        "meaning": "原件分别保留；校验 schema、范围和整数格式，失败不得进入验收",
+        "kind": "process"
+      },
+      {
+        "id": "binding",
+        "label": "Binding kind?",
+        "meaning": "区分原生 RPC 请求绑定与服务自行声明",
+        "kind": "decision"
+      },
+      {
+        "id": "rpc",
+        "label": "REQUEST_BOUND",
+        "meaning": "核对实际发送的区块参数；不能声称服务提供了证明",
+        "kind": "process"
+      },
+      {
+        "id": "declared",
+        "label": "PROVIDER_DECLARED",
+        "meaning": "检查服务声明的链、地址和区块是否相符",
+        "kind": "process"
+      },
+      {
+        "id": "compare",
+        "label": "Compare exact wei",
+        "meaning": "按本次参考值比较，不使用浮点",
+        "kind": "decision"
+      },
+      {
+        "id": "accepted",
+        "label": "Required data checks PASS",
+        "meaning": "仅返回已解析的验收结果给 D02；提交仍需 epochs 与租约守卫",
+        "kind": "success"
+      },
+      {
+        "id": "mismatch",
+        "label": "Verification FAIL",
+        "meaning": "确定的范围或数量失配；返回 D02 决定是否获准切换",
+        "kind": "failure"
+      },
+      {
+        "id": "quarantine",
+        "label": "INCONCLUSIVE",
+        "meaning": "冲突、来源不可用或必需能力不足",
+        "kind": "wait"
+      }
+    ],
+    "edges": [
+      {
+        "from": "scope",
+        "to": "a",
+        "label": ""
+      },
+      {
+        "from": "scope",
+        "to": "b",
+        "label": ""
+      },
+      {
+        "from": "a",
+        "to": "heads",
+        "label": ""
+      },
+      {
+        "from": "b",
+        "to": "heads",
+        "label": ""
+      },
+      {
+        "from": "heads",
+        "to": "hash",
+        "label": "yes"
+      },
+      {
+        "from": "heads",
+        "to": "quarantine",
+        "label": "no"
+      },
+      {
+        "from": "hash",
+        "to": "balance",
+        "label": "yes"
+      },
+      {
+        "from": "hash",
+        "to": "quarantine",
+        "label": "no"
+      },
+      {
+        "from": "balance",
+        "to": "snapshot",
+        "label": "yes"
+      },
+      {
+        "from": "balance",
+        "to": "quarantine",
+        "label": "no"
+      },
+      {
+        "from": "snapshot",
+        "to": "candidate",
+        "label": ""
+      },
+      {
+        "from": "candidate",
+        "to": "mismatch",
+        "label": "malformed / wrong scope"
+      },
+      {
+        "from": "candidate",
+        "to": "binding",
+        "label": "parsed"
+      },
+      {
+        "from": "binding",
+        "to": "rpc",
+        "label": "raw RPC"
+      },
+      {
+        "from": "binding",
+        "to": "declared",
+        "label": "enriched service"
+      },
+      {
+        "from": "rpc",
+        "to": "compare",
+        "label": ""
+      },
+      {
+        "from": "declared",
+        "to": "compare",
+        "label": "scope matches"
+      },
+      {
+        "from": "declared",
+        "to": "mismatch",
+        "label": "scope mismatch"
+      },
+      {
+        "from": "compare",
+        "to": "accepted",
+        "label": "equal"
+      },
+      {
+        "from": "compare",
+        "to": "mismatch",
+        "label": "different"
+      }
+    ],
+    "rules": [
+      "原生 RPC 把旧值返回但恰与当前值相同，不能据此判断其内部使用了哪个区块；只记录可观察到的一致性。",
+      "服务明确声明错误区块时拒绝该声明，并跳过跨区块金额比较；参考 RPC 交叉核对不等于密码学状态证明。",
+      "finalized 的区块时间早于当前时间是正常情况；不以单一墙钟阈值把 finalized 判为过期。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D04",
+    "title": "准入与网络出口控制",
+    "scope": "检查结果必须决定后端能否连接和提交，不能只作为 UI 分数。",
+    "nodes": [
+      {
+        "id": "subject",
+        "label": "Registered subject",
+        "meaning": "固定命名空间、origin、transport、manifestHash",
+        "kind": "process"
+      },
+      {
+        "id": "egress",
+        "label": "Egress policy",
+        "meaning": "HTTPS、获准 origin、解析地址与重定向策略",
+        "kind": "process"
+      },
+      {
+        "id": "safe",
+        "label": "Destination allowed?",
+        "meaning": "连接目标是否仍在允许范围",
+        "kind": "decision"
+      },
+      {
+        "id": "reject",
+        "label": "REJECT",
+        "meaning": "明确禁止或确定失配；不得调用",
+        "kind": "failure"
+      },
+      {
+        "id": "checks",
+        "label": "Capability + dependency checks",
+        "meaning": "精确版本、完整公告页、声明来源类别",
+        "kind": "process"
+      },
+      {
+        "id": "required",
+        "label": "Required evidence resolved?",
+        "meaning": "必需检查是否具备可用结果",
+        "kind": "decision"
+      },
+      {
+        "id": "unknown",
+        "label": "QUARANTINE",
+        "meaning": "未知不是通过；可选未知单独展示",
+        "kind": "wait"
+      },
+      {
+        "id": "pass",
+        "label": "Required checks PASS?",
+        "meaning": "所有必需规则通过；无覆盖性禁用",
+        "kind": "decision"
+      },
+      {
+        "id": "ticket",
+        "label": "Issue one-call ticket",
+        "meaning": "绑定 spec、snapshot、policy、manifest、caller、epochs 和代际",
+        "kind": "process"
+      },
+      {
+        "id": "guard",
+        "label": "Gateway guard",
+        "meaning": "核验签名、当前权限、过期、预算与单次 jti",
+        "kind": "process"
+      },
+      {
+        "id": "dispatch",
+        "label": "Atomic consume + dispatch",
+        "meaning": "短事务登记消费、预算和逻辑调用开始",
+        "kind": "process"
+      },
+      {
+        "id": "call",
+        "label": "Bounded provider call",
+        "meaning": "无额外跟随重定向；限制时长、字节与解析深度",
+        "kind": "process"
+      },
+      {
+        "id": "result",
+        "label": "Store response then verify",
+        "meaning": "返回只作不可信数据；原件私有保存",
+        "kind": "process"
+      }
+    ],
+    "edges": [
+      {
+        "from": "subject",
+        "to": "egress",
+        "label": ""
+      },
+      {
+        "from": "egress",
+        "to": "safe",
+        "label": ""
+      },
+      {
+        "from": "safe",
+        "to": "reject",
+        "label": "no"
+      },
+      {
+        "from": "safe",
+        "to": "checks",
+        "label": "yes"
+      },
+      {
+        "from": "checks",
+        "to": "required",
+        "label": ""
+      },
+      {
+        "from": "required",
+        "to": "unknown",
+        "label": "no"
+      },
+      {
+        "from": "required",
+        "to": "pass",
+        "label": "yes"
+      },
+      {
+        "from": "pass",
+        "to": "reject",
+        "label": "no"
+      },
+      {
+        "from": "pass",
+        "to": "ticket",
+        "label": "yes"
+      },
+      {
+        "from": "ticket",
+        "to": "guard",
+        "label": ""
+      },
+      {
+        "from": "guard",
+        "to": "reject",
+        "label": "invalid / revoked"
+      },
+      {
+        "from": "guard",
+        "to": "dispatch",
+        "label": "current"
+      },
+      {
+        "from": "dispatch",
+        "to": "call",
+        "label": ""
+      },
+      {
+        "from": "call",
+        "to": "result",
+        "label": ""
+      }
+    ],
+    "rules": [
+      "公开环境拒绝内网、loopback、link-local 和云元数据目标；开发例外不能带入发布配置。",
+      "DNS 校验应约束实际连接地址并保留 TLS 主机校验；只提前查 DNS 再由客户端重新解析仍有窗口。",
+      "不把用户 token 原样转给其他 audience；不自动安装包或启动上传的 stdio 配置。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D05",
+    "title": "用户界面与断线交互",
+    "scope": "这里的连接状态属于客户端视图，不能写入后端 TaskStatus 冒充真实任务终态。",
+    "nodes": [
+      {
+        "id": "form",
+        "label": "Task input",
+        "meaning": "输入需求；只读范围说明",
+        "kind": "process"
+      },
+      {
+        "id": "draft",
+        "label": "Scope or clarification",
+        "meaning": "缺失条件补答；明确范围后展示批准卡",
+        "kind": "process"
+      },
+      {
+        "id": "edit",
+        "label": "Edit scope",
+        "meaning": "增加 revision，作废旧摘要与 nonce",
+        "kind": "process"
+      },
+      {
+        "id": "approve",
+        "label": "Approve exact scope",
+        "meaning": "提交同一版本、摘要、nonce 和幂等键",
+        "kind": "process"
+      },
+      {
+        "id": "ack",
+        "label": "Acknowledgement known?",
+        "meaning": "是否收到并能核对后端确认",
+        "kind": "decision"
+      },
+      {
+        "id": "unknown",
+        "label": "ACK_UNKNOWN view",
+        "meaning": "显示确认状态未知；保留原 taskId 和键",
+        "kind": "wait"
+      },
+      {
+        "id": "reconcile",
+        "label": "Query task + resume events",
+        "meaning": "续读 sequence，去重并查询当前任务",
+        "kind": "process"
+      },
+      {
+        "id": "running",
+        "label": "Running workspace",
+        "meaning": "显示阶段、预算和独立停止入口",
+        "kind": "process"
+      },
+      {
+        "id": "stop",
+        "label": "Request stop",
+        "meaning": "立即发送控制请求；未 ACK 不显示已停止",
+        "kind": "process"
+      },
+      {
+        "id": "terminal",
+        "label": "Terminal evidence",
+        "meaning": "成功、失败、隔离、取消分别说明",
+        "kind": "process"
+      },
+      {
+        "id": "preview",
+        "label": "Public field preview",
+        "meaning": "公开字段与精确 reportHash",
+        "kind": "process"
+      },
+      {
+        "id": "publish",
+        "label": "Publication panel",
+        "meaning": "签名、广播、确认、UNKNOWN 独立显示",
+        "kind": "process"
+      },
+      {
+        "id": "read",
+        "label": "Public verification",
+        "meaning": "摘要、签名、当前主链、撤销、期限与范围",
+        "kind": "process"
+      }
+    ],
+    "edges": [
+      {
+        "from": "form",
+        "to": "draft",
+        "label": ""
+      },
+      {
+        "from": "draft",
+        "to": "edit",
+        "label": "change"
+      },
+      {
+        "from": "edit",
+        "to": "draft",
+        "label": "new revision"
+      },
+      {
+        "from": "draft",
+        "to": "approve",
+        "label": "complete"
+      },
+      {
+        "from": "approve",
+        "to": "ack",
+        "label": ""
+      },
+      {
+        "from": "ack",
+        "to": "unknown",
+        "label": "timeout / disconnect"
+      },
+      {
+        "from": "unknown",
+        "to": "reconcile",
+        "label": "same task / same key"
+      },
+      {
+        "from": "reconcile",
+        "to": "running",
+        "label": "running"
+      },
+      {
+        "from": "ack",
+        "to": "running",
+        "label": "accepted"
+      },
+      {
+        "from": "ack",
+        "to": "draft",
+        "label": "rejected / 409"
+      },
+      {
+        "from": "running",
+        "to": "stop",
+        "label": "user stops"
+      },
+      {
+        "from": "stop",
+        "to": "reconcile",
+        "label": "await server truth"
+      },
+      {
+        "from": "running",
+        "to": "terminal",
+        "label": "completed"
+      },
+      {
+        "from": "reconcile",
+        "to": "terminal",
+        "label": "terminal"
+      },
+      {
+        "from": "terminal",
+        "to": "preview",
+        "label": "explicit intent"
+      },
+      {
+        "from": "preview",
+        "to": "publish",
+        "label": "exact-hash consent"
+      },
+      {
+        "from": "publish",
+        "to": "read",
+        "label": "record available"
+      }
+    ],
+    "rules": [
+      "普通请求忙碌、事件断开或模型慢均不能禁用独立停止操作；鉴权过期时明确停止尚未确认。",
+      "批准 ACK 丢失后查原任务；安全重试使用原幂等键。已发生的状态不能由页面返回或刷新撤回。",
+      "公开后原始地址等字段可能被第三方保存；确认前展示真正将公开的字段。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D06",
+    "title": "停止竞争与晚到结果",
+    "scope": "竞争由数据库事务决定，不根据 UI 到达顺序猜测。",
+    "nodes": [
+      {
+        "id": "request",
+        "label": "Stop arrives",
+        "meaning": "用户请求停止",
+        "kind": "process"
+      },
+      {
+        "id": "state",
+        "label": "Task already terminal?",
+        "meaning": "先读取并锁定当前状态",
+        "kind": "decision"
+      },
+      {
+        "id": "terminal",
+        "label": "Return terminal fact",
+        "meaning": "成功先提交则保持 SUCCEEDED",
+        "kind": "success"
+      },
+      {
+        "id": "epoch",
+        "label": "Commit stopEpoch + revoke",
+        "meaning": "写 STOP_REQUESTED；撤销未消费凭据",
+        "kind": "process"
+      },
+      {
+        "id": "ack",
+        "label": "ACK stop request",
+        "meaning": "只有持久化成功才发送确认",
+        "kind": "process"
+      },
+      {
+        "id": "race",
+        "label": "Response commit guard",
+        "meaning": "比较 task、stopEpoch、policyEpoch、leaseGeneration",
+        "kind": "process"
+      },
+      {
+        "id": "late",
+        "label": "LATE_DISCARDED",
+        "meaning": "停止先提交时不接纳晚到结果",
+        "kind": "wait"
+      },
+      {
+        "id": "cleanup",
+        "label": "Finish local work",
+        "meaning": "不接受新 dispatch，不再切换",
+        "kind": "process"
+      },
+      {
+        "id": "cancel",
+        "label": "CANCELLED",
+        "meaning": "本系统后续工作已收尾",
+        "kind": "process"
+      },
+      {
+        "id": "dbfail",
+        "label": "Stop not acknowledged",
+        "meaning": "持久化失败则告知状态未知并查原任务",
+        "kind": "failure"
+      }
+    ],
+    "edges": [
+      {
+        "from": "request",
+        "to": "state",
+        "label": ""
+      },
+      {
+        "from": "state",
+        "to": "terminal",
+        "label": "yes"
+      },
+      {
+        "from": "state",
+        "to": "epoch",
+        "label": "no"
+      },
+      {
+        "from": "epoch",
+        "to": "ack",
+        "label": "durable"
+      },
+      {
+        "from": "epoch",
+        "to": "dbfail",
+        "label": "write fails"
+      },
+      {
+        "from": "ack",
+        "to": "race",
+        "label": "in-flight response"
+      },
+      {
+        "from": "race",
+        "to": "late",
+        "label": "guard mismatch"
+      },
+      {
+        "from": "late",
+        "to": "cleanup",
+        "label": ""
+      },
+      {
+        "from": "ack",
+        "to": "cleanup",
+        "label": "no response"
+      },
+      {
+        "from": "cleanup",
+        "to": "cancel",
+        "label": ""
+      }
+    ],
+    "rules": [
+      "停止前已经 DISPATCH_COMMITTED 的请求可能继续发出或被远端处理；不承诺网络层撤回。",
+      "停止 ACK 后禁止新的逻辑 dispatch；外部晚到值不得生成成功结果或触发下一次调用。",
+      "终态报告不回写历史；后续发现产生独立事件或新报告版本。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D07",
+    "title": "工作器崩溃与持久恢复",
+    "scope": "恢复先检查已持久化的事实，再决定是否可执行下一步；不能靠重放整个 Agent 会话恢复权限。",
+    "nodes": [
+      {
+        "id": "restart",
+        "label": "Worker restart / lease expiry",
+        "meaning": "进程退出、部署中断、超时租约",
+        "kind": "process"
+      },
+      {
+        "id": "storage",
+        "label": "Storage healthy?",
+        "meaning": "数据库完整性、可写性与队列一致性",
+        "kind": "decision"
+      },
+      {
+        "id": "freeze",
+        "label": "Freeze new dispatch",
+        "meaning": "数据库异常时停止新执行与新签名",
+        "kind": "failure"
+      },
+      {
+        "id": "lease",
+        "label": "Acquire new fenced lease",
+        "meaning": "增加 leaseGeneration，旧代际失效",
+        "kind": "process"
+      },
+      {
+        "id": "committed",
+        "label": "Fact already committed?",
+        "meaning": "是否已有合法终态",
+        "kind": "decision"
+      },
+      {
+        "id": "return",
+        "label": "Return durable outcome",
+        "meaning": "重复命令返回既有结果",
+        "kind": "success"
+      },
+      {
+        "id": "stored",
+        "label": "Response stored?",
+        "meaning": "是否有同一 Attempt 的完整私有响应",
+        "kind": "decision"
+      },
+      {
+        "id": "verify",
+        "label": "Re-run deterministic verifier",
+        "meaning": "只重算校验，不重发外部请求",
+        "kind": "process"
+      },
+      {
+        "id": "sent",
+        "label": "Dispatch committed?",
+        "meaning": "票据是否已消费并登记调用开始",
+        "kind": "decision"
+      },
+      {
+        "id": "dispatch",
+        "label": "Execute pending dispatch",
+        "meaning": "未消费时仍需核对当前授权和 epochs",
+        "kind": "process"
+      },
+      {
+        "id": "uncertain",
+        "label": "External outcome unknown",
+        "meaning": "已消费且无响应；调用预算不退回",
+        "kind": "wait"
+      },
+      {
+        "id": "next",
+        "label": "Approved fallback available?",
+        "meaning": "在剩余预算和固定 Snapshot 内",
+        "kind": "decision"
+      },
+      {
+        "id": "fallback",
+        "label": "New candidate + new ticket",
+        "meaning": "最多一次备用切换",
+        "kind": "process"
+      },
+      {
+        "id": "quarantine",
+        "label": "QUARANTINED",
+        "meaning": "无法恢复必需证据时保留不确定性",
+        "kind": "wait"
+      }
+    ],
+    "edges": [
+      {
+        "from": "restart",
+        "to": "storage",
+        "label": ""
+      },
+      {
+        "from": "storage",
+        "to": "freeze",
+        "label": "no"
+      },
+      {
+        "from": "storage",
+        "to": "lease",
+        "label": "yes"
+      },
+      {
+        "from": "lease",
+        "to": "committed",
+        "label": ""
+      },
+      {
+        "from": "committed",
+        "to": "return",
+        "label": "yes"
+      },
+      {
+        "from": "committed",
+        "to": "stored",
+        "label": "no"
+      },
+      {
+        "from": "stored",
+        "to": "verify",
+        "label": "yes"
+      },
+      {
+        "from": "stored",
+        "to": "sent",
+        "label": "no"
+      },
+      {
+        "from": "sent",
+        "to": "dispatch",
+        "label": "no"
+      },
+      {
+        "from": "sent",
+        "to": "uncertain",
+        "label": "yes"
+      },
+      {
+        "from": "uncertain",
+        "to": "next",
+        "label": ""
+      },
+      {
+        "from": "next",
+        "to": "fallback",
+        "label": "yes"
+      },
+      {
+        "from": "next",
+        "to": "quarantine",
+        "label": "no"
+      }
+    ],
+    "rules": [
+      "旧工作器即使仍存活，也不能用旧 leaseGeneration 消费凭据或提交事实。",
+      "JSON-RPC 的 request id 不是远端任务查询接口；没有服务查询能力时不能声称已查回原调用。",
+      "恢复演练必须覆盖提交前后崩溃、重复 outbox 和损坏存储；本图是设计要求，不是已恢复成功的证据。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D08",
+    "title": "证据链与公共核验",
+    "scope": "把内容、主体、链上位置、时效和任务事实分开，使失败位置可定位。",
+    "nodes": [
+      {
+        "id": "raw",
+        "label": "Private raw artifacts",
+        "meaning": "原始请求/响应、查询时间、来源、字节摘要",
+        "kind": "process"
+      },
+      {
+        "id": "bundle",
+        "label": "Build immutable public report",
+        "meaning": "脱敏后保留范围、Snapshot、Subject、检查和局限",
+        "kind": "process"
+      },
+      {
+        "id": "hash",
+        "label": "Canonicalize + hash",
+        "meaning": "JCS 与 Keccak-256；内容不含自身 hash 或链上状态",
+        "kind": "process"
+      },
+      {
+        "id": "integrity",
+        "label": "Content hash matches?",
+        "meaning": "下载的公开对象是否与承诺相符",
+        "kind": "decision"
+      },
+      {
+        "id": "reject",
+        "label": "Integrity FAIL",
+        "meaning": "停止信任该内容；保留原声明和原因",
+        "kind": "failure"
+      },
+      {
+        "id": "signature",
+        "label": "Signer + domain",
+        "meaning": "登记链、合约、验证者、消息字段与签名",
+        "kind": "process"
+      },
+      {
+        "id": "anchor",
+        "label": "Current chain observation",
+        "meaning": "receipt、目标合约、事件、区块 hash 当前是否匹配",
+        "kind": "process"
+      },
+      {
+        "id": "time",
+        "label": "Validity + revocation",
+        "meaning": "有效期、撤销记录及核查时间",
+        "kind": "process"
+      },
+      {
+        "id": "scope",
+        "label": "Scope + assurance",
+        "meaning": "链、地址、Snapshot、方法、规则版本与来源级别",
+        "kind": "process"
+      },
+      {
+        "id": "vector",
+        "label": "Verification vector",
+        "meaning": "分别输出 PASS / FAIL / UNKNOWN，不压成安全总分",
+        "kind": "process"
+      },
+      {
+        "id": "reuse",
+        "label": "Historical selection signal",
+        "meaning": "可参考历史观测；新调用仍需准入与验收",
+        "kind": "process"
+      }
+    ],
+    "edges": [
+      {
+        "from": "raw",
+        "to": "bundle",
+        "label": ""
+      },
+      {
+        "from": "bundle",
+        "to": "hash",
+        "label": ""
+      },
+      {
+        "from": "hash",
+        "to": "integrity",
+        "label": ""
+      },
+      {
+        "from": "integrity",
+        "to": "reject",
+        "label": "no"
+      },
+      {
+        "from": "integrity",
+        "to": "signature",
+        "label": "yes"
+      },
+      {
+        "from": "integrity",
+        "to": "anchor",
+        "label": "yes"
+      },
+      {
+        "from": "integrity",
+        "to": "time",
+        "label": "yes"
+      },
+      {
+        "from": "integrity",
+        "to": "scope",
+        "label": "yes"
+      },
+      {
+        "from": "signature",
+        "to": "vector",
+        "label": ""
+      },
+      {
+        "from": "anchor",
+        "to": "vector",
+        "label": ""
+      },
+      {
+        "from": "time",
+        "to": "vector",
+        "label": ""
+      },
+      {
+        "from": "scope",
+        "to": "vector",
+        "label": ""
+      },
+      {
+        "from": "vector",
+        "to": "reuse",
+        "label": ""
+      }
+    ],
+    "rules": [
+      "未签名的报告也可核对内容；其 signer 与 anchor 仍为未验证。",
+      "URI 丢失时链上 hash 不能恢复原文；明确显示内容不可用。",
+      "单验证者证据和双 RPC 一致性均有信任假设，不能写成无条件真实或密码学状态证明。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D09",
+    "title": "链上登记与结果不明",
+    "scope": "Publication 表示登记工作进度；AnchorObservation 表示后来某次对当前主链的核对。",
+    "nodes": [
+      {
+        "id": "preview",
+        "label": "Preview exact reportHash",
+        "meaning": "用户看到公开字段",
+        "kind": "process"
+      },
+      {
+        "id": "approve",
+        "label": "Approve publication",
+        "meaning": "独立 nonce 与幂等键",
+        "kind": "process"
+      },
+      {
+        "id": "queued",
+        "label": "QUEUED",
+        "meaning": "批准和 publication outbox 原子提交",
+        "kind": "process"
+      },
+      {
+        "id": "signed",
+        "label": "SIGNED + persisted tx",
+        "meaning": "保存签名 bytes、txHash、nonce 后才发送",
+        "kind": "process"
+      },
+      {
+        "id": "broadcast",
+        "label": "BROADCAST",
+        "meaning": "RPC 接收不等于链上成功",
+        "kind": "process"
+      },
+      {
+        "id": "unknown",
+        "label": "UNKNOWN",
+        "meaning": "超时或网络分歧；按原 txHash 查询",
+        "kind": "wait"
+      },
+      {
+        "id": "confirm",
+        "label": "CONFIRMING",
+        "meaning": "收据、合约、事件及确认策略",
+        "kind": "process"
+      },
+      {
+        "id": "success",
+        "label": "CONFIRMED history",
+        "meaning": "在记录的核查时间符合确认策略",
+        "kind": "success"
+      },
+      {
+        "id": "failed",
+        "label": "FAILED",
+        "meaning": "明确 revert 或不匹配事件；不冒充成功",
+        "kind": "failure"
+      },
+      {
+        "id": "cancel",
+        "label": "CANCELLED locally",
+        "meaning": "仅能取消尚未广播且确认无发送竞争的工作",
+        "kind": "wait"
+      },
+      {
+        "id": "observe",
+        "label": "Observe current chain again",
+        "meaning": "公开核验时检查 blockHash 与撤销",
+        "kind": "process"
+      },
+      {
+        "id": "current",
+        "label": "CANONICAL / ORPHANED / UNKNOWN",
+        "meaning": "当前链状态独立展示，不篡改历史报告",
+        "kind": "process"
+      }
+    ],
+    "edges": [
+      {
+        "from": "preview",
+        "to": "approve",
+        "label": ""
+      },
+      {
+        "from": "approve",
+        "to": "queued",
+        "label": ""
+      },
+      {
+        "from": "queued",
+        "to": "signed",
+        "label": ""
+      },
+      {
+        "from": "queued",
+        "to": "cancel",
+        "label": "cancel before signing"
+      },
+      {
+        "from": "signed",
+        "to": "broadcast",
+        "label": "send"
+      },
+      {
+        "from": "signed",
+        "to": "cancel",
+        "label": "unsent + exclusive lock"
+      },
+      {
+        "from": "signed",
+        "to": "unknown",
+        "label": "send uncertain"
+      },
+      {
+        "from": "broadcast",
+        "to": "confirm",
+        "label": ""
+      },
+      {
+        "from": "broadcast",
+        "to": "unknown",
+        "label": "timeout"
+      },
+      {
+        "from": "unknown",
+        "to": "confirm",
+        "label": "original tx found"
+      },
+      {
+        "from": "confirm",
+        "to": "success",
+        "label": "policy met"
+      },
+      {
+        "from": "confirm",
+        "to": "failed",
+        "label": "revert / mismatch"
+      },
+      {
+        "from": "confirm",
+        "to": "unknown",
+        "label": "conflict"
+      },
+      {
+        "from": "success",
+        "to": "observe",
+        "label": ""
+      },
+      {
+        "from": "observe",
+        "to": "current",
+        "label": ""
+      }
+    ],
+    "rules": [
+      "P0 不自动提价换 nonce；同一已批准交易的重发恢复策略需记录，费用上限变化需新授权。",
+      "广播后的“停止”不能撤回已公开记录。撤销是一条新的公开记录，也不会删除旧数据。",
+      "确认后若重组，当前显示 ORPHANED 或 UNKNOWN；不能继续用历史 CONFIRMED 单独证明当前仍有效。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D10",
+    "title": "数据采集与同步",
+    "scope": "大量数据的价值来自来源、版本和可复核性；缓存命中不能代替新鲜度规则。",
+    "nodes": [
+      {
+        "id": "catalog",
+        "label": "Source catalog",
+        "meaning": "RPC、OSV、上游公告、CISA、身份注册与构建材料",
+        "kind": "process"
+      },
+      {
+        "id": "ingest",
+        "label": "Bounded ingestion",
+        "meaning": "允许列表、速率、重试上限和资源预算",
+        "kind": "process"
+      },
+      {
+        "id": "complete",
+        "label": "Complete and valid?",
+        "meaning": "schema、分页、版本/区间、来源时间与摘要",
+        "kind": "decision"
+      },
+      {
+        "id": "incomplete",
+        "label": "INCOMPLETE / STALE",
+        "meaning": "缺页、限流、解析失败或过期；禁止当作无风险",
+        "kind": "wait"
+      },
+      {
+        "id": "cache",
+        "label": "Versioned evidence cache",
+        "meaning": "sourceId、sourceVersion、modified、fetchedAt、hash",
+        "kind": "process"
+      },
+      {
+        "id": "pin",
+        "label": "Pin run evidence",
+        "meaning": "Run 固定使用的来源版本与策略",
+        "kind": "process"
+      },
+      {
+        "id": "join",
+        "label": "Normalize and deduplicate",
+        "meaning": "CVE/GHSA/OSV alias 去重；不算多份独立证据",
+        "kind": "process"
+      },
+      {
+        "id": "evaluate",
+        "label": "Return resolved evidence",
+        "meaning": "完整材料交给 D04 确定性规则，按观测给 PASS/FAIL，不因 required 就隔离",
+        "kind": "process"
+      },
+      {
+        "id": "decision",
+        "label": "Required or optional?",
+        "meaning": "按任务策略决定阻断与展示",
+        "kind": "decision"
+      },
+      {
+        "id": "block",
+        "label": "QUARANTINE",
+        "meaning": "必需数据无法闭合",
+        "kind": "wait"
+      },
+      {
+        "id": "annotate",
+        "label": "Continue with limitation",
+        "meaning": "可选缺失明确未验证",
+        "kind": "process"
+      },
+      {
+        "id": "refresh",
+        "label": "Background refresh",
+        "meaning": "到期或变更触发；安全禁用只能收紧权限",
+        "kind": "process"
+      }
+    ],
+    "edges": [
+      {
+        "from": "catalog",
+        "to": "ingest",
+        "label": ""
+      },
+      {
+        "from": "ingest",
+        "to": "complete",
+        "label": ""
+      },
+      {
+        "from": "complete",
+        "to": "cache",
+        "label": "yes"
+      },
+      {
+        "from": "complete",
+        "to": "incomplete",
+        "label": "no"
+      },
+      {
+        "from": "cache",
+        "to": "pin",
+        "label": ""
+      },
+      {
+        "from": "pin",
+        "to": "join",
+        "label": ""
+      },
+      {
+        "from": "incomplete",
+        "to": "decision",
+        "label": ""
+      },
+      {
+        "from": "decision",
+        "to": "block",
+        "label": "required"
+      },
+      {
+        "from": "decision",
+        "to": "annotate",
+        "label": "optional"
+      },
+      {
+        "from": "cache",
+        "to": "refresh",
+        "label": ""
+      },
+      {
+        "from": "refresh",
+        "to": "ingest",
+        "label": "update"
+      },
+      {
+        "from": "join",
+        "to": "evaluate",
+        "label": "apply deterministic rules"
+      }
+    ],
+    "rules": [
+      "OSV querybatch 按每个查询项继续分页；截断不能等同无公告。",
+      "客户端锁文件、服务方 SBOM 声明和远程实际部署证明是三类材料；来源权威不能补足部署关联。",
+      "参考 RPC、模型、依赖源及候选服务各有独立预算；“最多两次服务调用”不表示总外部请求只有两次。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D11",
+    "title": "构建部署与交付停点",
+    "scope": "同一产物进入测试与演示，使用明确的 LIVE、REPLAY、SAMPLE 标识。",
+    "nodes": [
+      {
+        "id": "contract",
+        "label": "Freeze reviewed contracts",
+        "meaning": "范围、规则、接口、测试与 owner",
+        "kind": "process"
+      },
+      {
+        "id": "build",
+        "label": "Reproducible build",
+        "meaning": "锁文件、构建标识、来源说明与 secrets 检查",
+        "kind": "process"
+      },
+      {
+        "id": "verify",
+        "label": "Contract + adversarial tests",
+        "meaning": "正常路径、停止、恢复、未知与越权",
+        "kind": "process"
+      },
+      {
+        "id": "pass",
+        "label": "Release gate passes?",
+        "meaning": "必须控制是否真实通过",
+        "kind": "decision"
+      },
+      {
+        "id": "fix",
+        "label": "Fix or reduce claimed scope",
+        "meaning": "失败项回到 owner；不改为绿色演示",
+        "kind": "failure"
+      },
+      {
+        "id": "stage",
+        "label": "Staging with real dependencies",
+        "meaning": "真实模型、两个参考源、两个候选、持久库",
+        "kind": "process"
+      },
+      {
+        "id": "accept",
+        "label": "End-to-end acceptance",
+        "meaning": "非作者操作；保留 trace、耗时、成本和接管次数",
+        "kind": "process"
+      },
+      {
+        "id": "deploy",
+        "label": "Deploy exact artifact",
+        "meaning": "分别记录应用 URL、链、合约、回执和配置",
+        "kind": "process"
+      },
+      {
+        "id": "monitor",
+        "label": "Readiness + recovery check",
+        "meaning": "出口、数据库、签名器、预算与审计",
+        "kind": "process"
+      },
+      {
+        "id": "submit",
+        "label": "Competition materials",
+        "meaning": "仓库、启动、视频、运行链接、新增工作、链上材料",
+        "kind": "process"
+      },
+      {
+        "id": "rollback",
+        "label": "Operational rollback",
+        "meaning": "应用可回退；迁移按兼容方案，链上记录保留",
+        "kind": "process"
+      }
+    ],
+    "edges": [
+      {
+        "from": "contract",
+        "to": "build",
+        "label": ""
+      },
+      {
+        "from": "build",
+        "to": "verify",
+        "label": ""
+      },
+      {
+        "from": "verify",
+        "to": "pass",
+        "label": ""
+      },
+      {
+        "from": "pass",
+        "to": "fix",
+        "label": "no"
+      },
+      {
+        "from": "fix",
+        "to": "build",
+        "label": ""
+      },
+      {
+        "from": "pass",
+        "to": "stage",
+        "label": "yes"
+      },
+      {
+        "from": "stage",
+        "to": "accept",
+        "label": ""
+      },
+      {
+        "from": "accept",
+        "to": "deploy",
+        "label": "passed"
+      },
+      {
+        "from": "accept",
+        "to": "fix",
+        "label": "failed"
+      },
+      {
+        "from": "deploy",
+        "to": "monitor",
+        "label": ""
+      },
+      {
+        "from": "monitor",
+        "to": "submit",
+        "label": "healthy"
+      },
+      {
+        "from": "monitor",
+        "to": "rollback",
+        "label": "fault"
+      },
+      {
+        "from": "rollback",
+        "to": "fix",
+        "label": ""
+      }
+    ],
+    "rules": [
+      "本地 schema/逻辑检查、浏览器检查、实际 API 和链上确认分别登记，不互相替代。",
+      "主网 gas 不足或配置缺失显示 blocked；赛后补部署不改变比赛作品截止时间。",
+      "GCC 以服务验收和 Ethereum 信任职责为主线；BOT 部署材料只证明相应链上的真实接入。"
+    ],
+    "groups": []
+  },
+  {
+    "id": "D12",
+    "title": "创新假设与市场验证",
+    "scope": "原生余额查询是控制与验收试验，商业价值需在真实接入成本和失败损失中验证。",
+    "nodes": [
+      {
+        "id": "user",
+        "label": "Target teams",
+        "meaning": "链上数据/Agent 平台团队与安全负责人",
+        "kind": "process"
+      },
+      {
+        "id": "pain",
+        "label": "Measure current work",
+        "meaning": "接入审查、结果核对、故障切换、事后追溯",
+        "kind": "process"
+      },
+      {
+        "id": "baseline",
+        "label": "Three baselines",
+        "meaning": "直接调用、静态扫描、准入加持续验收",
+        "kind": "process"
+      },
+      {
+        "id": "pilot",
+        "label": "Matched pilot cases",
+        "meaning": "相同样本、来源、任务和故障分布",
+        "kind": "process"
+      },
+      {
+        "id": "measure",
+        "label": "Measure utility + cost",
+        "meaning": "完成率、误接纳、误拒绝、时延、成本、人工介入",
+        "kind": "process"
+      },
+      {
+        "id": "value",
+        "label": "Net value demonstrated?",
+        "meaning": "验证收益是否超过额外查询与运营成本",
+        "kind": "decision"
+      },
+      {
+        "id": "narrow",
+        "label": "Narrow or change use case",
+        "meaning": "廉价余额无需第三方验收时收窄商业承诺",
+        "kind": "wait"
+      },
+      {
+        "id": "adopt",
+        "label": "Repeat paid use",
+        "meaning": "自愿复用和付费试点；不是主观打分",
+        "kind": "process"
+      },
+      {
+        "id": "moat",
+        "label": "Reusable evidence assets",
+        "meaning": "开放规则、可重放案例、服务历史与集成积累",
+        "kind": "process"
+      }
+    ],
+    "edges": [
+      {
+        "from": "user",
+        "to": "pain",
+        "label": ""
+      },
+      {
+        "from": "pain",
+        "to": "baseline",
+        "label": ""
+      },
+      {
+        "from": "baseline",
+        "to": "pilot",
+        "label": ""
+      },
+      {
+        "from": "pilot",
+        "to": "measure",
+        "label": ""
+      },
+      {
+        "from": "measure",
+        "to": "value",
+        "label": ""
+      },
+      {
+        "from": "value",
+        "to": "narrow",
+        "label": "no"
+      },
+      {
+        "from": "narrow",
+        "to": "pain",
+        "label": "reframe"
+      },
+      {
+        "from": "value",
+        "to": "adopt",
+        "label": "yes"
+      },
+      {
+        "from": "adopt",
+        "to": "moat",
+        "label": ""
+      },
+      {
+        "from": "moat",
+        "to": "pilot",
+        "label": "new evidence"
+      }
+    ],
+    "rules": [
+      "已有依赖安全与 Agent/MCP 扫描产品；不能以产品名称不同推断市场空白。",
+      "候选差异化是任务相关验收、受限执行、可复核的公共失败记录与停止恢复；仍需需求和成本证据。",
+      "开放方法与案例形成公共物品；企业收费可来自托管、私有策略、监控和集成，不能以收集隐私日志建立壁垒。"
+    ],
+    "groups": []
+  }
+]

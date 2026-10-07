@@ -1,0 +1,32 @@
+digraph D09 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D09  |  Publication and chain observation"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+preview [label="Preview exact reportHash", fillcolor="#ffffff", color="#94a8c2"];
+approve [label="Approve publication", fillcolor="#ffffff", color="#94a8c2"];
+queued [label="QUEUED", fillcolor="#ffffff", color="#94a8c2"];
+signed [label="SIGNED + persisted tx", fillcolor="#ffffff", color="#94a8c2"];
+broadcast [label="BROADCAST", fillcolor="#ffffff", color="#94a8c2"];
+unknown [label="UNKNOWN", fillcolor="#fff4df", color="#bd9651"];
+confirm [label="CONFIRMING", fillcolor="#ffffff", color="#94a8c2"];
+success [label="CONFIRMED history", fillcolor="#e9f6ee", color="#559b75"];
+failed [label="FAILED", fillcolor="#fcebed", color="#bd6876"];
+cancel [label="CANCELLED locally", fillcolor="#fff4df", color="#bd9651"];
+observe [label="Observe current chain\nagain", fillcolor="#ffffff", color="#94a8c2"];
+current [label="CANONICAL / ORPHANED /\nUNKNOWN", fillcolor="#ffffff", color="#94a8c2"];
+preview -> approve;
+approve -> queued;
+queued -> signed;
+queued -> cancel [label="cancel before signing"];
+signed -> broadcast [label="send"];
+signed -> cancel [label="unsent + exclusive lock"];
+signed -> unknown [label="send uncertain"];
+broadcast -> confirm;
+broadcast -> unknown [label="timeout"];
+unknown -> confirm [label="original tx found"];
+confirm -> success [label="policy met"];
+confirm -> failed [label="revert / mismatch"];
+confirm -> unknown [label="conflict"];
+success -> observe;
+observe -> current;
+}

@@ -1,0 +1,32 @@
+digraph D04 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D04  |  Admission and egress"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+subject [label="Registered subject", fillcolor="#ffffff", color="#94a8c2"];
+egress [label="Egress policy", fillcolor="#ffffff", color="#94a8c2"];
+safe [label="Destination allowed?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+reject [label="REJECT", fillcolor="#fcebed", color="#bd6876"];
+checks [label="Capability + dependency\nchecks", fillcolor="#ffffff", color="#94a8c2"];
+required [label="Required evidence\nresolved?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+unknown [label="QUARANTINE", fillcolor="#fff4df", color="#bd9651"];
+pass [label="Required checks PASS?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+ticket [label="Issue one-call ticket", fillcolor="#ffffff", color="#94a8c2"];
+guard [label="Gateway guard", fillcolor="#ffffff", color="#94a8c2"];
+dispatch [label="Atomic consume +\ndispatch", fillcolor="#ffffff", color="#94a8c2"];
+call [label="Bounded provider call", fillcolor="#ffffff", color="#94a8c2"];
+result [label="Store response then\nverify", fillcolor="#ffffff", color="#94a8c2"];
+subject -> egress;
+egress -> safe;
+safe -> reject [label="no"];
+safe -> checks [label="yes"];
+checks -> required;
+required -> unknown [label="no"];
+required -> pass [label="yes"];
+pass -> reject [label="no"];
+pass -> ticket [label="yes"];
+ticket -> guard;
+guard -> reject [label="invalid / revoked"];
+guard -> dispatch [label="current"];
+dispatch -> call;
+call -> result;
+}

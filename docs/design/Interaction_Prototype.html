@@ -1,0 +1,514 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Agent 准入检查器的离线交互设计，全部数据为构造样例。">
+<title>Agent 准入工作台 · 离线设计原型</title>
+<style>
+:root{--bg:#f5f7fa;--paper:#fff;--ink:#182b42;--muted:#60738a;--line:#dce4ee;--blue:#2359c4;--nav:#102237;--green:#176749;--amber:#85531b;--red:#a42b39;--radius:14px}
+*{box-sizing:border-box}body{margin:0;font:15px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft Yahei",sans-serif;color:var(--ink);background:var(--bg)}button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:9px;padding:9px 15px;background:#fff;color:var(--ink);font-weight:600}button:hover:not(:disabled){border-color:var(--blue);background:#eef3ff}button:disabled{cursor:default;opacity:.5}button.primary{background:var(--blue);border-color:var(--blue);color:#fff}button.primary:hover:not(:disabled){background:#1c49a4}button.danger{color:var(--red);border-color:#e8b9c0}button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #7eabff;outline-offset:3px}textarea,input,select{border:1px solid #b9c8d9;border-radius:9px;padding:10px 12px;color:var(--ink);background:#fff;max-width:100%;min-width:0}textarea{width:100%;resize:vertical;min-height:105px}label{display:block;font-weight:600;margin-bottom:7px}p{margin:8px 0 14px}h1{font-size:29px;line-height:1.3;letter-spacing:-.7px;margin:0 0 8px}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 7px}.muted{color:var(--muted)}.small{font-size:12px}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;overflow-wrap:anywhere}.hidden,[hidden]{display:none!important}.shell{display:grid;grid-template-columns:222px minmax(0,1fr);min-height:100vh}.sidebar{background:var(--nav);color:#fff;padding:30px 20px;display:flex;flex-direction:column;gap:30px}.brand{display:flex;gap:11px;align-items:center;line-height:1.35}.brand-icon{width:34px;height:39px;border:1px solid #5776a0;border-radius:9px;display:grid;place-items:center;color:#c0d2ff;font-size:20px}.brand strong{font-size:17px}.brand span{font-size:11px;color:#9cb0ca}.nav{display:flex;flex-direction:column;gap:6px}.nav button{text-align:left;color:#b8c7db;border-color:transparent;background:transparent;border-radius:9px;padding:12px}.nav button[aria-selected="true"]{color:#fff;background:#25456c;border-color:#476487}.nav button:hover{background:#243c58!important;border-color:#476487!important}.nav small{margin-right:9px;opacity:.7}.sidebar-note{margin-top:auto;font-size:12px;color:#b5c4d7;border-top:1px solid #34465d;padding-top:18px}.main{min-width:0;padding:26px 34px 38px;max-width:1350px;width:100%}.banner{border:1px solid #ead6ad;background:#fff7e7;color:#775018;border-radius:10px;padding:10px 15px;display:flex;gap:12px;align-items:flex-start;font-size:12px;margin-bottom:28px}.tag{display:inline-flex;align-items:center;border-radius:5px;background:#e9efff;color:#2951a8;padding:2px 7px;font-size:11px;letter-spacing:.4px;font-weight:700;white-space:nowrap}.tag.sample{background:#7c531e;color:#fff}.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:24px}.eyebrow{text-transform:uppercase;color:var(--blue);font-size:11px;letter-spacing:1.8px;font-weight:700;margin-bottom:8px}.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:23px;min-width:0}.grid{display:grid;grid-template-columns:minmax(0,1.14fr) minmax(0,1fr);gap:20px;align-items:start}.stack{display:grid;gap:20px}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.between{justify-content:space-between}.input-actions{margin-top:14px}.checklabel{display:flex;gap:8px;font-weight:400;margin:10px 0 0}.checklabel input{width:17px;height:17px;padding:0;accent-color:var(--blue)}.divider{border:0;border-top:1px solid var(--line);margin:19px 0}.scope-grid{display:grid;grid-template-columns:110px minmax(0,1fr);gap:9px 12px;font-size:13px}.scope-grid dt{color:var(--muted)}.scope-grid dd{margin:0;overflow-wrap:anywhere}.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:20px;background:#edf1f7;color:#42536a;font-size:12px;font-weight:600}.pill.green{background:#e8f4ee;color:var(--green)}.pill.red{background:#fbecef;color:var(--red)}.pill.amber{background:#fff3df;color:var(--amber)}.callout{padding:13px 15px;border-radius:9px;background:#eff4fb;font-size:13px}.callout.warn{background:#fff4e3;color:#82511b}.callout.error{background:#fbecef;color:var(--red)}.metric{font-size:37px;line-height:1.4;letter-spacing:-1.2px;font-weight:700}.metric small{font-size:15px;color:var(--muted);letter-spacing:0;font-weight:500}.result-box{border:1px solid #bddccb;background:#f3faf6;border-radius:10px;padding:15px;margin-top:15px}.timeline{list-style:none;padding:0;margin:16px 0 0}.timeline li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;margin-bottom:13px}.dot{width:19px;height:19px;border:1px solid #bdcbdd;border-radius:50%;font-size:10px;text-align:center;line-height:17px;background:#edf2f9;color:var(--blue);margin-top:2px}.timeline .green .dot{background:#e8f4ee;color:var(--green);border-color:#afcfbd}.timeline .amber .dot{background:#fff3df;color:var(--amber);border-color:#e3c99f}.timeline .red .dot{background:#fbecef;color:var(--red);border-color:#e3b2bb}.timeline strong{font-size:13px;font-weight:600}.timeline .detail{color:var(--muted);font-size:12px;overflow-wrap:anywhere}.budget{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0}.budget div{border:1px solid var(--line);border-radius:9px;padding:9px;text-align:center}.budget b{font-size:18px}.budget small{display:block;font-size:11px;color:var(--muted)}.services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.rule-list{list-style:none;margin:0;padding:0}.rule-list li{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-top:1px solid var(--line);padding:12px 0;font-size:13px}.rule-list li:first-child{border-top:0}.rule-list .rule-note{font-size:12px;color:var(--muted);margin-top:3px}.rule-list .pill{flex-shrink:0}.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:20px}.summary-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}.summary-item b{display:block;margin-bottom:5px}.hash-box{background:#f3f6fb;border:1px solid #d8e2f1;padding:12px;border-radius:8px;margin:10px 0;word-break:break-all}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f3f6fa;color:#506680;white-space:nowrap}tr:last-child td{border-bottom:0}td{overflow-wrap:anywhere}.table-wrap .pill{white-space:normal}.check-area{margin-top:20px}.footnote{margin:20px 0;color:var(--muted);font-size:12px}.json{white-space:pre-wrap;word-break:break-all;background:#13263c;color:#dce8f8;padding:17px;border-radius:10px;max-height:340px;overflow:auto;font-size:11px}.toast{position:fixed;right:25px;bottom:22px;max-width:min(440px,calc(100vw - 40px));padding:12px 16px;background:#122b45;color:#fff;border-radius:10px;box-shadow:0 6px 25px #0c234633;z-index:20;font-size:13px}.preview{border:2px solid #a5bee9;padding:16px;border-radius:10px;background:#f5f8ff;margin-top:15px}.preview .mono{max-height:70px;overflow:auto}.mobile-name{display:none}a{color:var(--blue)}
+@media(max-width:1120px){.main{padding:24px}.grid{grid-template-columns:1fr}.sidebar{padding:25px 16px}.shell{grid-template-columns:200px minmax(0,1fr)}.summary-grid{grid-template-columns:1fr}.services{grid-template-columns:1fr}}
+@media(max-width:650px){.shell{display:block}.sidebar{padding:14px 14px 9px;gap:13px}.brand-icon{width:27px;height:29px;font-size:16px}.brand strong{font-size:15px}.brand span,.sidebar-note{display:none}.nav{flex-direction:row;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}.nav button{text-align:center;padding:7px 2px;font-size:11px;line-height:1.4}.nav small{display:none}.main{padding:17px 13px}.banner{padding:9px 10px;gap:8px;margin-bottom:21px;font-size:11px}.page-head{margin-bottom:17px}h1{font-size:25px}.card{padding:17px}.scope-grid{grid-template-columns:83px minmax(0,1fr)}.metric{font-size:32px}.budget{gap:5px}.budget div{padding:8px 4px}.row button{flex-grow:1}th,td{padding:9px 8px;font-size:12px}.rule-list li{gap:7px}.tag{font-size:10px}.page-head .tag{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+ <aside class="sidebar">
+  <div class="brand"><div class="brand-icon" aria-hidden="true">◇</div><div><strong>Agent 准入工作台</strong><br><span>ETH WUHAN · DESIGN 0.1</span></div></div>
+  <nav class="nav" role="tablist" aria-label="工作台页面">
+   <button id="tab-workspace" role="tab" aria-selected="true" aria-controls="workspace" data-tab="workspace"><small>01</small>任务工作台</button>
+   <button id="tab-services" role="tab" aria-selected="false" aria-controls="services" data-tab="services"><small>02</small>服务检查</button>
+   <button id="tab-evidence" role="tab" aria-selected="false" aria-controls="evidence" data-tab="evidence"><small>03</small>证据核对</button>
+   <button id="tab-deployment" role="tab" aria-selected="false" aria-controls="deployment" data-tab="deployment"><small>04</small>部署清单</button>
+  </nav>
+  <div class="sidebar-note">先批准任务范围，再检查与验收。<br>公共记录只描述一次观测。</div>
+ </aside>
+ <main class="main">
+  <div class="banner"><span class="tag sample">SAMPLE</span><span>离线交互设计。地址、区块、余额、检查及事件均为构造样例；未连接模型、RPC、钱包或主网。本例模拟会明确声明区块的 MCP 服务；原生 RPC 余额响应不含区块证明。所有按钮仅影响此页面的本地状态。</span></div>
+  <section id="workspace" role="tabpanel" aria-labelledby="tab-workspace">
+   <div class="page-head"><div><div class="eyebrow">Controlled task / 01</div><h1>让每次工具调用有依据</h1><p class="muted">从一个受限的 Ethereum 原生 ETH 余额核验开始。</p></div><span class="tag">只读 · 原生 ETH</span></div>
+   <div class="grid">
+    <div class="stack">
+     <div class="card">
+      <h2>定义这次查询</h2>
+      <label for="intent">你的任务</label><textarea id="intent" spellcheck="false">请核对 0x2222222222222222222222222222222222222222 的 ETH 余额，使用执行时 finalized 区块。</textarea>
+      <label class="checklabel"><input id="allow-fallback" type="checkbox" checked>允许在相同范围内切换一次备用服务</label>
+      <div class="row input-actions"><button id="prepare" class="primary">生成任务范围</button><span class="small muted">原型使用有限本地规则解析</span></div>
+      <div id="input-error" class="callout error" role="alert" hidden></div>
+      <div id="clarification" class="check-area" hidden><label for="address-answer">补充要核验的地址</label><input id="address-answer" placeholder="0x… 共 40 位十六进制" style="width:100%"><div class="row input-actions"><button id="submit-answer">确认补答</button></div></div>
+     </div>
+     <div id="scope-card" class="card" hidden>
+      <div class="row between"><h2>批准前核对范围</h2><span id="revision" class="tag">REV 1</span></div>
+      <dl id="scope-fields" class="scope-grid"></dl>
+      <div class="callout" style="margin-top:16px">批准只允许这次查询。切换仍沿用同一地址与参考区块。证据默认私有，公开登记需要独立确认。</div>
+      <div class="row input-actions"><button id="approve" class="primary">批准并开始模拟</button><button id="edit-scope">修改范围</button><button id="cancel-draft">取消任务</button></div>
+     </div>
+    </div>
+    <div class="card">
+     <div class="row between"><h2>运行与验收</h2><span id="task-status" class="pill">尚未创建</span></div>
+     <label for="scenario">演示场景</label><select id="scenario" style="width:100%">
+      <option value="normal">正常查询 · 首选通过</option><option value="stale_primary" selected>首选声明旧区块 · 切换备用</option><option value="both_fail">两个服务均验收失败</option><option value="reference_conflict">参考来源冲突 · 暂停判断</option><option value="manifest_changed">首选清单变化 · 调用前拒绝</option><option value="optional_missing">远程来源资料缺失 · 明确未验证</option>
+     </select>
+     <p class="small muted">场景在批准时固定；所有时延都是本地动画。</p>
+     <div class="budget"><div><b id="checks-count">0 / 2</b><small>候选检查</small></div><div><b id="calls-count">0 / 2</b><small>服务调用</small></div><div><b id="fallback-count">0 / 1</b><small>切换</small></div></div>
+     <div class="row between"><span id="phase-label" class="small muted">等待任务范围</span><button id="stop" class="danger" disabled>停止任务</button></div>
+     <ol id="timeline" class="timeline" aria-live="polite" aria-label="运行事件"><li><div class="dot">·</div><div><strong>尚未调用服务</strong><div class="detail">生成并批准具体范围后，才会开始模拟。</div></div></li></ol>
+     <div id="accepted-result" class="result-box" hidden><div class="small" style="color:var(--green)">本地样例验收通过 · 非真实余额</div><div class="metric">42.125 <small>ETH</small></div><div id="result-detail" class="small muted"></div><button id="view-evidence" style="margin-top:12px">查看证据</button></div>
+     <div id="run-note" class="callout warn" hidden></div>
+    </div>
+   </div>
+   <p class="footnote">Ethereum 数据链：1 · 设计中的登记链：BOT 677 · finalized 可能早于当前时间，以固定区块 hash 验收。</p>
+  </section>
+  <section id="services" role="tabpanel" aria-labelledby="tab-services" hidden>
+   <div class="page-head"><div><div class="eyebrow">Admission / 02</div><h1>分别检查能力、依赖与来源</h1><p class="muted">无已知漏洞、登记身份或只读声明均不能代替结果验收。</p></div><span class="tag">管理员配置样例</span></div>
+   <div class="callout" style="margin-bottom:20px">两个候选均为本地构造服务。未发出探测、OSV 或 JSON-RPC 请求。检查结果随任务样例变化。</div>
+   <div id="service-cards" class="services"></div>
+   <div class="card" style="margin-top:20px"><h2>真正执行前仍需后端检查</h2><p class="muted">每次调用分别核对当前批准、清单摘要、参数、预算、单次凭据与停止 epoch。模型提出服务建议，不持有执行凭据。</p><span class="pill amber">后端网关未接入</span></div>
+  </section>
+  <section id="evidence" role="tabpanel" aria-labelledby="tab-evidence" hidden>
+   <div class="page-head"><div><div class="eyebrow">Evidence / 03</div><h1>核对结论所依据的内容</h1><p class="muted">内容完整性、验收事实、签名主体与链上记录分别展示。</p></div><span class="tag">默认私有</span></div>
+   <div id="evidence-empty" class="card"><h2>还没有终态证据</h2><p class="muted">完成或停止一项任务后，会生成构造报告。没有通过验收的任务不会出现正常余额结果。</p><button data-goto="workspace">返回任务</button></div>
+   <div id="evidence-body" hidden>
+    <div class="summary-grid"><div class="summary-item"><b>内容摘要</b><span id="integrity-status" class="pill">尚未核对</span></div><div class="summary-item"><b>签名主体</b><span class="pill amber">未连接签名器</span></div><div class="summary-item"><b>BOT 主网登记</b><span class="pill amber">未连接主网</span></div></div>
+    <div class="grid">
+     <div class="stack">
+      <div class="card"><div class="row between"><h2>本次证据内容</h2><span id="report-result" class="pill"></span></div><dl id="evidence-scope" class="scope-grid"></dl><hr class="divider"><h3>基准摘要 · Keccak-256 / JCS</h3><div id="original-hash" class="hash-box mono"></div><div class="row"><button id="verify-hash" class="primary">核对内容摘要</button><button id="tamper-report">模拟篡改金额</button><button id="restore-report">恢复原件</button></div><div id="hash-message" class="callout" style="margin-top:12px" aria-live="polite">摘要只证明内容是否相同，不证明余额真实或已上链。</div></div>
+      <div class="card"><h2>分项验收与未覆盖内容</h2><div id="evidence-checks"></div><p class="small muted">失败区块的金额不与目标区块金额直接比较。没有远程部署证明时始终标记“未验证”。</p></div>
+     </div>
+     <div class="stack">
+      <div class="card"><h2>预览公开字段</h2><p class="muted">实际产品将公开地址、查询范围、区块、规则观测与局限。私有提示、用户身份和访问令牌不进入公开报告。</p><button id="preview-public">生成公开预览</button><div id="public-preview" class="preview" hidden><div class="row between"><h3>本地公开预览</h3><span class="tag sample">SAMPLE</span></div><p id="disclosure" class="small"></p><div id="preview-hash" class="mono"></div><label class="checklabel"><input id="ack-public" type="checkbox">确认此样例的公开字段与摘要</label><button id="publish-local" class="primary" style="margin-top:12px" disabled>加入本地示例登记队列</button></div><p id="publication-note" class="small muted" aria-live="polite">不会签名、广播或产生交易 hash。</p><div id="publication-error" class="callout error" role="alert" hidden></div></div>
+      <div class="card"><details><summary>查看规范化报告对象</summary><pre id="report-json" class="json"></pre></details><p class="small muted">本地摘要实现用于设计演示。生产版本需经验证的库、完整测试向量与真实数据。</p></div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section id="deployment" role="tabpanel" aria-labelledby="tab-deployment" hidden>
+   <div class="page-head"><div><div class="eyebrow">Delivery / 04</div><h1>区分设计完成与真实接入</h1><p class="muted">这份原型提供完整交互，不计入主网有效部署。</p></div><span class="tag">研发交接</span></div>
+   <div class="card"><h2>比赛前就绪检查</h2><div class="table-wrap"><table><thead><tr><th>模块</th><th>当前状态</th><th>实际完成要求</th></tr></thead><tbody><tr><td>PRD、合同与状态</td><td><span class="pill green">设计已提供</span></td><td>研发评审与实际实现</td></tr><tr><td>交互流程</td><td><span class="pill green">本地可点击</span></td><td>替换为真实 API，复测失败与停止</td></tr><tr><td>在线 Agent</td><td><span class="pill amber">未接入</span></td><td>有限工具、模型配置、评测与实际调用</td></tr><tr><td>两个参考运营者</td><td><span class="pill amber">未接入</span></td><td>真实 finalized hash/余额交叉核对</td></tr><tr><td>准入网关与数据库</td><td><span class="pill amber">未实现</span></td><td>后端授权、预算、epoch、持久恢复</td></tr><tr><td>依赖公告</td><td><span class="pill amber">样例</span></td><td>真实锁文件、OSV 检索时间与原始依据</td></tr><tr><td>签名及 BOT 主网</td><td><span class="pill amber">未部署</span></td><td>实现合约、Gas、真实地址/回执/事件</td></tr><tr><td>视频、仓库与运行链接</td><td><span class="pill amber">待团队提交</span></td><td>按赛事手册标注比赛新增工作</td></tr></tbody></table></div><div class="callout warn" style="margin-top:16px">主网确认配置为空时必须阻断发布。Ethereum sourceChainId=1 与 BOT registryChainId=677 不能混用。</div></div>
+  </section>
+ </main>
+</div>
+<div id="toast" class="toast" role="status" hidden></div>
+<script>
+(function (root) {
+  'use strict';
+  const mask = (1n << 64n) - 1n;
+  const rotation = [0,1,62,28,27,36,44,6,55,20,3,10,43,25,39,41,45,15,21,8,18,2,61,56,14];
+  const constants = [0x1n,0x8082n,0x800000000000808an,0x8000000080008000n,0x808bn,0x80000001n,
+    0x8000000080008081n,0x8000000000008009n,0x8an,0x88n,0x80008009n,0x8000000an,
+    0x8000808bn,0x800000000000008bn,0x8000000000008089n,0x8000000000008003n,
+    0x8000000000008002n,0x8000000000000080n,0x800an,0x800000008000000an,
+    0x8000000080008081n,0x8000000000008080n,0x80000001n,0x8000000080008008n];
+  const rol = (v, n) => n ? ((v << BigInt(n)) | (v >> BigInt(64 - n))) & mask : v;
+  function permute(a) {
+    for (const rc of constants) {
+      const c = Array(5).fill(0n), d = [], b = Array(25).fill(0n);
+      for (let x = 0; x < 5; x++) for (let y = 0; y < 5; y++) c[x] ^= a[x + 5*y];
+      for (let x = 0; x < 5; x++) d[x] = c[(x+4)%5] ^ rol(c[(x+1)%5], 1);
+      for (let x = 0; x < 5; x++) for (let y = 0; y < 5; y++) {
+        const i = x + 5*y;
+        b[y + 5*((2*x + 3*y)%5)] = rol(a[i] ^ d[x], rotation[i]);
+      }
+      for (let x = 0; x < 5; x++) for (let y = 0; y < 5; y++)
+        a[x+5*y] = (b[x+5*y] ^ ((~b[(x+1)%5+5*y]) & b[(x+2)%5+5*y])) & mask;
+      a[0] ^= rc;
+    }
+  }
+  function keccak256(text) {
+    const input = new TextEncoder().encode(text), rate = 136;
+    const data = new Uint8Array(rate * Math.ceil((input.length + 1) / rate));
+    data.set(input); data[input.length] ^= 1; data[data.length-1] ^= 128;
+    const a = Array(25).fill(0n);
+    for (let offset = 0; offset < data.length; offset += rate) {
+      for (let i = 0; i < rate; i++) a[i >> 3] ^= BigInt(data[offset+i]) << BigInt((i%8)*8);
+      permute(a);
+    }
+    let hex = '0x';
+    for (let i = 0; i < 32; i++) hex += Number((a[i>>3] >> BigInt((i%8)*8)) & 255n).toString(16).padStart(2,'0');
+    return hex;
+  }
+  function validUnicode(s) {
+    for (let i = 0; i < s.length; i++) {
+      const n = s.charCodeAt(i);
+      if (n >= 0xd800 && n <= 0xdbff) {
+        const next = s.charCodeAt(++i);
+        if (!(next >= 0xdc00 && next <= 0xdfff)) throw new Error('Lone Unicode surrogate');
+      } else if (n >= 0xdc00 && n <= 0xdfff) throw new Error('Lone Unicode surrogate');
+    }
+  }
+  function canonicalize(value, visited = new Set()) {
+    if (value === null) return 'null';
+    if (typeof value === 'string') { validUnicode(value); return JSON.stringify(value); }
+    if (typeof value === 'boolean') return JSON.stringify(value);
+    if (typeof value === 'number') {
+      if (!Number.isFinite(value)) throw new Error('Non-finite number');
+      return JSON.stringify(value);
+    }
+    if (typeof value !== 'object') throw new Error('Unsupported JSON value');
+    if (visited.has(value)) throw new Error('Circular value');
+    visited.add(value);
+    let result;
+    if (Array.isArray(value)) result = '[' + value.map(v => canonicalize(v, visited)).join(',') + ']';
+    else {
+      if (Object.getPrototypeOf(value) !== Object.prototype && Object.getPrototypeOf(value) !== null) throw new Error('Non-JSON object');
+      result = '{' + Object.keys(value).sort().map(k => {
+        validUnicode(k); return JSON.stringify(k) + ':' + canonicalize(value[k], visited);
+      }).join(',') + '}';
+    }
+    visited.delete(value); return result;
+  }
+  function validateProfile(value) {
+    if (typeof value === 'number' && (!Number.isFinite(value) || (Number.isInteger(value) && !Number.isSafeInteger(value))))
+      throw new Error('Contract numbers must be finite; integers must be safe. Store chain quantities as strings.');
+    if (value && typeof value === 'object') for (const v of Object.values(value)) validateProfile(v);
+  }
+  function hashObject(value) { validateProfile(value); return keccak256(canonicalize(value)); }
+  const api = Object.freeze({keccak256,canonicalize,hashObject,validateProfile});
+  if (typeof module !== 'undefined' && module.exports) module.exports = api;
+  else root.DesignCrypto = api;
+})(typeof globalThis === 'undefined' ? this : globalThis);
+
+</script>
+<script>
+(() => {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const copy = v => JSON.parse(JSON.stringify(v));
+  const {hashObject} = DesignCrypto;
+  const SAMPLE_POLICY = {"version": "1", "kind": "INITIAL_CONFIGURATION_NOT_MEASURED", "sourceChainId": "1", "registryChainId": "677", "allowedOperation": "NATIVE_BALANCE", "enabledSnapshotModes": ["FINALIZED_AT_RUN"], "candidateServiceIds": ["svc_primary", "svc_backup"], "referenceOperatorIds": ["operator_a", "operator_b"], "limits": {"maxCandidateChecks": 2, "maxProviderCalls": 2, "maxFallbacks": 1, "maxModelRounds": 4, "maxOutputTokensPerRound": 2048}, "timeoutsSeconds": {"approvalNonce": 600, "admissionTicket": 60, "providerRequest": 15, "run": 120}, "infrastructureLimits": {"maxReferenceRpcCallsPerRun": 12, "maxAdvisoryHttpRequestsPerRun": 20, "limitExceededAction": "required evidence INCONCLUSIVE; never interpret truncation as empty", "providerBudgetExcludes": "reference, advisory, model and publication operations; all require separate accounting"}, "maxReferenceHeadSkewBlocks": "32", "maxProviderResponseBytes": 1048576, "referenceAssurance": "RPC_CROSS_CHECKED", "eip1898Required": true, "checkRules": [{"ruleId": "chain_match", "stage": "REFERENCE", "required": true}, {"ruleId": "reference_hash_match", "stage": "REFERENCE", "required": true}, {"ruleId": "manifest_pin", "stage": "ADMISSION", "required": true}, {"ruleId": "capability_match", "stage": "ADMISSION", "required": true}, {"ruleId": "client_dependency_policy", "stage": "ADMISSION", "required": true}, {"ruleId": "remote_deployment_provenance", "stage": "ADMISSION", "required": false}, {"ruleId": "response_schema", "stage": "VERIFY", "required": true}, {"ruleId": "response_scope", "stage": "VERIFY", "required": true}, {"ruleId": "snapshot_match", "stage": "VERIFY", "required": true}, {"ruleId": "balance_match", "stage": "VERIFY", "required": true}], "dependencyPolicy": {"source": "OSV", "ecosystem": "npm", "input": "pinned client lockfile only", "unresolvedVersionAction": "QUARANTINE", "advisoryRetrievalFailureAction": "QUARANTINE", "maxCacheAgeSeconds": 3600, "freshnessStatus": "INITIAL_PRODUCT_POLICY_NOT_SOURCE_GUARANTEE", "pagination": "finish every query next_page_token and fetch required advisory records; cap reached => INCONCLUSIVE", "knownAffectedPackageAction": "REJECT", "unknownAffectedRangeAction": "QUARANTINE", "successfulNoAdvisoryMeaning": "no known advisory found at observed time; not deployment safety"}, "egress": {"default": "DENY", "targets": "administrator-configured origins; credentials and URLs kept server-side", "redirects": "DENY unless revalidated", "publicEvidenceURI": "never automatically executed"}, "publication": {"automatic": false, "confirmations": null, "registryAddress": null, "signerAddress": null, "blockedUntil": "actual BOT mainnet confirmation policy, gas, registry and validator configured"}};
+  const H = '0x' + '11'.repeat(32), ADDRESS = '0x' + '22'.repeat(20);
+  const statusLabels = {NEEDS_INPUT:'等待补答',AWAITING_APPROVAL:'等待批准',QUEUED:'等待开始',RUNNING:'运行中',
+    STOP_REQUESTED:'正在收尾',SUCCEEDED:'样例验收通过',FAILED:'验收失败',QUARANTINED:'暂不能判断',CANCELLED:'已停止'};
+  const phaseLabels = {PLAN:'等待批准范围',REFERENCE:'固定参考区块',ADMISSION:'检查服务准入',INVOKE:'调用受限服务',
+    VERIFY:'验收结果',REPORT:'生成构造报告',STOPPING:'停止请求已本地确认',COMPLETE:'本地模拟已结束'};
+  const ruleLabels = {manifest_pin:'服务清单固定',capability_match:'只读方法与区块能力',client_dependency_policy:'客户端依赖公告',
+    remote_deployment_provenance:'远程部署来源',response_schema:'响应结构',response_scope:'链、地址与资产范围',
+    snapshot_match:'本次参考区块',balance_match:'同区块余额对照'};
+  let count = 0, toastTimer;
+  const timers = new Set();
+  let s;
+  function blank() {
+    return {taskId:null,revision:0,status:null,phase:'PLAN',spec:null,specHash:null,runId:null,epoch:0,
+      scenario:null,snapshot:null,attempts:[],fact:null,checksUsed:0,callsUsed:0,fallbacksUsed:0,events:[],
+      note:'',error:'',report:null,originalReport:null,originalHash:null,integrity:null,previewHash:null,
+      publication:null,editing:false};
+  }
+  function toast(text) {
+    $('toast').textContent=text; $('toast').hidden=false;
+    clearTimeout(toastTimer); toastTimer=setTimeout(()=>{$('toast').hidden=true;},3300);
+  }
+  function clearTimers() { for (const timer of timers) clearTimeout(timer); timers.clear(); }
+  function schedule(fn, ms=380) {
+    const epoch=s.epoch, taskId=s.taskId;
+    const timer=setTimeout(()=>{
+      timers.delete(timer);
+      if (s.epoch!==epoch || s.taskId!==taskId || ['CANCELLED','STOP_REQUESTED'].includes(s.status)) return;
+      fn();
+    },ms);
+    timers.add(timer);
+  }
+  function log(title, detail, color='green', code='TASK_UPDATED') {
+    s.events.push({sequence:s.events.length+1,title,detail,color,code}); renderRuntime();
+  }
+  function setStatus(status,phase=s.phase) { s.status=status;s.phase=phase;render(); }
+  function switchTab(tab) {
+    for(const id of ['workspace','services','evidence','deployment']) {
+      $(id).hidden = id!==tab;
+      $('tab-'+id).setAttribute('aria-selected',String(id===tab));
+      $('tab-'+id).tabIndex = id===tab ? 0 : -1;
+    }
+  }
+  function unsupported(text) { return /(erc[-\s]?20|usdt|usdc|转账|发送交易|transfer|solana|polygon|bitcoin|bnb|bot\s*chain|其他链)/i.test(text); }
+  function prepare() {
+    if(['QUEUED','RUNNING','STOP_REQUESTED'].includes(s.status)) return;
+    const previous=s.editing?{taskId:s.taskId,revision:s.revision,events:s.events}:null;
+    clearTimers();s=blank();
+    if(previous) Object.assign(s,previous);
+    else {s.taskId='tsk_sample'+String(++count).padStart(4,'0');s.revision=1;}
+    $('ack-public').checked=false; $('address-answer').value='';
+    const text=$('intent').value.trim();
+    if(!text) { s.error='请输入要核验的原生 ETH 余额任务。';render();return; }
+    if(unsupported(text)) {s.error='UNSUPPORTED_SCOPE：此原型只支持 Ethereum 原生 ETH 余额只读核验。';render();return;}
+    const matches=text.match(/0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/g)||[];
+    const addresses=[...new Set(matches.map(a=>a.toLowerCase()))];
+    if(addresses.length!==1){
+      s.status='NEEDS_INPUT';s.note=addresses.length>1?'发现多个地址，请明确本次核验地址。':'缺少地址，请补充一个完整地址。';
+      log('需要补充地址',s.note,'amber');render();$('address-answer').focus();return;
+    }
+    defineSpec(addresses[0]);
+  }
+  function defineSpec(address) {
+    s.spec={version:'1',sourceChainId:'1',operation:'NATIVE_BALANCE',asset:'ETH',address,
+      snapshotPolicy:{mode:'FINALIZED_AT_RUN'},candidateServiceIds: $('allow-fallback').checked?['svc_primary','svc_backup']:['svc_primary'],
+      limits:{maxCandidateChecks:2,maxProviderCalls:2,maxFallbacks:$('allow-fallback').checked?1:0,maxModelRounds:4,maxOutputTokensPerRound:2048}};
+    s.specHash=hashObject(s.spec);s.status='AWAITING_APPROVAL';s.phase='PLAN';s.error='';s.note='';
+    log('范围已生成','本地规则提案；尚未调用服务。');render();
+  }
+  function clarify() {
+    if(s.status!=='NEEDS_INPUT') return;
+    const address=$('address-answer').value.trim();
+    if(!/^0x[0-9a-fA-F]{40}$/.test(address)) {s.error='地址需为 0x 开头、随后 40 位十六进制。';render();return;}
+    s.revision++;s.error='';defineSpec(address.toLowerCase());
+  }
+  function editScope() {
+    if(s.status!=='AWAITING_APPROVAL')return;
+    s.spec=null;s.specHash=null;s.revision++;s.status='NEEDS_INPUT';s.editing=true;
+    s.note='请修改输入并重新生成范围；原版本批准已失效。';
+    log('修改范围','revision 已增加，旧摘要不能继续批准。','amber');render();$('intent').focus();
+  }
+  function makeSnapshot() {
+    return {sourceChainId:'1',blockNumber:'24500000',blockHash:H,blockTimestamp:'2026-10-07T09:45:00Z',
+      capturedAt:'2026-10-07T10:00:00Z',tag:'finalized',assurance:'RPC_CROSS_CHECKED',references:['a','b'].map(a=>({
+        sourceId:'ref_'+a,operatorId:'operator_'+a,observedBlockHash:H,fetchedAt:'2026-10-07T10:00:00Z',balanceWei:'42125000000000000000'}))};
+  }
+  function approve() {
+    if(s.status!=='AWAITING_APPROVAL') return;
+    s.runId='run_sample'+String(count).padStart(4,'0');s.scenario=$('scenario').value;
+    setStatus('QUEUED','PLAN');log('已批准本次样例范围','固定 revision、TaskSpec 与预算；未调用真实后端。');
+    schedule(()=>{
+      setStatus('RUNNING','REFERENCE');log('核对参考来源','构造的两份 finalized 观测。');
+      schedule(()=>{
+        if(s.scenario==='reference_conflict') {
+          log('参考区块不一致','INCONCLUSIVE：不判断哪个服务恶意，也不继续调用。','amber');
+          finish('QUARANTINED','参考来源冲突，当前不能形成可用余额。');return;
+        }
+        s.snapshot=makeSnapshot();log('参考区块已固定','样例高度 24500000；后续所有候选使用同一 hash。');
+        inspect('svc_primary');
+      });
+    },200);
+  }
+  function check(ruleId,status='PASS',required=true,reasonCode='SAMPLE_MATCH',expected='本次样例策略',observed='符合样例策略',sourceClass='SYSTEM_OBSERVED') {
+    return {checkId:'chk_sample_'+s.attempts.length+'_'+ruleId,ruleId,required,status,reasonCode,expected,observed,
+      sourceClass,evidenceRefs:status==='NOT_CHECKED'?[]:['ev_sample_'+ruleId],checkedAt:'2026-10-07T10:00:00Z'};
+  }
+  function inspect(serviceId) {
+    if(s.checksUsed>=s.spec.limits.maxCandidateChecks) {finish('FAILED','候选检查预算已用尽。');return;}
+    s.checksUsed++;s.phase='ADMISSION';
+    const attempt={attemptId:'att_sample'+count+'_'+(s.attempts.length+1),serviceId,manifestHash:'0x'+'44'.repeat(32),
+      status:'CHECKING',decision:'QUARANTINE',providerCallConsumed:false,checks:[],responseDigest:null,observation:null,
+      startedAt:'2026-10-07T10:00:00Z',finishedAt:null};
+    s.attempts.push(attempt);
+    log('检查'+(serviceId==='svc_primary'?'首选':'备用')+'服务','受限方法、清单版本和客户端依赖。');render();
+    schedule(()=>{
+      attempt.checks=[check('manifest_pin'),check('capability_match'),check('client_dependency_policy','PASS',true,
+        'SAMPLE_ADVISORY_RESULT','固定客户端锁文件','构造的“未检索到公告”结果，未查询 OSV','VERIFIED_ARTIFACT'),
+        check('remote_deployment_provenance','NOT_CHECKED',false,'PROVENANCE_NOT_VERIFIED','远程部署证明',
+          s.scenario==='optional_missing'?null:'服务方声明不等于证明',s.scenario==='optional_missing'?'NOT_AVAILABLE':'PROVIDER_DECLARED')];
+      if(serviceId==='svc_primary' && s.scenario==='manifest_changed') {
+        attempt.checks[0]=check('manifest_pin','FAIL',true,'MANIFEST_CHANGED','固定版本摘要','构造的变更摘要');
+        attempt.status='REJECTED';attempt.decision='REJECT';attempt.finishedAt='2026-10-07T10:00:01Z';
+        log('首选清单发生变化','在调用前拒绝，未消费首选服务调用次数。','red');render();fallbackOrFail();return;
+      }
+      attempt.decision='ALLOW';
+      if(s.scenario==='optional_missing') log('远程来源未验证','optional 项不阻断当前只读策略，但不显示为已通过。','amber');
+      schedule(()=>invoke(attempt),220);
+    });
+  }
+  function invoke(attempt) {
+    if(s.callsUsed>=s.spec.limits.maxProviderCalls) {finish('FAILED','服务调用预算已用尽。');return;}
+    s.callsUsed++;attempt.status='RUNNING';attempt.providerCallConsumed=true;s.phase='INVOKE';
+    log('模拟受限调用',attempt.serviceId+' · eth_getBalance · 固定地址与区块。');render();
+    schedule(()=>{
+      s.phase='VERIFY';log('验收返回内容','先核对范围与区块，再比较同区块余额。');render();
+      schedule(()=>verifyAttempt(attempt));
+    },550);
+  }
+  function verifyAttempt(attempt) {
+    const stale=s.scenario==='stale_primary' && attempt.serviceId==='svc_primary';
+    const wrong=s.scenario==='both_fail';
+    attempt.checks.push(check('response_schema'),check('response_scope'));
+    if(stale) {
+      attempt.checks.push(check('snapshot_match','FAIL',true,'DATA_SNAPSHOT_MISMATCH',H,'0x'+'55'.repeat(32),'REFERENCE_RPC'),
+        check('balance_match','NOT_CHECKED',true,'CROSS_BLOCK_COMPARISON_SKIPPED','同区块余额',null,'REFERENCE_RPC'));
+      attempt.status='FAILED';attempt.decision='REJECT';attempt.finishedAt='2026-10-07T10:00:02Z';
+      log('首选返回的区块不符','拒绝本次快照；跳过跨区块余额比较。','red');render();fallbackOrFail();return;
+    }
+    attempt.checks.push(check('snapshot_match','PASS',true,'SAMPLE_SNAPSHOT_MATCH',H,H,'REFERENCE_RPC'));
+    if(wrong) {
+      attempt.checks.push(check('balance_match','FAIL',true,'DATA_BALANCE_MISMATCH','42125000000000000000','42126000000000000000','REFERENCE_RPC'));
+      attempt.status='FAILED';attempt.decision='REJECT';attempt.finishedAt='2026-10-07T10:00:02Z';
+      log('同区块余额验收失败',attempt.serviceId+' 的构造值与参考值不一致。','red');render();fallbackOrFail();return;
+    }
+    attempt.checks.push(check('balance_match','PASS',true,'SAMPLE_BALANCE_MATCH','42125000000000000000','42125000000000000000','REFERENCE_RPC'));
+    if(!attempt.checks.filter(c=>c.required).every(c=>c.status==='PASS')) {finish('QUARANTINED','必需检查未全部通过。');return;}
+    attempt.status='PASSED';attempt.decision='ALLOW';attempt.finishedAt='2026-10-07T10:00:02Z';
+    s.fact={sourceChainId:'1',asset:'ETH',address:s.spec.address,blockNumber:s.snapshot.blockNumber,blockHash:s.snapshot.blockHash,
+      balanceWei:'42125000000000000000',serviceId:attempt.serviceId};
+    log('通过本地样例验收','必需检查全通过；远程部署来源仍未验证。');
+    finish('SUCCEEDED','');
+  }
+  function fallbackOrFail() {
+    const permitted=s.spec.candidateServiceIds.includes('svc_backup') && s.fallbacksUsed<s.spec.limits.maxFallbacks;
+    if(!permitted) {finish('FAILED','未获准继续切换，或全部候选均失败。');return;}
+    s.fallbacksUsed++;log('在原授权内切换备用','不更改地址、资产、参考区块或调用上限。','amber');
+    schedule(()=>inspect('svc_backup'),240);
+  }
+  function buildReport() {
+    if(!s.spec) return;
+    const subjects=s.spec.candidateServiceIds.map(serviceId=>({serviceId,namespace:'agent-admission:sample:v1',
+      transport:'MCP',serviceOrigin:'https://'+(serviceId==='svc_primary'?'primary':'backup')+'.example.invalid',
+      manifestHash:'0x'+'44'.repeat(32),ethereumIdentity:null,identityStatus:'NOT_CHECKED'}));
+    const report={schemaVersion:'1',reportId:'rpt_sample'+String(count).padStart(4,'0'),executionMode:'SAMPLE',
+      taskSpec:copy(s.spec),taskSpecHash:s.specHash,policyHash:hashObject(SAMPLE_POLICY),subjects,subjectHash:hashObject(subjects),
+      result:s.status,snapshot:copy(s.snapshot),attempts:copy(s.attempts),acceptedFact:copy(s.fact),
+      observedAt:'2026-10-07T10:00:02Z',expiresAt:'2026-10-08T10:00:02Z',limitations:[
+        'All addresses, balances, blocks and observations are synthetic SAMPLE data.',
+        'No live model, RPC, OSV, signature or registry verification occurred.',
+        'Remote deployment provenance is not verified.', 'Reference cross-checking is not a cryptographic state proof.', 'These sample MCP services explicitly declare the block; raw eth_getBalance returns no block proof.']};
+    s.report=report;s.originalReport=copy(report);s.originalHash=hashObject(report);s.integrity=null;
+    s.previewHash=null;s.publication=null;
+    $('ack-public').checked=false;$('publication-error').hidden=true;
+    $('hash-message').textContent='摘要只证明内容是否相同，不证明余额真实或已上链。';
+    $('hash-message').className='callout';$('publication-note').textContent='不会签名、广播或产生交易 hash。';
+  }
+  function finish(status,note) {s.status=status;s.phase='COMPLETE';s.note=note;buildReport();render();}
+  function stop() {
+    if(!s.status) return;
+    if(['SUCCEEDED','FAILED','QUARANTINED','CANCELLED'].includes(s.status)) {
+      toast('任务已是终态；停止不会改写已经提交的事实。');return;
+    }
+    if(s.status==='STOP_REQUESTED') return;
+    clearTimers();s.epoch++;
+    if(['NEEDS_INPUT','AWAITING_APPROVAL'].includes(s.status)) {finish('CANCELLED','草稿已取消；没有外部调用。');return;}
+    const attempt=s.attempts.findLast(a=>['RUNNING','CHECKING'].includes(a.status));
+    const inFlight=attempt && attempt.status==='RUNNING';
+    if(attempt) attempt.status='CANCEL_REQUESTED';
+    s.status='STOP_REQUESTED';s.phase='STOPPING';
+    log('停止已本地确认','不再发起调用或备用切换；已发出的请求可能仍被远端处理。','amber','STOP_ACKNOWLEDGED');render();
+    const epoch=s.epoch,taskId=s.taskId;
+    const timer=setTimeout(()=>{
+      timers.delete(timer);if(s.epoch!==epoch || s.taskId!==taskId) return;
+      if(attempt) {attempt.status=inFlight?'LATE_DISCARDED':'CANCELLED';attempt.decision='QUARANTINE';attempt.finishedAt='2026-10-07T10:00:02Z';}
+      if(inFlight) log('模拟晚到响应已丢弃','LATE_DISCARDED：不采用金额，不切换，不自动发布。','amber','LATE_RESPONSE_DISCARDED');
+      s.fact=null;log('已停止后续执行','本地终态为 CANCELLED；没有链上撤销承诺。','amber');finish('CANCELLED','本地停止完成；已发出的查询可能仍被远端处理。');
+    },260);timers.add(timer);
+  }
+  function pill(text,color='') {const span=document.createElement('span');span.className='pill '+color;span.textContent=text;return span;}
+  function pair(dl,key,value,mono=false) {
+    const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=key;dd.textContent=value;
+    if(mono)dd.className='mono';dl.append(dt,dd);
+  }
+  function renderRuntime() {
+    const status=$('task-status');status.textContent=statusLabels[s.status]||'尚未创建';
+    status.className='pill '+(s.status==='SUCCEEDED'?'green':['FAILED'].includes(s.status)?'red':['QUARANTINED','STOP_REQUESTED','CANCELLED'].includes(s.status)?'amber':'');
+    $('phase-label').textContent=phaseLabels[s.phase];
+    $('checks-count').textContent=s.checksUsed+' / 2';$('calls-count').textContent=s.callsUsed+' / 2';
+    $('fallback-count').textContent=s.fallbacksUsed+' / '+(s.spec?s.spec.limits.maxFallbacks:1);
+    $('stop').disabled=!['QUEUED','RUNNING'].includes(s.status);
+    $('stop').textContent=s.status==='STOP_REQUESTED'?'正在结束…':'停止任务';
+    const list=$('timeline');list.replaceChildren();
+    if(!s.events.length) {const li=document.createElement('li');li.textContent='尚未调用服务；生成并批准范围后开始模拟。';list.append(li);}
+    s.events.forEach(event=>{
+      const li=document.createElement('li'),dot=document.createElement('div'),content=document.createElement('div');li.className=event.color;
+      dot.className='dot';dot.textContent=String(event.sequence);const title=document.createElement('strong'),detail=document.createElement('div');
+      title.textContent=event.title;detail.className='detail';detail.textContent=event.detail;content.append(title,detail);li.append(dot,content);list.append(li);
+    });
+    $('accepted-result').hidden=!(s.status==='SUCCEEDED' && s.fact);
+    if(s.fact) $('result-detail').textContent='构造区块 '+s.fact.blockNumber+' · '+s.fact.serviceId+' · '+s.fact.balanceWei+' wei';
+    $('run-note').hidden=!s.note;$('run-note').textContent=s.note;
+  }
+  function renderServices() {
+    const cards=$('service-cards');cards.replaceChildren();
+    ['svc_primary','svc_backup'].forEach(id=>{
+      const card=document.createElement('div');card.className='card';const head=document.createElement('div');head.className='row between';
+      const h=document.createElement('h2');h.textContent=id==='svc_primary'?'首选数据服务':'备用数据服务';head.append(h,pill('构造样例'));
+      const idText=document.createElement('p');idText.className='mono muted';idText.textContent=id+' · 管理员配置 · HTTP/MCP 接入设计';card.append(head,idText);
+      const list=document.createElement('ul');list.className='rule-list';const a=s.attempts.find(a=>a.serviceId===id);
+      for(const ruleId of ['manifest_pin','capability_match','client_dependency_policy','remote_deployment_provenance']) {
+        const c=a && a.checks.find(c=>c.ruleId===ruleId),li=document.createElement('li'),info=document.createElement('div');
+        const title=document.createElement('div');title.textContent=ruleLabels[ruleId];info.append(title);
+        const note=document.createElement('div');note.className='rule-note';note.textContent=c?(c.observed||'资料不可用'):'尚未进行本次检查';info.append(note);
+        li.append(info,pill(c?({PASS:'样例通过',FAIL:'失败',NOT_CHECKED:'未验证',INCONCLUSIVE:'待核验'}[c.status]||c.status):'未检查',c&&c.status==='PASS'?'green':c&&c.status==='FAIL'?'red':'amber'));list.append(li);
+      }
+      card.append(list);cards.append(card);
+    });
+  }
+  function renderEvidence() {
+    $('evidence-empty').hidden=!!s.report;$('evidence-body').hidden=!s.report;if(!s.report)return;
+    $('report-result').textContent=statusLabels[s.report.result];
+    const dl=$('evidence-scope');dl.replaceChildren();pair(dl,'执行模式','SAMPLE · 全部构造');pair(dl,'地址',s.report.taskSpec.address,true);
+    pair(dl,'数据链','Ethereum 1');pair(dl,'区块',s.report.snapshot?s.report.snapshot.blockNumber+' · finalized':'未形成有效参考快照');
+    pair(dl,'余额事实',s.report.acceptedFact?s.report.acceptedFact.balanceWei+' wei':'没有通过验收的余额',true);
+    pair(dl,'未覆盖','真实部署来源、密码学状态证明、真实在线链路');
+    $('original-hash').textContent=s.originalHash;$('report-json').textContent=JSON.stringify(s.report,null,2);
+    $('tamper-report').disabled=!s.report.acceptedFact;
+    $('integrity-status').textContent=s.integrity===true?'内容摘要相符':s.integrity===false?'内容摘要不符':'尚未核对';
+    $('integrity-status').className='pill '+(s.integrity===true?'green':s.integrity===false?'red':'');
+    $('public-preview').hidden=!s.previewHash;$('preview-hash').textContent=s.previewHash||'';
+    $('disclosure').textContent='公开：地址 '+s.report.taskSpec.address+'、任务范围、区块、服务命名空间/origin/清单摘要/身份状态、验收检查和局限。此处仅预览本地样例。';
+    $('publish-local').disabled=!s.previewHash||!$('ack-public').checked||!!s.publication;
+    const parent=$('evidence-checks');parent.replaceChildren();
+    if(!s.report.attempts.length) {const note=document.createElement('p');note.className='muted';note.textContent='未调用候选服务；参考未闭合或任务已在调用前停止。';parent.append(note);}
+    s.report.attempts.forEach(a=>{
+      const h=document.createElement('h3');h.textContent=a.serviceId+' · '+a.status;parent.append(h);
+      const list=document.createElement('ul');list.className='rule-list';
+      a.checks.forEach(c=>{const li=document.createElement('li'),info=document.createElement('div');
+        info.textContent=(ruleLabels[c.ruleId]||c.ruleId)+(c.required?' · 必需':' · 可选');
+        const note=document.createElement('div');note.className='rule-note';note.textContent=c.reasonCode;info.append(note);
+        li.append(info,pill(c.status,c.status==='PASS'?'green':c.status==='FAIL'?'red':'amber'));list.append(li);});parent.append(list);
+    });
+  }
+  function render() {
+    const active=['QUEUED','RUNNING','STOP_REQUESTED'].includes(s.status);
+    $('prepare').disabled=active||s.status==='AWAITING_APPROVAL';
+    $('intent').disabled=active||s.status==='AWAITING_APPROVAL';$('allow-fallback').disabled=active||s.status==='AWAITING_APPROVAL';
+    $('scenario').disabled=active;$('clarification').hidden=s.status!=='NEEDS_INPUT'||s.editing;
+    $('input-error').hidden=!s.error;$('input-error').textContent=s.error;
+    $('scope-card').hidden=!s.spec;$('approve').disabled=s.status!=='AWAITING_APPROVAL';
+    $('cancel-draft').disabled=s.status!=='AWAITING_APPROVAL';$('edit-scope').disabled=s.status!=='AWAITING_APPROVAL';$('revision').textContent='REV '+s.revision;
+    const dl=$('scope-fields');dl.replaceChildren();
+    if(s.spec){pair(dl,'任务',s.taskId,true);pair(dl,'数据链','Ethereum mainnet · 1');pair(dl,'地址',s.spec.address,true);
+      pair(dl,'资产与方法','原生 ETH · eth_getBalance');pair(dl,'快照','执行时固定 finalized 区块');
+      pair(dl,'候选',s.spec.candidateServiceIds.join(' → '),true);pair(dl,'限额','最多 2 次调用、'+s.spec.limits.maxFallbacks+' 次切换');pair(dl,'TaskSpecHash',s.specHash,true);}
+    renderRuntime();renderServices();renderEvidence();
+  }
+  function verifyHash() {
+    if(!s.report)return;s.integrity=hashObject(s.report)===s.originalHash;
+    $('hash-message').textContent=s.integrity?'本地内容摘要相符。签名、真实数据与主网记录仍未验证。':'内容摘要不符：当前对象已偏离原报告，不能用旧摘要批准公开。';
+    $('hash-message').className='callout '+(s.integrity?'':'error');renderEvidence();
+  }
+  function tamper() {
+    if(!s.report || !s.report.acceptedFact)return;
+    s.report.acceptedFact.balanceWei='42126000000000000000';s.integrity=null;
+    $('hash-message').textContent='已把样例金额改动。基准摘要保持原值，请核对。';renderEvidence();
+  }
+  function restore() {
+    if(!s.originalReport)return;s.report=copy(s.originalReport);s.integrity=null;
+    $('hash-message').textContent='已恢复原始构造报告，仍需分别核对其他层。';$('publication-error').hidden=true;renderEvidence();
+  }
+  function preview() {
+    if(!s.report)return;
+    if(hashObject(s.report)!==s.originalHash){$('publication-error').hidden=false;$('publication-error').textContent='HASH_MISMATCH：当前内容已变化，先恢复原件。';return;}
+    s.previewHash=s.originalHash;$('ack-public').checked=false;$('publication-error').hidden=true;renderEvidence();
+  }
+  function publish() {
+    if(!s.previewHash || !$('ack-public').checked || s.publication)return;
+    if(hashObject(s.report)!==s.previewHash || s.previewHash!==s.originalHash) {
+      $('publication-error').hidden=false;$('publication-error').textContent='HASH_MISMATCH：预览后内容变化，未创建登记队列。';return;
+    }
+    s.publication={status:'QUEUED',executionMode:'SAMPLE',reportHash:s.previewHash,transactionHash:null,signatureEnvelope:null,anchorReceipt:null,currentAnchor:null};
+    $('publication-note').textContent='SAMPLE / QUEUED：仅已加入本地示例队列。未签名、未广播、未上链；任务停止不代表删除公共记录。';
+    $('publication-error').hidden=true;renderEvidence();
+  }
+  document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.tab)));
+  document.querySelectorAll('[data-goto]').forEach(b=>b.addEventListener('click',()=>switchTab(b.dataset.goto)));
+  const tabs=[...document.querySelectorAll('[role="tab"]')];
+  tabs.forEach((b,i)=>b.addEventListener('keydown',e=>{
+    let n;if(e.key==='ArrowRight')n=(i+1)%tabs.length;else if(e.key==='ArrowLeft')n=(i+tabs.length-1)%tabs.length;
+    else if(e.key==='Home')n=0;else if(e.key==='End')n=tabs.length-1;else return;
+    e.preventDefault();switchTab(tabs[n].dataset.tab);tabs[n].focus();
+  }));
+  $('prepare').addEventListener('click',prepare);$('submit-answer').addEventListener('click',clarify);
+  $('approve').addEventListener('click',approve);$('edit-scope').addEventListener('click',editScope);$('cancel-draft').addEventListener('click',stop);$('stop').addEventListener('click',stop);
+  $('view-evidence').addEventListener('click',()=>switchTab('evidence'));$('verify-hash').addEventListener('click',verifyHash);
+  $('tamper-report').addEventListener('click',tamper);$('restore-report').addEventListener('click',restore);
+  $('preview-public').addEventListener('click',preview);$('ack-public').addEventListener('change',renderEvidence);
+  $('publish-local').addEventListener('click',publish);
+  s=blank();render();switchTab('workspace');
+  // Inspection API for design checks only; this page cannot authorize a real task.
+  window.DesignApp=Object.freeze({getState:()=>copy(s),stop,canonicalize:DesignCrypto.canonicalize,hashObject:DesignCrypto.hashObject});
+})();
+
+</script>
+</body></html>

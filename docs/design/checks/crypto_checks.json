@@ -1,0 +1,37 @@
+{
+  "scope": "Local demonstration implementation; not a production crypto audit",
+  "tests": [
+    {
+      "name": "Keccak-256 empty vector",
+      "status": "PASS"
+    },
+    {
+      "name": "Keccak-256 abc vector",
+      "status": "PASS"
+    },
+    {
+      "name": "Ethereum transfer selector",
+      "status": "PASS"
+    },
+    {
+      "name": "JCS property order, nested arrays, negative zero",
+      "status": "PASS"
+    },
+    {
+      "name": "JCS RFC numeric serialization sample",
+      "status": "PASS"
+    },
+    {
+      "name": "UTF-16 property sorting",
+      "status": "PASS"
+    },
+    {
+      "name": "Reject non-finite, non-JSON, lone surrogate and unsafe contract integers",
+      "status": "PASS"
+    },
+    {
+      "name": "SAMPLE report tamper changes digest",
+      "status": "PASS"
+    }
+  ]
+}

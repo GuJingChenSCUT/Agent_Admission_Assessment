@@ -1,0 +1,21 @@
+{
+  "version": "1",
+  "sourceChainId": "1",
+  "operation": "NATIVE_BALANCE",
+  "asset": "ETH",
+  "address": "0x2222222222222222222222222222222222222222",
+  "snapshotPolicy": {
+    "mode": "FINALIZED_AT_RUN"
+  },
+  "candidateServiceIds": [
+    "svc_primary",
+    "svc_backup"
+  ],
+  "limits": {
+    "maxCandidateChecks": 2,
+    "maxProviderCalls": 2,
+    "maxFallbacks": 1,
+    "maxModelRounds": 4,
+    "maxOutputTokensPerRound": 2048
+  }
+}

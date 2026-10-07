@@ -1,0 +1,31 @@
+flowchart TD
+  form["form 输入需求"]
+  draft["draft 缺失条件补答"]
+  edit["edit 增加 revision，作废旧摘要与 nonce"]
+  approve["approve 提交同一版本、摘要、nonce 和幂等键"]
+  ack{"ack 是否收到并能核对后端确认"}
+  unknown["unknown 显示确认状态未知"]
+  reconcile["reconcile 续读 sequence，去重并查询当前任务"]
+  running["running 显示阶段、预算和独立停止入口"]
+  stop["stop 立即发送控制请求"]
+  terminal["terminal 成功、失败、隔离、取消分别说明"]
+  preview["preview 公开字段与精确 reportHash"]
+  publish["publish 签名、广播、确认、UNKNOWN 独立显示"]
+  read["read 摘要、签名、当前主链、撤销、期限与范围"]
+  form --> draft
+  draft -->|"change"| edit
+  edit -->|"new revision"| draft
+  draft -->|"complete"| approve
+  approve --> ack
+  ack -->|"timeout / disconnect"| unknown
+  unknown -->|"same task / same key"| reconcile
+  reconcile -->|"running"| running
+  ack -->|"accepted"| running
+  ack -->|"rejected / 409"| draft
+  running -->|"user stops"| stop
+  stop -->|"await server truth"| reconcile
+  running -->|"completed"| terminal
+  reconcile -->|"terminal"| terminal
+  terminal -->|"explicit intent"| preview
+  preview -->|"exact-hash consent"| publish
+  publish -->|"record available"| read

@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="Agent 准入检查器的离线交互设计，全部数据为构造样例。">
+<title>Agent 准入工作台 · 离线设计原型</title>
+<style>
+:root{--bg:#f5f7fa;--paper:#fff;--ink:#182b42;--muted:#60738a;--line:#dce4ee;--blue:#2359c4;--nav:#102237;--green:#176749;--amber:#85531b;--red:#a42b39;--radius:14px}
+*{box-sizing:border-box}body{margin:0;font:15px/1.65 system-ui,-apple-system,"Segoe UI","Microsoft Yahei",sans-serif;color:var(--ink);background:var(--bg)}button,input,textarea,select{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:9px;padding:9px 15px;background:#fff;color:var(--ink);font-weight:600}button:hover:not(:disabled){border-color:var(--blue);background:#eef3ff}button:disabled{cursor:default;opacity:.5}button.primary{background:var(--blue);border-color:var(--blue);color:#fff}button.primary:hover:not(:disabled){background:#1c49a4}button.danger{color:var(--red);border-color:#e8b9c0}button:focus-visible,textarea:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #7eabff;outline-offset:3px}textarea,input,select{border:1px solid #b9c8d9;border-radius:9px;padding:10px 12px;color:var(--ink);background:#fff;max-width:100%;min-width:0}textarea{width:100%;resize:vertical;min-height:105px}label{display:block;font-weight:600;margin-bottom:7px}p{margin:8px 0 14px}h1{font-size:29px;line-height:1.3;letter-spacing:-.7px;margin:0 0 8px}h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 7px}.muted{color:var(--muted)}.small{font-size:12px}.mono{font-family:ui-monospace,SFMono-Regular,Consolas,monospace;font-size:12px;overflow-wrap:anywhere}.hidden,[hidden]{display:none!important}.shell{display:grid;grid-template-columns:222px minmax(0,1fr);min-height:100vh}.sidebar{background:var(--nav);color:#fff;padding:30px 20px;display:flex;flex-direction:column;gap:30px}.brand{display:flex;gap:11px;align-items:center;line-height:1.35}.brand-icon{width:34px;height:39px;border:1px solid #5776a0;border-radius:9px;display:grid;place-items:center;color:#c0d2ff;font-size:20px}.brand strong{font-size:17px}.brand span{font-size:11px;color:#9cb0ca}.nav{display:flex;flex-direction:column;gap:6px}.nav button{text-align:left;color:#b8c7db;border-color:transparent;background:transparent;border-radius:9px;padding:12px}.nav button[aria-selected="true"]{color:#fff;background:#25456c;border-color:#476487}.nav button:hover{background:#243c58!important;border-color:#476487!important}.nav small{margin-right:9px;opacity:.7}.sidebar-note{margin-top:auto;font-size:12px;color:#b5c4d7;border-top:1px solid #34465d;padding-top:18px}.main{min-width:0;padding:26px 34px 38px;max-width:1350px;width:100%}.banner{border:1px solid #ead6ad;background:#fff7e7;color:#775018;border-radius:10px;padding:10px 15px;display:flex;gap:12px;align-items:flex-start;font-size:12px;margin-bottom:28px}.tag{display:inline-flex;align-items:center;border-radius:5px;background:#e9efff;color:#2951a8;padding:2px 7px;font-size:11px;letter-spacing:.4px;font-weight:700;white-space:nowrap}.tag.sample{background:#7c531e;color:#fff}.page-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:24px}.eyebrow{text-transform:uppercase;color:var(--blue);font-size:11px;letter-spacing:1.8px;font-weight:700;margin-bottom:8px}.card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:23px;min-width:0}.grid{display:grid;grid-template-columns:minmax(0,1.14fr) minmax(0,1fr);gap:20px;align-items:start}.stack{display:grid;gap:20px}.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap}.between{justify-content:space-between}.input-actions{margin-top:14px}.checklabel{display:flex;gap:8px;font-weight:400;margin:10px 0 0}.checklabel input{width:17px;height:17px;padding:0;accent-color:var(--blue)}.divider{border:0;border-top:1px solid var(--line);margin:19px 0}.scope-grid{display:grid;grid-template-columns:110px minmax(0,1fr);gap:9px 12px;font-size:13px}.scope-grid dt{color:var(--muted)}.scope-grid dd{margin:0;overflow-wrap:anywhere}.pill{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:20px;background:#edf1f7;color:#42536a;font-size:12px;font-weight:600}.pill.green{background:#e8f4ee;color:var(--green)}.pill.red{background:#fbecef;color:var(--red)}.pill.amber{background:#fff3df;color:var(--amber)}.callout{padding:13px 15px;border-radius:9px;background:#eff4fb;font-size:13px}.callout.warn{background:#fff4e3;color:#82511b}.callout.error{background:#fbecef;color:var(--red)}.metric{font-size:37px;line-height:1.4;letter-spacing:-1.2px;font-weight:700}.metric small{font-size:15px;color:var(--muted);letter-spacing:0;font-weight:500}.result-box{border:1px solid #bddccb;background:#f3faf6;border-radius:10px;padding:15px;margin-top:15px}.timeline{list-style:none;padding:0;margin:16px 0 0}.timeline li{display:grid;grid-template-columns:24px minmax(0,1fr);gap:8px;margin-bottom:13px}.dot{width:19px;height:19px;border:1px solid #bdcbdd;border-radius:50%;font-size:10px;text-align:center;line-height:17px;background:#edf2f9;color:var(--blue);margin-top:2px}.timeline .green .dot{background:#e8f4ee;color:var(--green);border-color:#afcfbd}.timeline .amber .dot{background:#fff3df;color:var(--amber);border-color:#e3c99f}.timeline .red .dot{background:#fbecef;color:var(--red);border-color:#e3b2bb}.timeline strong{font-size:13px;font-weight:600}.timeline .detail{color:var(--muted);font-size:12px;overflow-wrap:anywhere}.budget{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0}.budget div{border:1px solid var(--line);border-radius:9px;padding:9px;text-align:center}.budget b{font-size:18px}.budget small{display:block;font-size:11px;color:var(--muted)}.services{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}.rule-list{list-style:none;margin:0;padding:0}.rule-list li{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;border-top:1px solid var(--line);padding:12px 0;font-size:13px}.rule-list li:first-child{border-top:0}.rule-list .rule-note{font-size:12px;color:var(--muted);margin-top:3px}.rule-list .pill{flex-shrink:0}.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:15px;margin-bottom:20px}.summary-item{background:#fff;border:1px solid var(--line);border-radius:10px;padding:16px}.summary-item b{display:block;margin-bottom:5px}.hash-box{background:#f3f6fb;border:1px solid #d8e2f1;padding:12px;border-radius:8px;margin:10px 0;word-break:break-all}.table-wrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px}table{border-collapse:collapse;width:100%;font-size:13px}th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f3f6fa;color:#506680;white-space:nowrap}tr:last-child td{border-bottom:0}td{overflow-wrap:anywhere}.table-wrap .pill{white-space:normal}.check-area{margin-top:20px}.footnote{margin:20px 0;color:var(--muted);font-size:12px}.json{white-space:pre-wrap;word-break:break-all;background:#13263c;color:#dce8f8;padding:17px;border-radius:10px;max-height:340px;overflow:auto;font-size:11px}.toast{position:fixed;right:25px;bottom:22px;max-width:min(440px,calc(100vw - 40px));padding:12px 16px;background:#122b45;color:#fff;border-radius:10px;box-shadow:0 6px 25px #0c234633;z-index:20;font-size:13px}.preview{border:2px solid #a5bee9;padding:16px;border-radius:10px;background:#f5f8ff;margin-top:15px}.preview .mono{max-height:70px;overflow:auto}.mobile-name{display:none}a{color:var(--blue)}
+@media(max-width:1120px){.main{padding:24px}.grid{grid-template-columns:1fr}.sidebar{padding:25px 16px}.shell{grid-template-columns:200px minmax(0,1fr)}.summary-grid{grid-template-columns:1fr}.services{grid-template-columns:1fr}}
+@media(max-width:650px){.shell{display:block}.sidebar{padding:14px 14px 9px;gap:13px}.brand-icon{width:27px;height:29px;font-size:16px}.brand strong{font-size:15px}.brand span,.sidebar-note{display:none}.nav{flex-direction:row;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}.nav button{text-align:center;padding:7px 2px;font-size:11px;line-height:1.4}.nav small{display:none}.main{padding:17px 13px}.banner{padding:9px 10px;gap:8px;margin-bottom:21px;font-size:11px}.page-head{margin-bottom:17px}h1{font-size:25px}.card{padding:17px}.scope-grid{grid-template-columns:83px minmax(0,1fr)}.metric{font-size:32px}.budget{gap:5px}.budget div{padding:8px 4px}.row button{flex-grow:1}th,td{padding:9px 8px;font-size:12px}.rule-list li{gap:7px}.tag{font-size:10px}.page-head .tag{display:none}}
+</style>
+</head>
+<body>
+<div class="shell">
+ <aside class="sidebar">
+  <div class="brand"><div class="brand-icon" aria-hidden="true">◇</div><div><strong>Agent 准入工作台</strong><br><span>ETH WUHAN · DESIGN 0.1</span></div></div>
+  <nav class="nav" role="tablist" aria-label="工作台页面">
+   <button id="tab-workspace" role="tab" aria-selected="true" aria-controls="workspace" data-tab="workspace"><small>01</small>任务工作台</button>
+   <button id="tab-services" role="tab" aria-selected="false" aria-controls="services" data-tab="services"><small>02</small>服务检查</button>
+   <button id="tab-evidence" role="tab" aria-selected="false" aria-controls="evidence" data-tab="evidence"><small>03</small>证据核对</button>
+   <button id="tab-deployment" role="tab" aria-selected="false" aria-controls="deployment" data-tab="deployment"><small>04</small>部署清单</button>
+  </nav>
+  <div class="sidebar-note">先批准任务范围，再检查与验收。<br>公共记录只描述一次观测。</div>
+ </aside>
+ <main class="main">
+  <div class="banner"><span class="tag sample">SAMPLE</span><span>离线交互设计。地址、区块、余额、检查及事件均为构造样例；未连接模型、RPC、钱包或主网。本例模拟会明确声明区块的 MCP 服务；原生 RPC 余额响应不含区块证明。所有按钮仅影响此页面的本地状态。</span></div>
+  <section id="workspace" role="tabpanel" aria-labelledby="tab-workspace">
+   <div class="page-head"><div><div class="eyebrow">Controlled task / 01</div><h1>让每次工具调用有依据</h1><p class="muted">从一个受限的 Ethereum 原生 ETH 余额核验开始。</p></div><span class="tag">只读 · 原生 ETH</span></div>
+   <div class="grid">
+    <div class="stack">
+     <div class="card">
+      <h2>定义这次查询</h2>
+      <label for="intent">你的任务</label><textarea id="intent" spellcheck="false">请核对 0x2222222222222222222222222222222222222222 的 ETH 余额，使用执行时 finalized 区块。</textarea>
+      <label class="checklabel"><input id="allow-fallback" type="checkbox" checked>允许在相同范围内切换一次备用服务</label>
+      <div class="row input-actions"><button id="prepare" class="primary">生成任务范围</button><span class="small muted">原型使用有限本地规则解析</span></div>
+      <div id="input-error" class="callout error" role="alert" hidden></div>
+      <div id="clarification" class="check-area" hidden><label for="address-answer">补充要核验的地址</label><input id="address-answer" placeholder="0x… 共 40 位十六进制" style="width:100%"><div class="row input-actions"><button id="submit-answer">确认补答</button></div></div>
+     </div>
+     <div id="scope-card" class="card" hidden>
+      <div class="row between"><h2>批准前核对范围</h2><span id="revision" class="tag">REV 1</span></div>
+      <dl id="scope-fields" class="scope-grid"></dl>
+      <div class="callout" style="margin-top:16px">批准只允许这次查询。切换仍沿用同一地址与参考区块。证据默认私有，公开登记需要独立确认。</div>
+      <div class="row input-actions"><button id="approve" class="primary">批准并开始模拟</button><button id="edit-scope">修改范围</button><button id="cancel-draft">取消任务</button></div>
+     </div>
+    </div>
+    <div class="card">
+     <div class="row between"><h2>运行与验收</h2><span id="task-status" class="pill">尚未创建</span></div>
+     <label for="scenario">演示场景</label><select id="scenario" style="width:100%">
+      <option value="normal">正常查询 · 首选通过</option><option value="stale_primary" selected>首选声明旧区块 · 切换备用</option><option value="both_fail">两个服务均验收失败</option><option value="reference_conflict">参考来源冲突 · 暂停判断</option><option value="manifest_changed">首选清单变化 · 调用前拒绝</option><option value="optional_missing">远程来源资料缺失 · 明确未验证</option>
+     </select>
+     <p class="small muted">场景在批准时固定；所有时延都是本地动画。</p>
+     <div class="budget"><div><b id="checks-count">0 / 2</b><small>候选检查</small></div><div><b id="calls-count">0 / 2</b><small>服务调用</small></div><div><b id="fallback-count">0 / 1</b><small>切换</small></div></div>
+     <div class="row between"><span id="phase-label" class="small muted">等待任务范围</span><button id="stop" class="danger" disabled>停止任务</button></div>
+     <ol id="timeline" class="timeline" aria-live="polite" aria-label="运行事件"><li><div class="dot">·</div><div><strong>尚未调用服务</strong><div class="detail">生成并批准具体范围后，才会开始模拟。</div></div></li></ol>
+     <div id="accepted-result" class="result-box" hidden><div class="small" style="color:var(--green)">本地样例验收通过 · 非真实余额</div><div class="metric">42.125 <small>ETH</small></div><div id="result-detail" class="small muted"></div><button id="view-evidence" style="margin-top:12px">查看证据</button></div>
+     <div id="run-note" class="callout warn" hidden></div>
+    </div>
+   </div>
+   <p class="footnote">Ethereum 数据链：1 · 设计中的登记链：BOT 677 · finalized 可能早于当前时间，以固定区块 hash 验收。</p>
+  </section>
+  <section id="services" role="tabpanel" aria-labelledby="tab-services" hidden>
+   <div class="page-head"><div><div class="eyebrow">Admission / 02</div><h1>分别检查能力、依赖与来源</h1><p class="muted">无已知漏洞、登记身份或只读声明均不能代替结果验收。</p></div><span class="tag">管理员配置样例</span></div>
+   <div class="callout" style="margin-bottom:20px">两个候选均为本地构造服务。未发出探测、OSV 或 JSON-RPC 请求。检查结果随任务样例变化。</div>
+   <div id="service-cards" class="services"></div>
+   <div class="card" style="margin-top:20px"><h2>真正执行前仍需后端检查</h2><p class="muted">每次调用分别核对当前批准、清单摘要、参数、预算、单次凭据与停止 epoch。模型提出服务建议，不持有执行凭据。</p><span class="pill amber">后端网关未接入</span></div>
+  </section>
+  <section id="evidence" role="tabpanel" aria-labelledby="tab-evidence" hidden>
+   <div class="page-head"><div><div class="eyebrow">Evidence / 03</div><h1>核对结论所依据的内容</h1><p class="muted">内容完整性、验收事实、签名主体与链上记录分别展示。</p></div><span class="tag">默认私有</span></div>
+   <div id="evidence-empty" class="card"><h2>还没有终态证据</h2><p class="muted">完成或停止一项任务后，会生成构造报告。没有通过验收的任务不会出现正常余额结果。</p><button data-goto="workspace">返回任务</button></div>
+   <div id="evidence-body" hidden>
+    <div class="summary-grid"><div class="summary-item"><b>内容摘要</b><span id="integrity-status" class="pill">尚未核对</span></div><div class="summary-item"><b>签名主体</b><span class="pill amber">未连接签名器</span></div><div class="summary-item"><b>BOT 主网登记</b><span class="pill amber">未连接主网</span></div></div>
+    <div class="grid">
+     <div class="stack">
+      <div class="card"><div class="row between"><h2>本次证据内容</h2><span id="report-result" class="pill"></span></div><dl id="evidence-scope" class="scope-grid"></dl><hr class="divider"><h3>基准摘要 · Keccak-256 / JCS</h3><div id="original-hash" class="hash-box mono"></div><div class="row"><button id="verify-hash" class="primary">核对内容摘要</button><button id="tamper-report">模拟篡改金额</button><button id="restore-report">恢复原件</button></div><div id="hash-message" class="callout" style="margin-top:12px" aria-live="polite">摘要只证明内容是否相同，不证明余额真实或已上链。</div></div>
+      <div class="card"><h2>分项验收与未覆盖内容</h2><div id="evidence-checks"></div><p class="small muted">失败区块的金额不与目标区块金额直接比较。没有远程部署证明时始终标记“未验证”。</p></div>
+     </div>
+     <div class="stack">
+      <div class="card"><h2>预览公开字段</h2><p class="muted">实际产品将公开地址、查询范围、区块、规则观测与局限。私有提示、用户身份和访问令牌不进入公开报告。</p><button id="preview-public">生成公开预览</button><div id="public-preview" class="preview" hidden><div class="row between"><h3>本地公开预览</h3><span class="tag sample">SAMPLE</span></div><p id="disclosure" class="small"></p><div id="preview-hash" class="mono"></div><label class="checklabel"><input id="ack-public" type="checkbox">确认此样例的公开字段与摘要</label><button id="publish-local" class="primary" style="margin-top:12px" disabled>加入本地示例登记队列</button></div><p id="publication-note" class="small muted" aria-live="polite">不会签名、广播或产生交易 hash。</p><div id="publication-error" class="callout error" role="alert" hidden></div></div>
+      <div class="card"><details><summary>查看规范化报告对象</summary><pre id="report-json" class="json"></pre></details><p class="small muted">本地摘要实现用于设计演示。生产版本需经验证的库、完整测试向量与真实数据。</p></div>
+     </div>
+    </div>
+   </div>
+  </section>
+  <section id="deployment" role="tabpanel" aria-labelledby="tab-deployment" hidden>
+   <div class="page-head"><div><div class="eyebrow">Delivery / 04</div><h1>区分设计完成与真实接入</h1><p class="muted">这份原型提供完整交互，不计入主网有效部署。</p></div><span class="tag">研发交接</span></div>
+   <div class="card"><h2>比赛前就绪检查</h2><div class="table-wrap"><table><thead><tr><th>模块</th><th>当前状态</th><th>实际完成要求</th></tr></thead><tbody><tr><td>PRD、合同与状态</td><td><span class="pill green">设计已提供</span></td><td>研发评审与实际实现</td></tr><tr><td>交互流程</td><td><span class="pill green">本地可点击</span></td><td>替换为真实 API，复测失败与停止</td></tr><tr><td>在线 Agent</td><td><span class="pill amber">未接入</span></td><td>有限工具、模型配置、评测与实际调用</td></tr><tr><td>两个参考运营者</td><td><span class="pill amber">未接入</span></td><td>真实 finalized hash/余额交叉核对</td></tr><tr><td>准入网关与数据库</td><td><span class="pill amber">未实现</span></td><td>后端授权、预算、epoch、持久恢复</td></tr><tr><td>依赖公告</td><td><span class="pill amber">样例</span></td><td>真实锁文件、OSV 检索时间与原始依据</td></tr><tr><td>签名及 BOT 主网</td><td><span class="pill amber">未部署</span></td><td>实现合约、Gas、真实地址/回执/事件</td></tr><tr><td>视频、仓库与运行链接</td><td><span class="pill amber">待团队提交</span></td><td>按赛事手册标注比赛新增工作</td></tr></tbody></table></div><div class="callout warn" style="margin-top:16px">主网确认配置为空时必须阻断发布。Ethereum sourceChainId=1 与 BOT registryChainId=677 不能混用。</div></div>
+  </section>
+ </main>
+</div>
+<div id="toast" class="toast" role="status" hidden></div>
+<script>
+/* CRYPTO_INLINE */
+</script>
+<script>
+/* APP_INLINE */
+</script>
+</body></html>

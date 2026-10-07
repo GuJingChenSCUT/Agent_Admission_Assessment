@@ -1,0 +1,1121 @@
+{
+  "version": "0.2",
+  "scope": "Ethereum native ETH read-only tasks with registered HTTP/MCP services; all cases are design/acceptance requirements, not evidence of implemented backend controls.",
+  "exhaustiveness": "Finite set of identified scenarios. Unknown incidents use SC-E05/SC-O08; this is not proof that every possible failure or attack is covered.",
+  "cases": [
+    {
+      "caseId": "SC-T01",
+      "testId": "AT-T01",
+      "category": "任务与授权",
+      "trigger": "需求缺地址或有多个地址",
+      "detector": "TaskDraft 编译器",
+      "decision": "补答，不创建执行命令",
+      "expectedState": "NEEDS_INPUT",
+      "userMessage": "请明确本次核验地址",
+      "recovery": "用户补答，增加 revision",
+      "evidence": "缺失字段、revision、无调用记录",
+      "diagrams": [
+        "D02",
+        "D05"
+      ],
+      "owner": "Control/Agent",
+      "verification": "无地址输入后检查 providerCalls=0",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-T02",
+      "testId": "AT-T02",
+      "category": "任务与授权",
+      "trigger": "ERC20、其他链、转账或任意 URL",
+      "detector": "范围编译器",
+      "decision": "拒绝未支持范围",
+      "expectedState": "不生成可批准 TaskSpec",
+      "userMessage": "当前只支持原生 ETH 余额只读核验",
+      "recovery": "修改需求后重建提案",
+      "evidence": "UNSUPPORTED_SCOPE 与解析范围",
+      "diagrams": [
+        "D02",
+        "D04"
+      ],
+      "owner": "Control",
+      "verification": "未支持意图无法生成 gateway ticket",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-T03",
+      "testId": "AT-T03",
+      "category": "任务与授权",
+      "trigger": "用户修改已展示的范围",
+      "detector": "revision/specHash 比较",
+      "decision": "旧批准和 nonce 失效",
+      "expectedState": "AWAITING_APPROVAL 或 NEEDS_INPUT",
+      "userMessage": "范围已变化，请核对新版本",
+      "recovery": "重新批准新版本",
+      "evidence": "旧/新摘要、revision、事件",
+      "diagrams": [
+        "D05"
+      ],
+      "owner": "Control/Web",
+      "verification": "旧批准请求返回 409，未入队",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-T04",
+      "testId": "AT-T04",
+      "category": "任务与授权",
+      "trigger": "批准重复点击或 ACK 丢失",
+      "detector": "owner+route+Idempotency-Key",
+      "decision": "同键同体返回既有 Run",
+      "expectedState": "当前持久状态",
+      "userMessage": "正在核对原任务是否已获准",
+      "recovery": "查原 task；必要时原键重试",
+      "evidence": "请求摘要、幂等记录、唯一 Run",
+      "diagrams": [
+        "D05",
+        "D07"
+      ],
+      "owner": "Control",
+      "verification": "重复/并发批准只生成一个 outbox",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-T05",
+      "testId": "AT-T05",
+      "category": "任务与授权",
+      "trigger": "相同幂等键携带不同请求体",
+      "detector": "幂等摘要比较",
+      "decision": "409，不产生新动作",
+      "expectedState": "当前状态不变",
+      "userMessage": "该请求键已用于其他内容",
+      "recovery": "更正客户端状态，不自动换键执行",
+      "evidence": "原/新请求摘要、traceId",
+      "diagrams": [
+        "D05"
+      ],
+      "owner": "Control",
+      "verification": "同键不同 hash 不签票据",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-T06",
+      "testId": "AT-T06",
+      "category": "任务与授权",
+      "trigger": "跨 owner 读取/批准/停止/下载原件",
+      "detector": "每个对象的归属校验",
+      "decision": "拒绝，不泄露存在性或 nonce",
+      "expectedState": "当前状态不变",
+      "userMessage": "无权访问此任务",
+      "recovery": "使用合法会话或任务",
+      "evidence": "访问主体、对象引用、拒绝原因",
+      "diagrams": [
+        "D01",
+        "D05"
+      ],
+      "owner": "Control",
+      "verification": "第二账号不能获取任何私有报告",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-T07",
+      "testId": "AT-T07",
+      "category": "任务与授权",
+      "trigger": "票据过期、重放、caller 或参数不符",
+      "detector": "Gateway 验签及原子 jti 消费",
+      "decision": "拒绝 dispatch",
+      "expectedState": "Attempt REJECTED",
+      "userMessage": "本次调用授权无效",
+      "recovery": "同范围重新评估并签新票据，计入预算",
+      "evidence": "jti、绑定字段摘要、拒绝码",
+      "diagrams": [
+        "D04",
+        "D07"
+      ],
+      "owner": "Gateway",
+      "verification": "重放及并发消费仅最多一次成功",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-T08",
+      "testId": "AT-T08",
+      "category": "任务与授权",
+      "trigger": "批准后策略禁用或新风险紧急收紧",
+      "detector": "policyEpoch 与当前 denylist",
+      "decision": "撤销未消费票据，禁止放宽",
+      "expectedState": "QUARANTINED 或停止收尾",
+      "userMessage": "安全策略已收紧，本次暂停",
+      "recovery": "修复后生成新范围/批准",
+      "evidence": "策略版本、epoch、禁用原因",
+      "diagrams": [
+        "D04",
+        "D10"
+      ],
+      "owner": "Policy",
+      "verification": "旧票据不能穿越安全禁用",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-A01",
+      "testId": "AT-A01",
+      "category": "Agent",
+      "trigger": "模型连接未配置",
+      "detector": "启动 readiness 与模型适配器",
+      "decision": "阻断在线创建；不得伪装模型输出",
+      "expectedState": "创建返回 CONFIGURATION_REQUIRED",
+      "userMessage": "在线模型尚未配置",
+      "recovery": "配置后重试；结构化模式需显式标注",
+      "evidence": "配置存在性，不记录秘密",
+      "diagrams": [
+        "D01",
+        "D11"
+      ],
+      "owner": "Agent",
+      "verification": "LIVE 创建不会返回 SAMPLE 提案",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-A02",
+      "testId": "AT-A02",
+      "category": "Agent",
+      "trigger": "模型超时或 429",
+      "detector": "适配器计时和预算",
+      "decision": "有限重试；超限失败",
+      "expectedState": "创建失败或 Run FAILED",
+      "userMessage": "模型暂不可用，尚未执行新工具",
+      "recovery": "预算内重试；否则新任务",
+      "evidence": "请求次数、耗时、模型错误码",
+      "diagrams": [
+        "D02",
+        "D11"
+      ],
+      "owner": "Agent",
+      "verification": "计入模型预算，停止入口仍可用",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-A03",
+      "testId": "AT-A03",
+      "category": "Agent",
+      "trigger": "模型输出不符合 schema 或猜测地址",
+      "detector": "确定性编译器",
+      "decision": "不批准非法结构",
+      "expectedState": "NEEDS_INPUT 或 INVALID_INPUT",
+      "userMessage": "需要补充或修正范围",
+      "recovery": "有限纠正一次或用户补答",
+      "evidence": "原提案私有、校验错误",
+      "diagrams": [
+        "D02",
+        "D05"
+      ],
+      "owner": "Agent/Control",
+      "verification": "额外字段与猜测值不能进入 TaskSpec",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-A04",
+      "testId": "AT-A04",
+      "category": "Agent",
+      "trigger": "工具描述/响应包含越权指令",
+      "detector": "文本隔离与工具允许表",
+      "decision": "当数据处理；后端拒绝越权",
+      "expectedState": "当前受控流程或 QUARANTINED",
+      "userMessage": "服务内容含不可信指令，已限制处理",
+      "recovery": "跳过可疑候选或结束",
+      "evidence": "摘要、来源、命中规则、工具审计",
+      "diagrams": [
+        "D01",
+        "D04"
+      ],
+      "owner": "Agent/Gateway",
+      "verification": "诱导 shell、提预算、签名均无可调用权限",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-A05",
+      "testId": "AT-A05",
+      "category": "Agent",
+      "trigger": "模型循环调用或重复选择服务",
+      "detector": "服务器模型/工具预算",
+      "decision": "终止新模型动作",
+      "expectedState": "FAILED 或确定性报告完成",
+      "userMessage": "已达到任务预算",
+      "recovery": "不自动增加预算；用户另开任务",
+      "evidence": "回合、token、候选和调用计数",
+      "diagrams": [
+        "D02",
+        "D04"
+      ],
+      "owner": "Worker",
+      "verification": "超过 4 回合/2 次候选调用被阻止",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-A06",
+      "testId": "AT-A06",
+      "category": "Agent",
+      "trigger": "解释包含无依据金额或错误引用",
+      "detector": "报告事实引用校验",
+      "decision": "丢弃解释，模板回退",
+      "expectedState": "事实状态保持不变",
+      "userMessage": "显示已核验事实与范围",
+      "recovery": "重建确定性说明",
+      "evidence": "解释版本、事实 ID、失配原因",
+      "diagrams": [
+        "D08"
+      ],
+      "owner": "Evidence",
+      "verification": "虚构数字不进入正常结果或 PublicReport",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-A07",
+      "testId": "AT-A07",
+      "category": "Agent",
+      "trigger": "Agent 运行时自动暴露 shell 或自修改",
+      "detector": "启动时能力清单比对",
+      "decision": "readiness 失败，拒绝运行",
+      "expectedState": "CONFIGURATION_REQUIRED",
+      "userMessage": "运行能力超出获准配置",
+      "recovery": "移除扩展后重新部署",
+      "evidence": "有效工具清单、构建版本",
+      "diagrams": [
+        "D01",
+        "D11"
+      ],
+      "owner": "Agent/Ops",
+      "verification": "非五个允许工具导致发布阻断",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-N01",
+      "testId": "AT-N01",
+      "category": "网络",
+      "trigger": "TLS 证书或主机校验失败",
+      "detector": "受限 HTTP 客户端",
+      "decision": "不关闭验证，不降级 HTTP",
+      "expectedState": "Attempt INCONCLUSIVE",
+      "userMessage": "服务连接身份无法核对",
+      "recovery": "允许的备用路线或隔离",
+      "evidence": "TLS 原因码、origin、时间",
+      "diagrams": [
+        "D04"
+      ],
+      "owner": "Gateway",
+      "verification": "错误证书不能继续取得响应",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-N02",
+      "testId": "AT-N02",
+      "category": "网络",
+      "trigger": "DNS rebinding、私有地址或云元数据目标",
+      "detector": "实际连接地址约束",
+      "decision": "连接前拒绝",
+      "expectedState": "Attempt REJECTED",
+      "userMessage": "服务目标不符合网络策略",
+      "recovery": "管理员修正登记，用户不可放行",
+      "evidence": "解析集合、实际目标、规则",
+      "diagrams": [
+        "D04"
+      ],
+      "owner": "Network",
+      "verification": "只校验域名而实际连接私网的测试必须失败",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-N03",
+      "testId": "AT-N03",
+      "category": "网络",
+      "trigger": "跨 origin 重定向或 metadata URL",
+      "detector": "出口策略与逐跳校验",
+      "decision": "默认不跟随；不得携带原令牌",
+      "expectedState": "Attempt REJECTED",
+      "userMessage": "服务跳转超出允许范围",
+      "recovery": "管理员新增独立配置后重试",
+      "evidence": "Location 摘要、目标、拒绝码",
+      "diagrams": [
+        "D04"
+      ],
+      "owner": "Network",
+      "verification": "令牌不流向重定向目标",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-N04",
+      "testId": "AT-N04",
+      "category": "网络",
+      "trigger": "JSON 超大、压缩膨胀、超深或重复 key",
+      "detector": "流式字节/解压/解析限制",
+      "decision": "中止并记录无效数据",
+      "expectedState": "Attempt FAILED 或 INCONCLUSIVE",
+      "userMessage": "响应超出安全处理范围",
+      "recovery": "可用备用服务；不提高限额",
+      "evidence": "字节计数、内容摘要、解析码",
+      "diagrams": [
+        "D04"
+      ],
+      "owner": "Gateway",
+      "verification": "1 MiB 与深度上限触发后不继续缓冲",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-N05",
+      "testId": "AT-N05",
+      "category": "网络",
+      "trigger": "连接超时、半开、断流或读取中断",
+      "detector": "请求 deadline 与完整性检查",
+      "decision": "不假装得到空余额；计入已提交调用",
+      "expectedState": "Attempt INCONCLUSIVE",
+      "userMessage": "服务响应不完整或超时",
+      "recovery": "同快照获准备用；无路则 QUARANTINED",
+      "evidence": "dispatch、耗时、已收字节、错误",
+      "diagrams": [
+        "D02",
+        "D07"
+      ],
+      "owner": "Gateway",
+      "verification": "超时不返还已消费预算，不重用 jti",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-N06",
+      "testId": "AT-N06",
+      "category": "网络",
+      "trigger": "服务 429 或 5xx",
+      "detector": "HTTP/RPC 分类",
+      "decision": "候选调用不盲目重发",
+      "expectedState": "Attempt INCONCLUSIVE",
+      "userMessage": "服务暂不可用",
+      "recovery": "使用获准备用；新尝试计预算",
+      "evidence": "状态码、Retry-After、尝试记录",
+      "diagrams": [
+        "D02",
+        "D04"
+      ],
+      "owner": "Gateway",
+      "verification": "自动库重试不能使实际调用超过 2 次",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-N07",
+      "testId": "AT-N07",
+      "category": "网络",
+      "trigger": "浏览器事件流断开或消息乱序",
+      "detector": "sequence、游标与任务查询",
+      "decision": "保持最后状态并标记连接过期",
+      "expectedState": "客户端 DISCONNECTED；Task 不改写",
+      "userMessage": "连接已中断，显示的是上次状态",
+      "recovery": "按游标续读并查询当前 Task",
+      "evidence": "事件序号、更新时间",
+      "diagrams": [
+        "D05"
+      ],
+      "owner": "Web",
+      "verification": "乱序/重复事件不能把终态倒退成运行中",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-N08",
+      "testId": "AT-N08",
+      "category": "网络",
+      "trigger": "用户停止时鉴权过期或控制请求失败",
+      "detector": "停止响应与会话校验",
+      "decision": "不显示已停止",
+      "expectedState": "客户端 STOP_ACK_UNKNOWN",
+      "userMessage": "停止请求尚未确认",
+      "recovery": "恢复认证并查询原任务；控制路径仍优先",
+      "evidence": "stop 请求 ID、响应状态、当前任务",
+      "diagrams": [
+        "D05",
+        "D06"
+      ],
+      "owner": "Web/Control",
+      "verification": "网络失败不直接写本地 CANCELLED",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D01",
+      "testId": "AT-D01",
+      "category": "数据",
+      "trigger": "两个参考源链 ID 或区块 hash 冲突",
+      "detector": "Reference resolver",
+      "decision": "不使用多数掩盖冲突",
+      "expectedState": "QUARANTINED",
+      "userMessage": "参考来源不一致，暂不能判断",
+      "recovery": "修复来源后新任务",
+      "evidence": "各参考原件、运营者、区块 hash",
+      "diagrams": [
+        "D03"
+      ],
+      "owner": "Data",
+      "verification": "参考冲突时 providerCalls=0",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D02",
+      "testId": "AT-D02",
+      "category": "数据",
+      "trigger": "finalized 头偏差超过配置窗口",
+      "detector": "头高度与源健康检查",
+      "decision": "不退回 latest",
+      "expectedState": "QUARANTINED",
+      "userMessage": "参考节点同步状态不满足策略",
+      "recovery": "修复节点或等待后新任务",
+      "evidence": "两端高度、窗口、采集时间",
+      "diagrams": [
+        "D03"
+      ],
+      "owner": "Data",
+      "verification": "超窗时不能构造 PASS Snapshot",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D03",
+      "testId": "AT-D03",
+      "category": "数据",
+      "trigger": "同一参考区块的余额仍不一致",
+      "detector": "两份精确 wei 比较",
+      "decision": "不凭候选多数判真",
+      "expectedState": "QUARANTINED",
+      "userMessage": "同区块参考余额不一致",
+      "recovery": "排查独立性与节点后重试",
+      "evidence": "两份数量及相同 hash",
+      "diagrams": [
+        "D03"
+      ],
+      "owner": "Data",
+      "verification": "参考数量冲突时无 acceptedFact",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D04",
+      "testId": "AT-D04",
+      "category": "数据",
+      "trigger": "服务明确声明错误区块",
+      "detector": "PROVIDER_DECLARED 绑定核对",
+      "decision": "拒绝快照声明，跳过跨区块余额比较",
+      "expectedState": "Attempt FAILED",
+      "userMessage": "返回声明不属于本次目标区块",
+      "recovery": "同 Snapshot 备用候选",
+      "evidence": "期望/声明 blockHash、bindingKind",
+      "diagrams": [
+        "D03"
+      ],
+      "owner": "Verifier",
+      "verification": "错误块不同时再报虚构余额错误",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D05",
+      "testId": "AT-D05",
+      "category": "数据",
+      "trigger": "原生 RPC 仅返回数量，或旧值恰好相同",
+      "detector": "适配器 bindingKind 分类",
+      "decision": "只声称请求绑定与数值一致性",
+      "expectedState": "按参考对照决定；不产生 PROOF_VERIFIED",
+      "userMessage": "未提供密码学状态证明",
+      "recovery": "后续可增加可信区块头与证明方案",
+      "evidence": "原始 RPC 请求/响应、请求 hash",
+      "diagrams": [
+        "D03",
+        "D08"
+      ],
+      "owner": "Verifier",
+      "verification": "自身附加的 blockHash 不能升级为服务证明",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D06",
+      "testId": "AT-D06",
+      "category": "数据",
+      "trigger": "地址/资产/chainId 或整数格式错误",
+      "detector": "规范化与精度校验",
+      "decision": "确定性拒绝，不做浮点补正",
+      "expectedState": "Attempt FAILED",
+      "userMessage": "返回内容不符合本次查询范围",
+      "recovery": "获准备用或结束",
+      "evidence": "schema 错误、范围和原件摘要",
+      "diagrams": [
+        "D03",
+        "D04"
+      ],
+      "owner": "Verifier",
+      "verification": "溢出、浮点、错误地址与负数均被拒绝",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D07",
+      "testId": "AT-D07",
+      "category": "数据",
+      "trigger": "OSV 限流、缺页、超时、缓存过期",
+      "detector": "完整性和 fetchedAt 策略",
+      "decision": "必需信息未知时阻断",
+      "expectedState": "QUARANTINED",
+      "userMessage": "依赖公告检查尚未完成",
+      "recovery": "后台有界续页/更新；不可静默略过",
+      "evidence": "分页 token 进度、源版本、时间",
+      "diagrams": [
+        "D10"
+      ],
+      "owner": "Data",
+      "verification": "只取得第一页不能显示无已知公告",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D08",
+      "testId": "AT-D08",
+      "category": "数据",
+      "trigger": "锁文件版本无法确定或公告区间不清",
+      "detector": "生态/包名/精确版本解析",
+      "decision": "不按包名猜测安全性",
+      "expectedState": "QUARANTINED",
+      "userMessage": "无法确认本次依赖版本的受影响情况",
+      "recovery": "补齐锁文件或维护者资料",
+      "evidence": "锁文件 hash、版本、区间依据",
+      "diagrams": [
+        "D04",
+        "D10"
+      ],
+      "owner": "Inspection",
+      "verification": "unknown 版本不能返回依赖 PASS",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D09",
+      "testId": "AT-D09",
+      "category": "数据",
+      "trigger": "远程 SBOM 缺失或无法绑定真实部署",
+      "detector": "来源分类与策略 required 标志",
+      "decision": "可选缺失显示未验证；必需缺失阻断",
+      "expectedState": "可继续或 QUARANTINED",
+      "userMessage": "远程部署来源未验证",
+      "recovery": "补部署证明；不能用客户端锁文件顶替",
+      "evidence": "VERIFIED_ARTIFACT/PROVIDER_DECLARED/NOT_AVAILABLE",
+      "diagrams": [
+        "D04",
+        "D10"
+      ],
+      "owner": "Inspection",
+      "verification": "两种策略分别验收，不能一律放行或全拒",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-D10",
+      "testId": "AT-D10",
+      "category": "数据",
+      "trigger": "同一公告出现在 OSV/GHSA/CVE 多个入口",
+      "detector": "aliases 与上游 provenance 去重",
+      "decision": "去重并保留来源链",
+      "expectedState": "状态按独立规则判定",
+      "userMessage": "同源记录合并展示",
+      "recovery": "增量合并与原件追溯",
+      "evidence": "aliases、upstreamId、抓取时间",
+      "diagrams": [
+        "D10"
+      ],
+      "owner": "Data",
+      "verification": "不把同一公告算多份独立证据",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-O01",
+      "testId": "AT-O01",
+      "category": "运行与恢复",
+      "trigger": "数据库写失败、磁盘满或损坏",
+      "detector": "readiness、事务返回、存储完整性",
+      "decision": "冻结新 dispatch 和签名；不能假 ACK",
+      "expectedState": "无可靠新终态，客户端状态未知",
+      "userMessage": "服务无法持久化本次操作",
+      "recovery": "运维恢复后核查原任务",
+      "evidence": "错误码、最后成功提交位置",
+      "diagrams": [
+        "D06",
+        "D07",
+        "D11"
+      ],
+      "owner": "Ops",
+      "verification": "停止落库失败时不返回已确认停止",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-O02",
+      "testId": "AT-O02",
+      "category": "运行与恢复",
+      "trigger": "工作器在票据消费前退出",
+      "detector": "lease 与 dispatch 记录",
+      "decision": "新代际恢复未完成命令",
+      "expectedState": "当前 Run 恢复执行",
+      "userMessage": "任务恢复中",
+      "recovery": "重新核对 scope/epochs 后调用",
+      "evidence": "leaseGeneration、jti、未消费证明",
+      "diagrams": [
+        "D07"
+      ],
+      "owner": "Worker",
+      "verification": "恢复不创造重复 Run",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-O03",
+      "testId": "AT-O03",
+      "category": "运行与恢复",
+      "trigger": "票据已消费但响应未落库时退出",
+      "detector": "DISPATCH_COMMITTED 与响应缺口",
+      "decision": "承认外部结果未知；预算不退款",
+      "expectedState": "Attempt INCONCLUSIVE",
+      "userMessage": "原调用结果未知",
+      "recovery": "同范围新票据备用或隔离",
+      "evidence": "dispatch 时间、预算、恢复原因",
+      "diagrams": [
+        "D07"
+      ],
+      "owner": "Worker",
+      "verification": "不能复用原 jti 自动重发",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-O04",
+      "testId": "AT-O04",
+      "category": "运行与恢复",
+      "trigger": "响应已存但事实尚未提交时退出",
+      "detector": "原件摘要与验证记录",
+      "decision": "重算确定性验收",
+      "expectedState": "按校验结果进入终态",
+      "userMessage": "正在恢复已收到的结果",
+      "recovery": "不再访问候选服务",
+      "evidence": "原件 hash、规则版本、提交守卫",
+      "diagrams": [
+        "D07"
+      ],
+      "owner": "Worker/Verifier",
+      "verification": "恢复不得增加 providerCalls",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-O05",
+      "testId": "AT-O05",
+      "category": "运行与恢复",
+      "trigger": "旧工作器在新租约后仍提交",
+      "detector": "leaseGeneration fencing",
+      "decision": "拒绝旧代际消费和提交",
+      "expectedState": "当前 Run 不被旧进程改写",
+      "userMessage": "显示当前有效运行状态",
+      "recovery": "由当前租约继续",
+      "evidence": "旧/新代际、拒绝原因",
+      "diagrams": [
+        "D04",
+        "D07"
+      ],
+      "owner": "Worker",
+      "verification": "双工作器竞争只能一方提交",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-O06",
+      "testId": "AT-O06",
+      "category": "运行与恢复",
+      "trigger": "停止与成功提交同时发生",
+      "detector": "数据库 CAS 的提交顺序",
+      "decision": "先提交的合法转换胜出",
+      "expectedState": "SUCCEEDED 或 STOP_REQUESTED/CANCELLED",
+      "userMessage": "展示后端确定状态",
+      "recovery": "晚到结果丢弃或返回已有成功",
+      "evidence": "事务顺序、epochs、事件",
+      "diagrams": [
+        "D06"
+      ],
+      "owner": "Control/Worker",
+      "verification": "同时触发两种顺序都验证",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-O07",
+      "testId": "AT-O07",
+      "category": "运行与恢复",
+      "trigger": "系统时间跳变或时钟偏差",
+      "detector": "UTC 记录与单调 deadline",
+      "decision": "超范围凭据不继续使用",
+      "expectedState": "QUARANTINED 或鉴权拒绝",
+      "userMessage": "时间条件不满足本次授权",
+      "recovery": "修复时钟后重新签发，不改旧记录",
+      "evidence": "时间源、偏差、过期值",
+      "diagrams": [
+        "D04",
+        "D07"
+      ],
+      "owner": "Ops",
+      "verification": "向后调墙钟不能延长运行预算",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-O08",
+      "testId": "AT-O08",
+      "category": "运行与恢复",
+      "trigger": "未分类异常或未知错误码",
+      "detector": "顶层异常边界与状态事务",
+      "decision": "停止新动作，保留可诊断原因",
+      "expectedState": "FAILED 或 QUARANTINED；无法落库则未知",
+      "userMessage": "任务未能完成，提供 traceId",
+      "recovery": "分类复核后才能新任务",
+      "evidence": "已完成阶段、traceId、脱敏错误",
+      "diagrams": [
+        "D02",
+        "D07"
+      ],
+      "owner": "Worker",
+      "verification": "异常不落入默认 ALLOW 分支",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B01",
+      "testId": "AT-B01",
+      "category": "区块链与证据",
+      "trigger": "RPC 指向错误网络或测试网",
+      "detector": "chainId/合约代码/配置比对",
+      "decision": "阻断签名与发布",
+      "expectedState": "Publication FAILED 或未创建",
+      "userMessage": "登记网络配置不符",
+      "recovery": "纠正配置并新审批",
+      "evidence": "实测 chainId、代码 hash、配置版本",
+      "diagrams": [
+        "D09",
+        "D11"
+      ],
+      "owner": "Chain",
+      "verification": "不能把测试网交易作为 BOT Mainnet",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B02",
+      "testId": "AT-B02",
+      "category": "区块链与证据",
+      "trigger": "Gas 不足或 signer 不可用",
+      "detector": "签名前 readiness",
+      "decision": "不生成成功交易",
+      "expectedState": "QUEUED 等待或 FAILED",
+      "userMessage": "登记暂不可用，任务结果保留",
+      "recovery": "补足获准资源后显式重试",
+      "evidence": "余额/预算检查、错误码",
+      "diagrams": [
+        "D09"
+      ],
+      "owner": "Chain",
+      "verification": "无 txHash 时无浏览器成功链接",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B03",
+      "testId": "AT-B03",
+      "category": "区块链与证据",
+      "trigger": "签名后广播超时",
+      "detector": "已存 signed bytes 与 txHash",
+      "decision": "按原 hash 核查，拒绝新无关 nonce",
+      "expectedState": "UNKNOWN",
+      "userMessage": "登记结果尚不明确",
+      "recovery": "有界查询或同一原始交易恢复",
+      "evidence": "原 txHash、nonce、bytes 摘要",
+      "diagrams": [
+        "D09"
+      ],
+      "owner": "Chain",
+      "verification": "超时不能重复创建第二笔登记",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B04",
+      "testId": "AT-B04",
+      "category": "区块链与证据",
+      "trigger": "交易明确 revert 或事件不匹配",
+      "detector": "receipt 与目标事件解码",
+      "decision": "不显示登记成功",
+      "expectedState": "FAILED",
+      "userMessage": "交易失败或记录不匹配",
+      "recovery": "修复后另建显式 publication job",
+      "evidence": "receipt status、address、topics、logIndex",
+      "diagrams": [
+        "D09"
+      ],
+      "owner": "Chain",
+      "verification": "只看 receipt.status=1 不足以 CONFIRMED",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B05",
+      "testId": "AT-B05",
+      "category": "区块链与证据",
+      "trigger": "确认前链重组或 RPC 分歧",
+      "detector": "当前 canonical hash 对照",
+      "decision": "继续核查，保留不确定性",
+      "expectedState": "CONFIRMING 或 UNKNOWN",
+      "userMessage": "主链确认尚未闭合",
+      "recovery": "按同一交易持续检查",
+      "evidence": "旧/新区块 hash、观察时间",
+      "diagrams": [
+        "D09"
+      ],
+      "owner": "Chain",
+      "verification": "不以单一 RPC 一次回应完成确认",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B06",
+      "testId": "AT-B06",
+      "category": "区块链与证据",
+      "trigger": "曾确认记录后来脱离主链",
+      "detector": "当前 AnchorObservation",
+      "decision": "保留历史，当前标为 ORPHANED/UNKNOWN",
+      "expectedState": "Publication 历史不改；当前核验失败/未知",
+      "userMessage": "该登记当前不在已核对主链上",
+      "recovery": "复核同 tx 或新批准记录",
+      "evidence": "checkedAt、旧/当前 blockHash",
+      "diagrams": [
+        "D08",
+        "D09"
+      ],
+      "owner": "Chain",
+      "verification": "历史 CONFIRMED 不覆盖当前孤块观察",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B07",
+      "testId": "AT-B07",
+      "category": "区块链与证据",
+      "trigger": "nonce 被其他 signer 作业占用或交易替换",
+      "detector": "专用 signer nonce 管理",
+      "decision": "停止猜测；核对同账户同 nonce",
+      "expectedState": "UNKNOWN 或明确 FAILED",
+      "userMessage": "登记交易需要复核",
+      "recovery": "仅按受控策略恢复；费用变更新授权",
+      "evidence": "sender、nonce、原/替代 txHash",
+      "diagrams": [
+        "D09"
+      ],
+      "owner": "Chain",
+      "verification": "不能将不同 payload 的替代交易归属本报告",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B08",
+      "testId": "AT-B08",
+      "category": "区块链与证据",
+      "trigger": "公开报告被篡改或预览后内容变化",
+      "detector": "规范化 hash 与批准快照",
+      "decision": "拒绝签名/发布或公共核验失败",
+      "expectedState": "不新建 publication；integrity FAIL",
+      "userMessage": "内容与原摘要不符",
+      "recovery": "恢复原件或生成新报告再批准",
+      "evidence": "基准/实际摘要、报告版本",
+      "diagrams": [
+        "D08",
+        "D09"
+      ],
+      "owner": "Evidence",
+      "verification": "改一位金额后旧批准不能使用",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B09",
+      "testId": "AT-B09",
+      "category": "区块链与证据",
+      "trigger": "URI 丢失、内容过期或撤销",
+      "detector": "公共读取、时间与撤销核对",
+      "decision": "各层独立给出不可用/失效",
+      "expectedState": "Verification UNKNOWN/FAIL",
+      "userMessage": "内容不可用或记录已失效",
+      "recovery": "允许重新取原件；新任务须重新验收",
+      "evidence": "URI/内容摘要、到期、撤销事件",
+      "diagrams": [
+        "D08"
+      ],
+      "owner": "Evidence",
+      "verification": "链上 hash 存在不能冒充原文可访问",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B10",
+      "testId": "AT-B10",
+      "category": "区块链与证据",
+      "trigger": "验证者密钥受损或主体解绑",
+      "detector": "可信验证者配置与事件/身份追踪",
+      "decision": "冻结新签名与该主体信任",
+      "expectedState": "新发布 blocked；旧报告标记复核",
+      "userMessage": "验证者可信状态发生变化",
+      "recovery": "独立审查、撤销/新 registry；旧记录保留",
+      "evidence": "信任配置版本、事件、受影响摘要",
+      "diagrams": [
+        "D08",
+        "D09"
+      ],
+      "owner": "Security",
+      "verification": "P0 固定验证者不能假称具备在线密钥轮换",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-B11",
+      "testId": "AT-B11",
+      "category": "区块链与证据",
+      "trigger": "刷分、关联验证者或同名服务混淆",
+      "detector": "全局 Subject 引用与来源相关性",
+      "decision": "不聚合成无条件安全分",
+      "expectedState": "历史信号有限使用",
+      "userMessage": "身份或来源独立性未验证",
+      "recovery": "收集可重放案例与独立验证者",
+      "evidence": "namespace、identityRegistry、agentId、时间窗",
+      "diagrams": [
+        "D01",
+        "D08",
+        "D12"
+      ],
+      "owner": "Evidence/Product",
+      "verification": "两个私有 svc_primary 别名不能合并信誉",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-E01",
+      "testId": "AT-E01",
+      "category": "交付与商业",
+      "trigger": "将 SAMPLE/REPLAY 当 LIVE 展示",
+      "detector": "运行模式与来源来源记录",
+      "decision": "阻断不实验收声明",
+      "expectedState": "交付项 BLOCKED",
+      "userMessage": "当前为样例或回放模式",
+      "recovery": "真实联调后单独记录成绩",
+      "evidence": "executionMode、原始 trace、构建号",
+      "diagrams": [
+        "D11"
+      ],
+      "owner": "QA",
+      "verification": "模型/RPC 未连不能计在线成功",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-E02",
+      "testId": "AT-E02",
+      "category": "交付与商业",
+      "trigger": "主网部署材料缺项或迟交",
+      "detector": "交付清单与截止时间",
+      "decision": "标记缺项，不把主办方目标当单队分数",
+      "expectedState": "交付项 BLOCKED",
+      "userMessage": "缺少可核验部署/提交材料",
+      "recovery": "按实际完成范围提交并联系工作人员处理异常",
+      "evidence": "仓库、链接、交易、视频、提交回执",
+      "diagrams": [
+        "D11"
+      ],
+      "owner": "PM",
+      "verification": "10 月 8 日 12:00 北京时间前材料可访问",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-E03",
+      "testId": "AT-E03",
+      "category": "交付与商业",
+      "trigger": "两参考 RPC 已能直接回答简单余额",
+      "detector": "成本与基线对照",
+      "decision": "限定技术演示的商业结论",
+      "expectedState": "市场假设待验证",
+      "userMessage": "先证明接入/核对/追溯成本收益",
+      "recovery": "转向高价值任务模板与托管验收",
+      "evidence": "人工步骤、总成本、重复使用证据",
+      "diagrams": [
+        "D12"
+      ],
+      "owner": "Product",
+      "verification": "直接调用与本系统在同任务下对照",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-E04",
+      "testId": "AT-E04",
+      "category": "交付与商业",
+      "trigger": "声明无人竞争或已获先发优势",
+      "detector": "原厂产品与用户访谈核对",
+      "decision": "撤回未经验证的领先表述",
+      "expectedState": "市场假设待验证",
+      "userMessage": "差异化仍需试点证明",
+      "recovery": "验证购买角色、替代方案和付费意愿",
+      "evidence": "竞品日期、访谈事实、试点结果",
+      "diagrams": [
+        "D12"
+      ],
+      "owner": "Product",
+      "verification": "不能把未检索到功能作为竞品不存在的证明",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    },
+    {
+      "caseId": "SC-E05",
+      "testId": "AT-E05",
+      "category": "交付与商业",
+      "trigger": "未知新风险不在当前清单",
+      "detector": "事件复盘与变更评审",
+      "decision": "先冻结受影响能力，再补规则与回归",
+      "expectedState": "受影响任务隔离",
+      "userMessage": "该能力正在复核",
+      "recovery": "新增场景、规则、测试和版本后开放",
+      "evidence": "新场景 ID、责任人、回归与变更记录",
+      "diagrams": [
+        "D07",
+        "D11"
+      ],
+      "owner": "Security/PM",
+      "verification": "没有“其他情况默认通过”分支",
+      "priority": "P0",
+      "implementationStatus": "DESIGN_REQUIRED"
+    }
+  ]
+}

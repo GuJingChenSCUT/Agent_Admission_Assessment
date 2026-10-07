@@ -1,0 +1,21 @@
+flowchart TD
+  request["request 用户请求停止"]
+  state{"state 先读取并锁定当前状态"}
+  terminal["terminal 成功先提交则保持 SUCCEEDED"]
+  epoch["epoch 写 STOP_REQUESTED"]
+  ack["ack 只有持久化成功才发送确认"]
+  race["race 比较 task、stopEpoch、policy…"]
+  late["late 停止先提交时不接纳晚到结果"]
+  cleanup["cleanup 不接受新 dispatch，不再切换"]
+  cancel["cancel 本系统后续工作已收尾"]
+  dbfail["dbfail 持久化失败则告知状态未知并查原任务"]
+  request --> state
+  state -->|"yes"| terminal
+  state -->|"no"| epoch
+  epoch -->|"durable"| ack
+  epoch -->|"write fails"| dbfail
+  ack -->|"in-flight response"| race
+  race -->|"guard mismatch"| late
+  late --> cleanup
+  ack -->|"no response"| cleanup
+  cleanup --> cancel

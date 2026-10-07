@@ -1,0 +1,29 @@
+digraph D11 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D11  |  Build and delivery gates"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+contract [label="Freeze reviewed\ncontracts", fillcolor="#ffffff", color="#94a8c2"];
+build [label="Reproducible build", fillcolor="#ffffff", color="#94a8c2"];
+verify [label="Contract + adversarial\ntests", fillcolor="#ffffff", color="#94a8c2"];
+pass [label="Release gate passes?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+fix [label="Fix or reduce claimed\nscope", fillcolor="#fcebed", color="#bd6876"];
+stage [label="Staging with real\ndependencies", fillcolor="#ffffff", color="#94a8c2"];
+accept [label="End-to-end acceptance", fillcolor="#ffffff", color="#94a8c2"];
+deploy [label="Deploy exact artifact", fillcolor="#ffffff", color="#94a8c2"];
+monitor [label="Readiness + recovery\ncheck", fillcolor="#ffffff", color="#94a8c2"];
+submit [label="Competition materials", fillcolor="#ffffff", color="#94a8c2"];
+rollback [label="Operational rollback", fillcolor="#ffffff", color="#94a8c2"];
+contract -> build;
+build -> verify;
+verify -> pass;
+pass -> fix [label="no"];
+fix -> build;
+pass -> stage [label="yes"];
+stage -> accept;
+accept -> deploy [label="passed"];
+accept -> fix [label="failed"];
+deploy -> monitor;
+monitor -> submit [label="healthy"];
+monitor -> rollback [label="fault"];
+rollback -> fix;
+}

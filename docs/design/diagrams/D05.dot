@@ -1,0 +1,35 @@
+digraph D05 {
+graph [rankdir=TB, bgcolor="#f8fafc", pad="0.30", nodesep="0.32", ranksep="0.52", splines=polyline, fontname="DejaVu Sans", fontsize=17, labelloc=t, label="D05  |  User interaction and reconnection"];
+node [shape=box, style="rounded,filled", margin="0.15,0.12", fontname="DejaVu Sans", fontsize=12.5, fontcolor="#17304b", penwidth=1.15, width=1.95];
+edge [color="#687e99", arrowsize=0.7, penwidth=1.05, fontname="DejaVu Sans", fontsize=10, fontcolor="#485f7a"];
+form [label="Task input", fillcolor="#ffffff", color="#94a8c2"];
+draft [label="Scope or clarification", fillcolor="#ffffff", color="#94a8c2"];
+edit [label="Edit scope", fillcolor="#ffffff", color="#94a8c2"];
+approve [label="Approve exact scope", fillcolor="#ffffff", color="#94a8c2"];
+ack [label="Acknowledgement known?", fillcolor="#edf3ff", color="#7399d7", shape=diamond, style=filled, margin="0.09,0.05", width=2.1];
+unknown [label="ACK_UNKNOWN view", fillcolor="#fff4df", color="#bd9651"];
+reconcile [label="Query task + resume\nevents", fillcolor="#ffffff", color="#94a8c2"];
+running [label="Running workspace", fillcolor="#ffffff", color="#94a8c2"];
+stop [label="Request stop", fillcolor="#ffffff", color="#94a8c2"];
+terminal [label="Terminal evidence", fillcolor="#ffffff", color="#94a8c2"];
+preview [label="Public field preview", fillcolor="#ffffff", color="#94a8c2"];
+publish [label="Publication panel", fillcolor="#ffffff", color="#94a8c2"];
+read [label="Public verification", fillcolor="#ffffff", color="#94a8c2"];
+form -> draft;
+draft -> edit [label="change"];
+edit -> draft [label="new revision"];
+draft -> approve [label="complete"];
+approve -> ack;
+ack -> unknown [label="timeout / disconnect"];
+unknown -> reconcile [label="same task / same key"];
+reconcile -> running [label="running"];
+ack -> running [label="accepted"];
+ack -> draft [label="rejected / 409"];
+running -> stop [label="user stops"];
+stop -> reconcile [label="await server truth"];
+running -> terminal [label="completed"];
+reconcile -> terminal [label="terminal"];
+terminal -> preview [label="explicit intent"];
+preview -> publish [label="exact-hash consent"];
+publish -> read [label="record available"];
+}

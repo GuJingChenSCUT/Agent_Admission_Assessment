@@ -1,0 +1,25 @@
+flowchart TD
+  contract["contract 范围、规则、接口、测试与 owner"]
+  build["build 锁文件、构建标识、来源说明与 secrets 检查"]
+  verify["verify 正常路径、停止、恢复、未知与越权"]
+  pass{"pass 必须控制是否真实通过"}
+  fix["fix 失败项回到 owner"]
+  stage["stage 真实模型、两个参考源、两个候选、持久库"]
+  accept["accept 非作者操作"]
+  deploy["deploy 分别记录应用 URL、链、合约、回执和配置"]
+  monitor["monitor 出口、数据库、签名器、预算与审计"]
+  submit["submit 仓库、启动、视频、运行链接、新增工作、链上材料"]
+  rollback["rollback 应用可回退"]
+  contract --> build
+  build --> verify
+  verify --> pass
+  pass -->|"no"| fix
+  fix --> build
+  pass -->|"yes"| stage
+  stage --> accept
+  accept -->|"passed"| deploy
+  accept -->|"failed"| fix
+  deploy --> monitor
+  monitor -->|"healthy"| submit
+  monitor -->|"fault"| rollback
+  rollback --> fix

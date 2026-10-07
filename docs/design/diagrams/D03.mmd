@@ -1,0 +1,36 @@
+flowchart TD
+  scope["scope 已批准 Ethereum 1 和地址"]
+  a["a 读取 chainId、finalized 头、目…"]
+  b["b 不同运营者"]
+  heads{"heads 核对链、头偏差和可共同核对高度"}
+  hash{"hash 共同高度两边区块 hash 一致"}
+  balance{"balance 在固定 blockHash 对照两份余额"}
+  snapshot["snapshot 保留区块、时间、来源、请求和响应摘要"]
+  candidate["candidate 原件分别保留"]
+  binding{"binding 区分原生 RPC 请求绑定与服务自行声明"}
+  rpc["rpc 核对实际发送的区块参数"]
+  declared["declared 检查服务声明的链、地址和区块是否相符"]
+  compare{"compare 按本次参考值比较，不使用浮点"}
+  accepted["accepted 仅返回已解析的验收结果给 D02"]
+  mismatch["mismatch 确定的范围或数量失配"]
+  quarantine["quarantine 冲突、来源不可用或必需能力不足"]
+  scope --> a
+  scope --> b
+  a --> heads
+  b --> heads
+  heads -->|"yes"| hash
+  heads -->|"no"| quarantine
+  hash -->|"yes"| balance
+  hash -->|"no"| quarantine
+  balance -->|"yes"| snapshot
+  balance -->|"no"| quarantine
+  snapshot --> candidate
+  candidate -->|"malformed / wrong scope"| mismatch
+  candidate -->|"parsed"| binding
+  binding -->|"raw RPC"| rpc
+  binding -->|"enriched service"| declared
+  rpc --> compare
+  declared -->|"scope matches"| compare
+  declared -->|"scope mismatch"| mismatch
+  compare -->|"equal"| accepted
+  compare -->|"different"| mismatch
