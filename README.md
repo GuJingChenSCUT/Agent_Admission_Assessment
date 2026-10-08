@@ -17,7 +17,7 @@ pnpm start
 
 ## 离线演示
 
-双击 `web/demo.html` 可进行逐阶段交互演练；`web/demo-film.html` 是带字幕和播放控制的 1 分 50 秒定时演示。均为独立 HTML，使用明确标注的构造样本，无外部请求；正式服务器也提供 `/demo.html` 与 `/demo-film.html`。操作、情节和边界见 [演示说明](docs/demo-guide.md)。修改源码后执行 `pnpm build:demos`。
+双击 `web/demo.html` 可体验逐阶段案例验收；`web/demo-film.html` 为 54 秒实测记录回放；`web/promo.html` 为独立的 56 秒项目宣传片。三者均为单文件 HTML，无外部请求，正式服务也提供同名路径。视频版在 `artifacts/films/`，均含中文字幕。操作片数据来自已保存的 LIVE 证据，交互页使用构造案例。来源与使用方法见 [展示说明](docs/demo-guide.md)。修改后运行 `pnpm build:demos`，视频导出运行 `pnpm export:films`。
 
 ## 已实现
 

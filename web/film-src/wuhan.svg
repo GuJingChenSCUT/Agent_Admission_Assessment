@@ -1,0 +1,19 @@
+<svg class="wuhan-art" viewBox="0 0 780 630" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="武汉两江、江汉关与桥梁的原创意象" role="img">
+ <defs><linearGradient id="river" x1="120" y1="70" x2="670" y2="580" gradientUnits="userSpaceOnUse"><stop stop-color="#819e91"/><stop offset="1" stop-color="#254e47"/></linearGradient><pattern id="ripples" width="48" height="21" patternUnits="userSpaceOnUse"><path d="M0 15Q12 5 24 15T48 15" stroke="#b9cdb8" stroke-width=".8" opacity=".3"/></pattern></defs>
+ <circle cx="425" cy="302" r="243" stroke="currentColor" opacity=".13"/><circle cx="425" cy="302" r="212" stroke="currentColor" stroke-dasharray="2 12" opacity=".25"/>
+ <path d="M300-20C258 108 395 206 398 311S573 481 827 501L800 655C461 585 286 457 293 326S157 136 177-20Z" fill="url(#river)"/>
+ <path d="M-40 172C82 173 186 254 355 299L315 370C156 329 81 247-40 262Z" fill="url(#river)"/>
+ <path d="M300-20C258 108 395 206 398 311S573 481 827 501L800 655C461 585 286 457 293 326S157 136 177-20ZM-40 172C82 173 186 254 355 299L315 370C156 329 81 247-40 262Z" fill="url(#ripples)"/>
+ <g stroke="currentColor" stroke-width="1.5" opacity=".8">
+  <path d="M48 446H484M55 456H478M91 446V508M235 446V557M397 446V590"/><path d="M58 446L110 394L161 446L213 394L266 446L318 394L370 446L421 394L474 446M58 394H474M110 394V446M213 394V446M318 394V446M421 394V446"/>
+ </g>
+ <g transform="translate(433 57)" stroke="currentColor" stroke-width="1.6">
+  <path d="M0 206H236V266H0ZM73 132H160V266H73ZM84 65H149V133H84ZM96 30H137V66H96ZM104 16H129V30H104ZM116 0V16M80 65H153M68 132H165M-6 206H242" fill="#25483d"/>
+  <path d="M13 223H223M13 252H223M87 148H146M87 192H146"/>
+  <circle cx="116" cy="98" r="19"/><path d="M116 79V83M135 98H131M116 117V113M97 98H101M116 86V99L124 105"/>
+  <path d="M100 157V184M116 157V184M132 157V184M20 232V247M40 232V247M60 232V247M93 232V247M116 232V247M139 232V247M175 232V247M197 232V247M217 232V247"/>
+ </g>
+ <g stroke="currentColor" opacity=".65"><path d="M75 143H144L132 160H89ZM112 104V143L86 136ZM118 99V140L144 132Z"/><path d="M548 460H632L615 475H562ZM587 406V460L554 449ZM594 399V456L625 446Z"/></g>
+ <g fill="currentColor" font-family="STZhongsong, SimSun, serif" font-size="16" letter-spacing="4"><text x="52" y="204">汉水</text><text x="447" y="567">长江</text><text x="573" y="374">江汉关</text><text x="91" y="364">一桥飞架</text></g>
+ <g stroke="currentColor" opacity=".5"><path d="M693 30V85M666 57H720"/><circle cx="693" cy="57" r="17"/></g>
+</svg>

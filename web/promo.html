@@ -1,0 +1,1734 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#163e35"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-84JvCcdSnDP+k9m9irCubKEmiG6VbEAc8yT0P0pKg5Q='; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'"><title>项目宣传片 · 江汉验关</title><style>@font-face {
+  font-family: Huawen;
+  src: local("STZhongsong"), local("华文中宋");
+  font-display: swap;
+}
+:root {
+  --paper: #f6f0e2;
+  --ink: #193f35;
+  --green: #244f43;
+  --gold: #b39b64;
+  --line: #d8d8c6;
+  --muted: #6c7a6e;
+  --font: Huawen, STZhongsong, "华文中宋", SimSun, serif;
+  font-synthesis: none;
+  color-scheme: light;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.65 var(--font);
+}
+[hidden] {
+  display: none !important;
+}
+button,
+input,
+textarea {
+  font: inherit;
+}
+button,
+a,
+input {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3,
+strong,
+b {
+  font-weight: 400;
+}
+em {
+  font-style: normal;
+  color: var(--gold);
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 3px solid var(--gold);
+  outline-offset: 4px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.masthead {
+  height: 88px;
+  padding: 0 4vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  z-index: 3;
+}
+.brand {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  font-size: 23px;
+  letter-spacing: 2px;
+}
+.brand-seal {
+  width: 44px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border: 1px solid currentColor;
+  outline: 1px solid currentColor;
+  outline-offset: -5px;
+  font-size: 28px;
+}
+.brand small {
+  display: block;
+  font:
+    9px/1.8 Georgia,
+    serif;
+  letter-spacing: 2px;
+}
+.mast-meta {
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  font:
+    11px Georgia,
+    serif;
+  letter-spacing: 1px;
+}
+.source-badge {
+  font: 11px/1.5 var(--font);
+  border: 1px solid var(--line);
+  padding: 6px 12px;
+  letter-spacing: 1px;
+}
+#film-stage {
+  position: relative;
+  height: calc(100dvh - 255px);
+  min-height: 465px;
+  overflow: hidden;
+  background-image: radial-gradient(#96967618 0.6px, transparent 0.6px);
+  background-size: 5px 5px;
+}
+.opening {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 2vh 7vw;
+  position: relative;
+}
+.opening-copy {
+  position: relative;
+  z-index: 1;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-bottom: 24px;
+}
+h1 {
+  font-size: clamp(38px, 4.4vw, 76px);
+  line-height: 1.3;
+  letter-spacing: 3px;
+}
+h2 {
+  font-size: 25px;
+  line-height: 1.5;
+}
+.lead {
+  font-size: 18px;
+  line-height: 1.9;
+  margin-top: 25px;
+  color: var(--muted);
+}
+.city-art {
+  position: absolute;
+  right: 3vw;
+  width: min(58vw, 770px);
+  color: #bfa575;
+  top: 50%;
+  transform: translateY(-50%);
+}
+.wuhan-art {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.opening .city-art {
+  width: 51vw;
+}
+.seal-row {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 28px;
+}
+.seal-row span {
+  padding: 5px 14px;
+  border: 1px solid #b19c6b88;
+  color: var(--gold);
+  font-size: 17px;
+}
+.seal-row i {
+  width: 45px;
+  border-top: 1px solid #b19c6b55;
+}
+.origin-note {
+  font-size: 10px;
+  color: var(--muted);
+  position: absolute;
+  bottom: 18px;
+  left: 7vw;
+  letter-spacing: 1px;
+}
+.operation-stage {
+  height: 100%;
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 5vw;
+  padding: 24px 7vw;
+}
+.task-rail {
+  position: relative;
+  border-right: 1px solid var(--line);
+  padding-right: 24px;
+}
+.task-rail .eyebrow {
+  font-size: 10px;
+  letter-spacing: 1px;
+  margin-bottom: 8px;
+}
+.task-rail h2 {
+  font-size: 24px;
+}
+#workflow {
+  list-style: none;
+  padding: 0;
+  margin: 20px 0;
+  display: grid;
+  gap: 10px;
+  counter-reset: step;
+}
+#workflow li {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  color: #8d9789;
+  counter-increment: step;
+}
+#workflow li:before {
+  content: counter(step, decimal-leading-zero);
+  font:
+    11px Georgia,
+    serif;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid #cdd4c3;
+  border-radius: 50%;
+}
+#workflow li.active {
+  color: var(--green);
+}
+#workflow li.active:before {
+  background: var(--green);
+  color: var(--paper);
+  box-shadow: 0 0 0 4px #274b3210;
+}
+#workflow li.done:before {
+  content: "✓";
+  background: #dde6d5;
+  color: var(--green);
+}
+.rail-sign {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  color: var(--gold);
+  font-size: 13px;
+}
+.rail-sign b {
+  border: 1px solid currentColor;
+  padding: 5px;
+  line-height: 1.3;
+  font-size: 16px;
+}
+.rail-note {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 15px;
+}
+.work-card {
+  align-self: center;
+  max-width: 900px;
+  width: 100%;
+  padding: 24px 30px;
+  background: #fffdf5;
+  border: 1px solid #d2d9c7;
+  box-shadow: 0 12px 44px #283c2910;
+  border-radius: 3px;
+  position: relative;
+  min-height: 410px;
+}
+.work-card:before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 30px;
+  width: 80px;
+  height: 3px;
+  background: var(--gold);
+}
+.card-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+#card-kicker {
+  font:
+    10px Georgia,
+    serif;
+  letter-spacing: 2px;
+  color: var(--gold);
+}
+#status-pill,
+.green-pill {
+  font-size: 11px;
+  background: #e8eddf;
+  color: var(--green);
+  padding: 4px 10px;
+  border: 1px solid #ced9c5;
+}
+#card-title {
+  font-size: 23px;
+  margin-bottom: 17px;
+}
+.field-label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+textarea {
+  resize: none;
+  width: 100%;
+  background: #f4f5eb;
+  border: 1px solid var(--line);
+  padding: 18px;
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.9;
+  min-height: 156px;
+}
+.chips {
+  display: flex;
+  gap: 10px;
+  margin: 12px 0;
+}
+.chips span {
+  color: var(--muted);
+  font:
+    11px Georgia,
+    serif;
+  border-bottom: 1px solid var(--line);
+  padding: 5px 0;
+  margin-right: 15px;
+}
+.process {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-top: 15px;
+  background: #eaf0e3;
+  padding: 13px;
+}
+.process strong {
+  font-size: 14px;
+}
+.process p {
+  font-size: 11px;
+  color: var(--muted);
+}
+.live-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--green);
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: breathe 1.4s infinite;
+}
+.request-summary {
+  color: var(--muted);
+  font-size: 14px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 10px;
+}
+.scope-list {
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr);
+  gap: 13px;
+  font-size: 13px;
+  margin: 18px 0;
+}
+.scope-list dt {
+  color: var(--muted);
+}
+.scope-list dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.approval {
+  font-size: 14px;
+  text-align: center;
+  background: var(--green);
+  color: var(--paper);
+  padding: 12px;
+}
+.approval.confirmed {
+  background: #e0ead6;
+  color: var(--green);
+}
+.block-card {
+  border-left: 2px solid var(--gold);
+  padding: 12px 18px;
+  background: #f2f1e6;
+}
+.block-card span {
+  font-size: 11px;
+  display: block;
+  color: var(--muted);
+}
+.block-card strong {
+  font:
+    40px/1.5 Georgia,
+    serif;
+  display: block;
+}
+.block-card code {
+  display: block;
+  font-size: 11px;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+.sources {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin: 24px 0;
+}
+.sources article {
+  flex: 1;
+  border: 1px solid var(--line);
+  padding: 15px;
+}
+.sources span {
+  font-size: 10px;
+  color: var(--gold);
+  display: block;
+}
+.sources strong {
+  font:
+    21px/1.7 Georgia,
+    serif;
+}
+.sources p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.link-mark {
+  color: var(--gold);
+  font-size: 25px;
+}
+.boundary {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.service-line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 12px 0 18px;
+}
+.provider-icon {
+  width: 38px;
+  height: 38px;
+  border: 1px solid var(--line);
+  display: grid;
+  place-items: center;
+  font:
+    24px Georgia,
+    serif;
+  color: var(--gold);
+}
+.service-line strong {
+  font:
+    20px Georgia,
+    serif;
+}
+.service-line p {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 5px;
+}
+.service-line .green-pill {
+  margin-left: auto;
+}
+.check-row {
+  display: grid;
+  grid-template-columns: 100px 1fr auto;
+  gap: 12px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e2e5d8;
+  font-size: 13px;
+}
+.check-row p {
+  font-size: 12px;
+  color: var(--muted);
+}
+.check-row span:last-child {
+  color: var(--green);
+  font-size: 11px;
+}
+.check-row.unchecked span:last-child {
+  color: #a08a50;
+}
+.call-budget {
+  font-size: 11px;
+  color: var(--muted);
+  display: flex;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+.call-budget b {
+  color: var(--ink);
+  font-family: Georgia, serif;
+  margin-left: 7px;
+}
+.query-strip {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  background: #edf1e5;
+  padding: 12px;
+  margin-top: 18px;
+  font-size: 12px;
+}
+.query-strip code {
+  overflow-wrap: anywhere;
+}
+.fact-label {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.balance {
+  font:
+    clamp(28px, 3.3vw, 48px)/1.6 Georgia,
+    serif;
+  letter-spacing: -1px;
+}
+.fact-detail {
+  font-size: 10px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.evidence-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 18px 0;
+  gap: 10px;
+}
+.evidence-grid article {
+  border-top: 1px solid var(--line);
+  padding-top: 8px;
+}
+.evidence-grid strong {
+  font:
+    32px/1.4 Georgia,
+    serif;
+  display: block;
+  color: var(--green);
+}
+.evidence-grid span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.report-seal {
+  display: flex;
+  gap: 20px;
+  background: #edf0e3;
+  padding: 12px;
+  margin-bottom: 10px;
+  align-items: center;
+}
+.report-seal span {
+  font-size: 10px;
+  color: var(--muted);
+}
+.report-seal code {
+  display: block;
+  font-size: 10px;
+  word-break: break-all;
+}
+.report-seal b {
+  border: 2px solid #a46a49;
+  outline: 1px solid #a46a49;
+  outline-offset: -5px;
+  min-width: 48px;
+  text-align: center;
+  padding: 5px;
+  color: #a46a49;
+  line-height: 1.4;
+  margin-left: auto;
+}
+.download {
+  background: none;
+  border: 0;
+  border-bottom: 1px solid var(--gold);
+  color: var(--green);
+  font-size: 11px;
+  padding: 3px 0;
+  margin-top: 8px;
+}
+.film-footer {
+  height: 167px;
+  border-top: 1px solid var(--line);
+  padding: 15px 4vw;
+  background: var(--paper);
+  position: relative;
+  z-index: 3;
+}
+.subtitle {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+  min-height: 38px;
+}
+.subtitle > span {
+  min-width: 160px;
+  font-size: 11px;
+  letter-spacing: 1px;
+  color: var(--gold);
+}
+.subtitle p {
+  font-size: 17px;
+  line-height: 1.6;
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 13px;
+}
+.controls button {
+  border: 1px solid var(--line);
+  background: transparent;
+  color: inherit;
+  font-size: 11px;
+  padding: 7px 14px;
+  white-space: nowrap;
+}
+.controls .primary {
+  background: var(--green);
+  color: var(--paper);
+  border-color: var(--green);
+}
+.controls input {
+  flex: 1;
+  min-width: 60px;
+  accent-color: var(--gold);
+  height: 12px;
+}
+.controls a {
+  font-size: 11px;
+  white-space: nowrap;
+  margin-left: 12px;
+  color: var(--muted);
+}
+#chapters {
+  display: flex;
+  gap: 25px;
+  margin-top: 8px;
+}
+#chapters button {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid transparent;
+  color: var(--muted);
+  padding: 3px 0;
+  font: 10px var(--font);
+  white-space: nowrap;
+}
+#chapters button.selected {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+body[data-kind="promo"] {
+  --ink: #eee7d7;
+  --paper: #173c33;
+  --muted: #afc0ac;
+  --line: #93a28633;
+  background: #173c33;
+  color: var(--ink);
+}
+body[data-kind="promo"] .masthead {
+  background: #173c33;
+}
+body[data-kind="promo"] .controls .primary {
+  background: #d6c492;
+  color: #173c33;
+  border-color: #d6c492;
+}
+.promo-art {
+  position: absolute;
+  width: 63vw;
+  right: -13vw;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #c6ae77;
+  opacity: 0.25;
+  transition:
+    opacity 0.7s,
+    transform 1s;
+}
+.promo-art.hero {
+  opacity: 0.8;
+  transform: translateY(-50%) translateX(-2vw);
+}
+.promo-art.quiet {
+  opacity: 0.1;
+}
+.promo-scene {
+  position: relative;
+  height: 100%;
+  padding: 35px 7vw;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.promo-scene .eyebrow {
+  margin-bottom: 20px;
+}
+.promo-scene h1 {
+  font-size: clamp(34px, 3.8vw, 63px);
+  line-height: 1.35;
+}
+.promo-scene .lead {
+  font-size: 18px;
+}
+.promo-scene .origin-note {
+  position: absolute;
+  bottom: 15px;
+}
+.question-cards,
+.principles,
+.metrics,
+.truth-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 22px;
+  margin-top: 28px;
+  max-width: 1100px;
+}
+.question-cards article {
+  border-top: 1px solid #9ba98955;
+  padding: 16px 20px 12px 0;
+}
+.question-cards span,
+.truth-grid span {
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--gold);
+}
+.question-cards h3,
+.principles h3,
+.metrics h3,
+.truth-grid h3 {
+  font-size: 20px;
+  margin: 10px 0;
+}
+.question-cards p,
+.principles p,
+.metrics p,
+.truth-grid p {
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.principles {
+  grid-template-columns: 1fr 30px 1fr 30px 1fr;
+  align-items: center;
+  gap: 20px;
+}
+.principles article {
+  padding: 18px 24px;
+  border: 1px solid #a1b09740;
+  background: #173c33a8;
+}
+.principles b {
+  display: block;
+  font-size: 34px;
+  color: var(--gold);
+  border-bottom: 1px solid #93a28633;
+  padding-bottom: 10px;
+}
+.principles i {
+  font-size: 25px;
+  color: var(--gold);
+  font-style: normal;
+}
+.boundary-flow {
+  display: flex;
+  align-items: center;
+  gap: 25px;
+  margin-top: 30px;
+}
+.boundary-flow > div {
+  padding: 18px 24px;
+  border: 1px solid #93a28655;
+  flex: 1;
+}
+.boundary-flow span:not(.flow-arrow) {
+  font-size: 11px;
+  display: block;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+.boundary-flow strong {
+  font-size: 19px;
+}
+.flow-arrow {
+  color: var(--gold);
+}
+.explain {
+  font-size: 16px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-top: 20px;
+}
+.small-source {
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 18px;
+  display: block;
+}
+.metrics {
+  gap: 25px;
+}
+.metrics article {
+  border-left: 1px solid #b39b6477;
+  padding: 0 0 0 24px;
+}
+.metrics strong {
+  font:
+    58px/1 Georgia,
+    serif;
+  color: var(--gold);
+}
+.metrics h3 {
+  margin: 15px 0 8px;
+}
+.truth-grid {
+  grid-template-columns: 1fr 1fr;
+  max-width: 950px;
+}
+.truth-grid article {
+  background: #aab2940a;
+  border: 1px solid #93a28644;
+  padding: 20px 25px;
+}
+.closing h1 {
+  font-size: clamp(50px, 6.5vw, 100px);
+}
+.closing-line {
+  font-size: 28px;
+  letter-spacing: 4px;
+  margin-top: 12px;
+}
+.closing .lead {
+  font-size: 16px;
+  margin-top: 15px;
+}
+.closing-tag {
+  font:
+    11px Georgia,
+    serif;
+  letter-spacing: 3px;
+  color: var(--gold);
+  margin-top: 26px;
+}
+.closing-tag span {
+  margin: 0 15px;
+}
+.cta {
+  font-size: 12px;
+  color: var(--gold);
+  margin-top: 18px;
+}
+.active {
+  animation: reveal 0.65s ease both;
+}
+body.paused * {
+  animation-play-state: paused !important;
+}
+body.export .controls,
+body.export #chapters {
+  visibility: hidden;
+}
+body.export .film-footer {
+  height: 95px;
+  padding-top: 20px;
+}
+body.export #film-stage {
+  height: calc(100dvh - 183px);
+}
+body.export .download {
+  visibility: hidden;
+}
+body.export * {
+  animation: none !important;
+  transition: none !important;
+}
+@keyframes reveal {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+@keyframes breathe {
+  50% {
+    opacity: 0.35;
+    box-shadow: 0 0 0 5px #60795118;
+  }
+}
+@media (min-width: 1600px) {
+  .work-card {
+    padding: 30px 40px;
+  }
+  .operation-stage {
+    padding-top: 35px;
+    padding-bottom: 35px;
+  }
+  .check-row {
+    padding: 14px 0;
+  }
+  .task-rail h2 {
+    font-size: 28px;
+  }
+  #workflow {
+    gap: 15px;
+  }
+  .rail-note {
+    font-size: 11px;
+  }
+}
+@media (max-height: 760px) and (min-width: 901px) {
+  #film-stage {
+    min-height: 425px;
+  }
+  .masthead {
+    height: 72px;
+  }
+  .film-footer {
+    height: 153px;
+  }
+  .operation-stage {
+    padding: 15px 5vw;
+    gap: 4vw;
+    grid-template-columns: 205px minmax(0, 1fr);
+  }
+  #film-stage {
+    height: calc(100dvh - 225px);
+  }
+  .work-card {
+    padding: 18px 25px;
+    min-height: 375px;
+  }
+  .task-rail h2 {
+    font-size: 21px;
+  }
+  #workflow {
+    gap: 6px;
+    margin: 12px 0;
+  }
+  .rail-sign {
+    padding-top: 8px;
+  }
+  .rail-note {
+    margin-top: 9px;
+  }
+  #card-title {
+    font-size: 21px;
+    margin-bottom: 13px;
+  }
+  .check-row {
+    padding: 8px 0;
+  }
+  .promo-scene {
+    padding-top: 20px;
+    padding-bottom: 20px;
+  }
+  .promo-scene h1 {
+    font-size: 40px;
+  }
+  .promo-scene .eyebrow {
+    margin-bottom: 14px;
+  }
+  .principles,
+  .metrics,
+  .question-cards,
+  .truth-grid {
+    margin-top: 22px;
+  }
+  .principles article {
+    padding: 12px 20px;
+  }
+  .metrics strong {
+    font-size: 48px;
+  }
+  .subtitle p {
+    font-size: 15px;
+  }
+  body.export #film-stage {
+    height: calc(100dvh - 167px);
+  }
+}
+@media (max-width: 900px) {
+  .masthead {
+    padding: 0 22px;
+    height: 74px;
+  }
+  .mast-meta > span:first-child {
+    display: none;
+  }
+  #film-stage {
+    height: auto;
+    min-height: calc(100dvh - 280px);
+  }
+  .opening {
+    min-height: 520px;
+    padding: 40px 6vw;
+  }
+  .opening-copy {
+    max-width: 80%;
+  }
+  .opening .city-art {
+    right: -25%;
+    width: 95vw;
+    opacity: 0.28;
+  }
+  .opening h1 {
+    font-size: 43px;
+  }
+  .operation-stage {
+    grid-template-columns: 1fr;
+    padding: 24px 6vw;
+    gap: 16px;
+  }
+  .task-rail {
+    border: 0;
+    padding: 0;
+  }
+  .task-rail h2,
+  .task-rail .eyebrow,
+  .rail-sign,
+  .rail-note {
+    display: none;
+  }
+  #workflow {
+    grid-template-columns: repeat(3, 1fr);
+    margin: 0;
+    gap: 10px;
+  }
+  #workflow li {
+    font-size: 11px;
+    gap: 7px;
+  }
+  #workflow li:before {
+    width: 22px;
+    height: 22px;
+    font-size: 9px;
+  }
+  .work-card {
+    min-height: 430px;
+    padding: 22px;
+  }
+  .film-footer {
+    height: auto;
+    min-height: 195px;
+    padding: 15px 6vw;
+  }
+  .subtitle {
+    display: block;
+  }
+  .subtitle > span {
+    display: block;
+    font-size: 10px;
+    margin-bottom: 5px;
+  }
+  .subtitle p {
+    font-size: 14px;
+  }
+  .controls {
+    flex-wrap: wrap;
+    gap: 9px;
+  }
+  .controls a {
+    margin-left: auto;
+  }
+  .controls input {
+    order: 5;
+    flex-basis: 100%;
+  }
+  #chapters {
+    overflow: auto;
+    gap: 20px;
+    padding-bottom: 6px;
+  }
+  .promo-scene {
+    min-height: 570px;
+    padding: 35px 6vw;
+  }
+  .promo-scene h1 {
+    font-size: 36px;
+    letter-spacing: 1px;
+  }
+  .promo-scene .eyebrow {
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .promo-art {
+    width: 120vw;
+    right: -65vw;
+    opacity: 0.15;
+  }
+  .promo-art.hero {
+    opacity: 0.4;
+  }
+  .question-cards,
+  .metrics,
+  .truth-grid {
+    gap: 14px;
+    grid-template-columns: 1fr;
+  }
+  .question-cards {
+    margin-top: 20px;
+  }
+  .question-cards article {
+    padding: 8px 0;
+  }
+  .question-cards h3 {
+    font-size: 17px;
+    margin: 5px 0;
+  }
+  .principles {
+    grid-template-columns: 1fr;
+    gap: 9px;
+    margin-top: 20px;
+  }
+  .principles i {
+    display: none;
+  }
+  .principles article {
+    display: grid;
+    grid-template-columns: 34px 1fr;
+    column-gap: 18px;
+    padding: 12px 18px;
+  }
+  .principles b {
+    grid-row: span 2;
+    border: 0;
+    padding: 0;
+    font-size: 28px;
+    align-self: center;
+  }
+  .principles h3 {
+    font-size: 16px;
+    margin: 0;
+  }
+  .principles p {
+    font-size: 12px;
+  }
+  .principles br {
+    display: none;
+  }
+  .boundary-flow {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+    margin-top: 18px;
+  }
+  .boundary-flow > div {
+    padding: 12px 17px;
+  }
+  .boundary-flow span:not(.flow-arrow) {
+    margin-bottom: 4px;
+  }
+  .boundary-flow strong {
+    font-size: 17px;
+  }
+  .flow-arrow {
+    display: none;
+  }
+  .explain {
+    font-size: 13px;
+  }
+  .metrics {
+    margin-top: 20px;
+    gap: 20px;
+  }
+  .metrics article {
+    display: grid;
+    grid-template-columns: 60px 1fr;
+    column-gap: 10px;
+    padding-left: 15px;
+  }
+  .metrics strong {
+    grid-row: span 2;
+    font-size: 40px;
+  }
+  .metrics h3 {
+    font-size: 17px;
+    margin: 0;
+  }
+  .metrics p {
+    font-size: 12px;
+  }
+  .small-source {
+    font-size: 10px;
+  }
+  .truth-grid article {
+    padding: 14px 18px;
+  }
+  .truth-grid h3 {
+    font-size: 18px;
+    margin: 5px 0;
+  }
+  .closing h1 {
+    font-size: 58px;
+  }
+  .closing-line {
+    font-size: 22px;
+  }
+  .promo-scene .lead {
+    font-size: 16px;
+  }
+  .source-badge {
+    font-size: 10px;
+    padding: 5px 7px;
+  }
+  .brand {
+    font-size: 19px;
+  }
+  .brand small {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  .brand-seal {
+    width: 35px;
+    height: 40px;
+    font-size: 25px;
+  }
+  .brand {
+    gap: 9px;
+  }
+  .check-row {
+    grid-template-columns: 80px 1fr auto;
+    font-size: 11px;
+    gap: 8px;
+  }
+  .check-row p {
+    font-size: 10px;
+  }
+  .check-row span:last-child {
+    font-size: 10px;
+  }
+  .scope-list {
+    grid-template-columns: 68px 1fr;
+    font-size: 12px;
+  }
+  .sources {
+    gap: 12px;
+  }
+  .sources article {
+    padding: 12px;
+  }
+  .sources strong {
+    font-size: 17px;
+  }
+  .sources p {
+    font-size: 10px;
+  }
+  #card-title {
+    font-size: 20px;
+  }
+  .balance {
+    font-size: 31px;
+  }
+  .query-strip {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+body.paused .active {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+@media (min-width: 901px) and (max-height: 820px) {
+  .work-card {
+    padding: 18px 25px;
+  }
+  .evidence-grid {
+    margin: 12px 0;
+  }
+  .balance {
+    line-height: 1.4;
+  }
+  .report-seal {
+    padding: 10px;
+  }
+  .operation-stage {
+    padding-top: 18px;
+    padding-bottom: 18px;
+  }
+}
+</style></head>
+<body data-kind="promo">
+<header class="masthead"><a class="brand" href="demo.html"><span class="brand-seal">验</span><span>江汉验关<small>JIANGHAN · AGENT ADMISSION</small></span></a><div class="mast-meta"><span>ETH WUHAN 2026</span><span class="source-badge">项目原理与已验证成果</span></div></header>
+<main id="film-stage" aria-label="项目宣传片"><div class="promo-art"><svg class="wuhan-art" viewBox="0 0 780 630" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="武汉两江、江汉关与桥梁的原创意象" role="img">
+ <defs><linearGradient id="river" x1="120" y1="70" x2="670" y2="580" gradientUnits="userSpaceOnUse"><stop stop-color="#819e91"/><stop offset="1" stop-color="#254e47"/></linearGradient><pattern id="ripples" width="48" height="21" patternUnits="userSpaceOnUse"><path d="M0 15Q12 5 24 15T48 15" stroke="#b9cdb8" stroke-width=".8" opacity=".3"/></pattern></defs>
+ <circle cx="425" cy="302" r="243" stroke="currentColor" opacity=".13"/><circle cx="425" cy="302" r="212" stroke="currentColor" stroke-dasharray="2 12" opacity=".25"/>
+ <path d="M300-20C258 108 395 206 398 311S573 481 827 501L800 655C461 585 286 457 293 326S157 136 177-20Z" fill="url(#river)"/>
+ <path d="M-40 172C82 173 186 254 355 299L315 370C156 329 81 247-40 262Z" fill="url(#river)"/>
+ <path d="M300-20C258 108 395 206 398 311S573 481 827 501L800 655C461 585 286 457 293 326S157 136 177-20ZM-40 172C82 173 186 254 355 299L315 370C156 329 81 247-40 262Z" fill="url(#ripples)"/>
+ <g stroke="currentColor" stroke-width="1.5" opacity=".8">
+  <path d="M48 446H484M55 456H478M91 446V508M235 446V557M397 446V590"/><path d="M58 446L110 394L161 446L213 394L266 446L318 394L370 446L421 394L474 446M58 394H474M110 394V446M213 394V446M318 394V446M421 394V446"/>
+ </g>
+ <g transform="translate(433 57)" stroke="currentColor" stroke-width="1.6">
+  <path d="M0 206H236V266H0ZM73 132H160V266H73ZM84 65H149V133H84ZM96 30H137V66H96ZM104 16H129V30H104ZM116 0V16M80 65H153M68 132H165M-6 206H242" fill="#25483d"/>
+  <path d="M13 223H223M13 252H223M87 148H146M87 192H146"/>
+  <circle cx="116" cy="98" r="19"/><path d="M116 79V83M135 98H131M116 117V113M97 98H101M116 86V99L124 105"/>
+  <path d="M100 157V184M116 157V184M132 157V184M20 232V247M40 232V247M60 232V247M93 232V247M116 232V247M139 232V247M175 232V247M197 232V247M217 232V247"/>
+ </g>
+ <g stroke="currentColor" opacity=".65"><path d="M75 143H144L132 160H89ZM112 104V143L86 136ZM118 99V140L144 132Z"/><path d="M548 460H632L615 475H562ZM587 406V460L554 449ZM594 399V456L625 446Z"/></g>
+ <g fill="currentColor" font-family="STZhongsong, SimSun, serif" font-size="16" letter-spacing="4"><text x="52" y="204">汉水</text><text x="447" y="567">长江</text><text x="573" y="374">江汉关</text><text x="91" y="364">一桥飞架</text></g>
+ <g stroke="currentColor" opacity=".5"><path d="M693 30V85M666 57H720"/><circle cx="693" cy="57" r="17"/></g>
+</svg>
+</div>
+<section class="promo-scene active" data-scene="0"><p class="eyebrow">武汉 · 两江交汇，万物往来</p><h1>把茶港的托付，<br>带进 <em>Agent 时代。</em></h1><p class="lead">一份约定，一次验收，一纸凭据。<br>江汉验关，让数据交付有据可查。</p><div class="seal-row"><span>约</span><i></i><span>验</span><i></i><span>据</span></div><p class="origin-note">武汉茶港为产品叙事灵感 · 原创城市意象</p></section>
+<section class="promo-scene" data-scene="1" hidden><p class="eyebrow">问题 / 从“有响应”到“可采用”</p><h1>数据到了。<br><em>是你要的那一份吗？</em></h1><div class="question-cards"><article><span>01 / 对象</span><h3>查的是这个地址？</h3><p>把研究范围落实到具体对象。</p></article><article><span>02 / 区块</span><h3>来自约定的区块？</h3><p>数据真实，也可能不合本次约定。</p></article><article><span>03 / 数值</span><h3>与同块参考一致？</h3><p>对齐基准后，再比较交付。</p></article></div></section>
+<section class="promo-scene" data-scene="2" hidden><p class="eyebrow">原理 / 一条可核查的交付链</p><h1>先定约。再验货。<br><em>最后，让依据同行。</em></h1><div class="principles"><article><b>约</b><h3>约束任务</h3><p>地址、资产、只读权限<br>批准范围与调用预算</p></article><i>→</i><article><b>验</b><h3>验收交付</h3><p>固定区块，检查工具<br>逐项核对返回数据</p></article><i>→</i><article><b>据</b><h3>封存证据</h3><p>规则、响应、报告留存<br>供另一实例独立复核</p></article></div></section>
+<section class="promo-scene" data-scene="3" hidden><p class="eyebrow">机制 / 失败之后，也有边界</p><h1>可以换服务。<br><em>约定不会跟着变。</em></h1><div class="boundary-flow"><div><span>首选交付</span><strong>不符 → 拒绝采用</strong></div><span class="flow-arrow">→</span><div><span>批准范围内</span><strong>最多一次备用切换</strong></div><span class="flow-arrow">→</span><div><span>仍无有效结果</span><strong>停止或隔离</strong></div></div><p class="explain">地址与区块保持固定。限流、超时单独记录，<br>避免把暂时不可用误判为虚假交付。</p><span class="small-source">规则与受控故障测试已覆盖；本次实测首选通过，无备用切换。</span></section>
+<section class="promo-scene" data-scene="4" hidden><p class="eyebrow">成效 / 已经跑通的真实链路</p><h1>从输入委托，<br><em>走到了可复核的结果。</em></h1><div class="metrics"><article><strong>1</strong><h3>真实余额核验闭环</h3><p>Ethereum · finalized<br>输入、批准、查询、验收、下载</p></article><article><strong>16</strong><h3>原始证据留存</h3><p>报告与原件摘要复核通过<br>改动原件副本后检出不一致</p></article><article><strong>10</strong><h3>生产依赖查询 OSV</h3><p>本次未返回已知漏洞公告<br>不等于不存在安全风险</p></article></div><p class="small-source">来源：2026-10-08 实测与独立复核记录 · 区块 26144163 · 原始证据随操作片提供</p></section>
+<section class="promo-scene" data-scene="5" hidden><p class="eyebrow">可信 / 能验什么，就说到哪里</p><h1>把结论交付出去。<br><em>也把边界留下来。</em></h1><div class="truth-grid"><article><span>数据一致性</span><h3>RPC 交叉核对</h3><p>参考与候选来源有重叠；<br>尚未提供密码学状态证明。</p></article><article><span>证据完整性</span><h3>内容变化可被发现</h3><p>摘要验证内容是否一致；<br>不替代来源签名与真实性证明。</p></article></div><p class="small-source">当前交付：本地、只读、ETH 原生余额验收 MVP。模型接入与链上发布为后续工作。</p></section>
+<section class="promo-scene closing" data-scene="6" hidden><p class="eyebrow">面向以太坊研究 Agent 的工具准入与数据验收</p><h1>江汉验关</h1><p class="closing-line">所托有界，<em>所交有据。</em></p><p class="lead">让每一次采用，<br>都有一份可以回头核查的依据。</p><div class="closing-tag">AI × ETHEREUM <span>·</span> BUILT IN WUHAN</div><a href="demo-film.html" class="cta">查看真实验收记录 ↗</a></section>
+</main>
+<footer class="film-footer"><div class="subtitle"><span id="chapter-label"></span><p id="caption" aria-live="off"></p></div><div class="controls"><button id="play" class="primary">播放 ▶</button><button id="replay">重新播放 ↺</button><label for="seek" class="sr-only">影片进度</label><input id="seek" type="range" min="0" max="56" step="0.05" value="0"><button id="fullscreen">全屏 ⛶</button><a href="demo-film.html">观看操作短片 ↗</a></div><nav id="chapters" aria-label="影片章节"></nav></footer>
+<noscript>启用 JavaScript 后可播放。本文件已包含画面与字幕，可离线打开。</noscript><script>"use strict";
+(()=>{
+const RECORDED_BUNDLE=null;
+const $ = (id) => document.getElementById(id);
+const isOperation = document.body.dataset.kind === "operation";
+const duration = Number($("seek").max);
+let position = 0,
+  playing = false,
+  last = performance.now(),
+  lastScene = -1;
+const operationCaptions = [
+  [0, "序 / 江汉之滨", "从一份约定，到一次验收。让研究结论带着依据流转。"],
+  [
+    5,
+    "一 / 写下委托",
+    "研究员正在复核零地址余额报表，需要一份可引用、可复核的余额记录。",
+  ],
+  [
+    11,
+    "一 / 解析范围",
+    "识别地址与余额意图，整理只读操作、区块策略和调用上限。",
+  ],
+  [
+    16,
+    "二 / 批准确认",
+    "地址、候选、区块策略与预算写清楚。批准之后，再进入查询。",
+  ],
+  [
+    21,
+    "三 / 固定基准",
+    "PublicNode 与 dRPC 对齐同一个 finalized 区块，后续交付沿用该基准。",
+  ],
+  [
+    27,
+    "四 / 工具准入",
+    "检查清单、客户端依赖和链能力；无法验证的远端来源保留“未检查”。",
+  ],
+  [33, "五 / 调用验收", "按固定区块查询余额，再核对格式、地址、区块和数值。"],
+  [
+    40,
+    "六 / 证据封存",
+    "首选交付通过必需检查。本次业务调用一次，没有使用备用服务。",
+  ],
+  [
+    46,
+    "六 / 可复核的交付",
+    "16 份原件随报告留存，已通过独立进程的摘要与引用完整性复核。",
+  ],
+  [50, "终 / 所交有据", "江汉验关。让每一次采用，都有一份可以回头核查的依据。"],
+];
+const promoCaptions = [
+  [0, "江汉 / 托付", "从武汉茶港获得灵感：有约定，有验收，也要有留存的凭据。"],
+  [
+    7,
+    "问题 / 数据交付",
+    "Agent 收到响应只是开始。采用之前，需要确认对象、区块和数值。",
+  ],
+  [
+    14,
+    "原理 / 约·验·据",
+    "把任务约束、工具准入、结果验收和证据留存连成一个闭环。",
+  ],
+  [
+    23,
+    "机制 / 有界执行",
+    "不符就拒绝采用；只在批准范围内切换备用，失败也留下准确记录。",
+  ],
+  [
+    32,
+    "成效 / 真实验证",
+    "已跑通以太坊余额核验、依赖公告查询，以及证据包的独立完整性复核。",
+  ],
+  [
+    42,
+    "可信 / 清楚的边界",
+    "一致性不等于真实性证明。检查到哪里，结论就说到哪里。",
+  ],
+  [
+    50,
+    "江汉验关 / 所交有据",
+    "面向以太坊研究 Agent。让工具有准入，让数据经验收，让结论有依据。",
+  ],
+];
+const captions = isOperation ? operationCaptions : promoCaptions;
+const chapters = isOperation
+  ? [
+      [0, "江汉之滨"],
+      [5, "研究委托"],
+      [16, "范围批准"],
+      [21, "固定基准"],
+      [27, "工具准入"],
+      [33, "调用验收"],
+      [40, "证据留存"],
+    ]
+  : [
+      [0, "城市与托付"],
+      [7, "真实问题"],
+      [14, "验收原理"],
+      [23, "执行边界"],
+      [32, "已见成效"],
+      [42, "可信表达"],
+      [50, "江汉验关"],
+    ];
+const make = (tag, text, className) => {
+  const n = document.createElement(tag);
+  n.textContent = text;
+  if (className) n.className = className;
+  return n;
+};
+for (const [at, title] of chapters) {
+  const b = make("button", title);
+  b.dataset.at = at;
+  b.onclick = () => seek(at);
+  $("chapters").append(b);
+}
+function showScene(index) {
+  if (index === lastScene) return;
+  lastScene = index;
+  document.querySelectorAll("[data-scene]").forEach((n) => {
+    const active = Number(n.dataset.scene) === index;
+    n.hidden = !active;
+    n.classList.toggle("active", active);
+  });
+}
+function operation(t) {
+  showScene(t < 5 ? 0 : 1);
+  if (t < 5) return;
+  const record = RECORDED_BUNDLE.report;
+  const address = record.taskSpec.address;
+  const prompt = `我在复核以太坊零地址的余额报表。请核验 ${address} 在执行时 finalized 区块的原生 ETH 余额；首选服务失败时，最多切换一次备用。请保留区块、查询响应与验收依据，供研究引用。`;
+  $("prompt").value = prompt.slice(
+    0,
+    Math.min(prompt.length, Math.floor(((t - 5) / 6) * prompt.length)),
+  );
+  const stage =
+    t < 16 ? 0 : t < 21 ? 1 : t < 27 ? 2 : t < 33 ? 3 : t < 40 ? 4 : 5;
+  const panels = [
+    "request",
+    "scope",
+    "reference",
+    "checks",
+    "checks",
+    "evidence",
+  ];
+  for (const id of new Set(panels))
+    $(id + "-panel").hidden = panels[stage] !== id;
+  document.querySelectorAll("#workflow li").forEach((n, i) => {
+    n.classList.toggle("active", i === stage);
+    n.classList.toggle("done", i < stage);
+    if (i === stage) n.setAttribute("aria-current", "step");
+    else n.removeAttribute("aria-current");
+  });
+  $("status-pill").textContent =
+    t < 11
+      ? "等待输入"
+      : t < 16
+        ? "解析范围中"
+        : t < 20
+          ? "等待批准"
+          : t < 21
+            ? "范围已批准"
+            : t < 27
+              ? "对齐参考中"
+              : t < 33
+                ? "准入检查中"
+                : t < 36
+                  ? "查询进行中"
+                  : t < 40
+                    ? "逐项验收中"
+                    : "验收通过";
+  $("card-kicker").textContent = [
+    "RESEARCH REQUEST",
+    "APPROVED SCOPE",
+    "FIXED REFERENCE",
+    "SERVICE ADMISSION",
+    "DELIVERY ACCEPTANCE",
+    "EVIDENCE PACKAGE",
+  ][stage];
+  $("card-title").textContent = [
+    "请核对这份研究所需的数据。",
+    "先确认，再执行。",
+    "要的是同一个区块。",
+    "先检查，才进入调用。",
+    "收到响应，再核对交付。",
+    "这份委托，有了依据。",
+  ][stage];
+  $("process").hidden = t < 11;
+  $("process-title").textContent =
+    t < 13 ? "已识别研究对象" : t < 14.5 ? "正在提取查询约束" : "范围已整理";
+  $("process-detail").textContent =
+    t < 13
+      ? "以太坊主网 · 零地址 · 原生 ETH 余额"
+      : t < 14.5
+        ? "执行时 finalized · 只读 · 允许一次备用切换"
+        : "等待批准后，才能发起服务查询";
+  $("scope-address").textContent = address;
+  $("approval").textContent =
+    t < 20 ? "范围已整理 · 等待批准" : "✓ 本次范围已批准";
+  $("approval").classList.toggle("confirmed", t >= 20);
+  $("block-number").textContent = record.snapshot.blockNumber;
+  $("block-hash").textContent = record.snapshot.blockHash;
+  const admission = [
+    ["服务清单", "批准版本与当前版本一致", "通过"],
+    ["客户端依赖", "OSV 查询 10 个依赖，未返回已知公告", "通过"],
+    ["链与区块能力", "以太坊主网 · 固定区块探测通过", "通过"],
+    ["远端来源", "未提供可验证的部署证明", "未检查"],
+  ];
+  const checks = [
+    ["响应格式", "返回值符合无符号整数格式", "通过"],
+    ["查询范围", "与批准地址、原生 ETH 资产一致", "通过"],
+    ["固定区块", "与约定区块哈希一致", "通过"],
+    ["余额核对", "与同区块参考余额一致", "通过"],
+  ];
+  let rows =
+    stage === 3
+      ? admission.slice(0, Math.min(4, Math.floor((t - 27) / 1.5) + 1))
+      : t < 36
+        ? []
+        : checks.slice(0, Math.min(4, Math.floor(t - 36) + 1));
+  $("check-rows").replaceChildren(
+    ...rows.map(([label, detail, status]) => {
+      const row = make(
+        "div",
+        "",
+        "check-row" + (status === "未检查" ? " unchecked" : ""),
+      );
+      row.append(
+        make("span", label),
+        make("p", detail),
+        make("span", status === "通过" ? "✓ 通过" : status),
+      );
+      return row;
+    }),
+  );
+  $("service-status").textContent =
+    t < 33
+      ? "准入检查中"
+      : t < 36
+        ? "请求已发出"
+        : t < 40
+          ? "交付核对中"
+          : "结果通过";
+  $("query-strip").hidden = t < 33 || t >= 36;
+  $("call-budget").firstChild.textContent = "业务调用 ";
+  $("call-budget").querySelector("b").textContent = t < 33 ? "0 / 2" : "1 / 2";
+  const wei = BigInt(record.acceptedFact.balanceWei);
+  const whole = (wei / 1000000000000000000n).toLocaleString("en-US");
+  const fraction = (wei % 1000000000000000000n).toString().padStart(18, "0");
+  $("balance").textContent = "≈ " + whole + "." + fraction.slice(0, 8) + " ETH";
+  $("fact-detail").textContent =
+    "精确值 " +
+    record.acceptedFact.balanceWei +
+    " wei · 区块 " +
+    record.snapshot.blockNumber;
+  $("report-hash").textContent = RECORDED_BUNDLE.reportHash;
+}
+function render() {
+  $("seek").value = String(position);
+  $("seek").setAttribute(
+    "aria-valuetext",
+    captions.filter((c) => c[0] <= position).at(-1)[1],
+  );
+  document.body.classList.toggle("paused", !playing);
+  $("play").textContent = playing
+    ? "暂停 ❚❚"
+    : position >= duration
+      ? "重播 ▶"
+      : "播放 ▶";
+  const caption = captions.filter((c) => c[0] <= position).at(-1);
+  $("chapter-label").textContent = caption[1];
+  $("caption").textContent = caption[2];
+  const selected = chapters.filter((c) => c[0] <= position).at(-1)[0];
+  document.querySelectorAll("#chapters button").forEach((b) => {
+    b.classList.toggle("selected", Number(b.dataset.at) === selected);
+    b.setAttribute("aria-pressed", String(Number(b.dataset.at) === selected));
+  });
+  if (isOperation) operation(position);
+  else {
+    const index = captions.indexOf(caption);
+    showScene(index);
+    document
+      .querySelector(".promo-art")
+      .classList.toggle("hero", index === 0 || index === 6);
+    document
+      .querySelector(".promo-art")
+      .classList.toggle("quiet", index > 0 && index < 6);
+  }
+}
+function seek(value) {
+  position = Math.max(0, Math.min(duration, value));
+  if (position >= duration) playing = false;
+  last = performance.now();
+  render();
+}
+$("play").onclick = () => {
+  if (position >= duration) position = 0;
+  playing = !playing;
+  last = performance.now();
+  render();
+};
+$("replay").onclick = () => {
+  playing = true;
+  seek(0);
+};
+$("seek").oninput = () => seek(Number($("seek").value));
+$("fullscreen").onclick = async () => {
+  try {
+    if (document.fullscreenElement) await document.exitFullscreen();
+    else await document.documentElement.requestFullscreen();
+  } catch {
+    $("fullscreen").textContent = "请使用 F11";
+  }
+};
+document.addEventListener("keydown", (e) => {
+  if (["INPUT", "TEXTAREA", "BUTTON", "A"].includes(e.target.tagName)) return;
+  if (e.code === "Space") {
+    e.preventDefault();
+    $("play").click();
+  }
+  if (e.code === "ArrowRight") {
+    e.preventDefault();
+    seek(position + 5);
+  }
+  if (e.code === "ArrowLeft") {
+    e.preventDefault();
+    seek(position - 5);
+  }
+});
+document.addEventListener("visibilitychange", () => {
+  if (document.hidden) {
+    playing = false;
+    render();
+  }
+  last = performance.now();
+});
+if (isOperation)
+  $("download").onclick = () => {
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(RECORDED_BUNDLE, null, 2)], {
+        type: "application/json",
+      }),
+    );
+    link.href = url;
+    link.download = "江汉验关-实测证据包.json";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+const params = new URLSearchParams(location.search);
+if (params.get("export") === "1") document.body.classList.add("export");
+if (params.get("autoplay") === "1") playing = true;
+render();
+function tick(now) {
+  const delta = Math.min(Math.max(0, now - last), 250);
+  last = now;
+  if (playing && !document.hidden) {
+    position = Math.min(duration, position + delta / 1000);
+    if (position >= duration) playing = false;
+    render();
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+})();</script></body></html>

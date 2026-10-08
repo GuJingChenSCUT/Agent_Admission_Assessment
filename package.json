@@ -15,6 +15,7 @@
     "test:live": "node scripts/live-smoke.mjs",
     "test:ui": "node scripts/ui-smoke.mjs",
     "build:demos": "node scripts/build-demos.mjs",
+    "export:films": "node scripts/export-films.mjs",
     "test:demos": "node scripts/demo-smoke.mjs",
     "verify:bundle": "node scripts/verify-bundle.mjs",
     "check": "node scripts/check-schema.js && tsc --noEmit",

@@ -2,35 +2,31 @@
 <html lang="zh-CN">
 <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#173e37"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-__SCRIPT_HASH__'; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'"><title>__TITLE__ · 江汉验关</title><style>__STYLE__</style></head>
 <body data-mode="__MODE__">
-<header class="topbar"><a class="brand" href="#"><span class="seal">验</span><span>江汉验关<small>AGENT ADMISSION</small></span></a><div class="top-right"><span class="tag">离线模拟 · SAMPLE</span><span class="edition">__TITLE__</span></div></header>
+<header class="topbar"><a class="brand" href="#"><span class="seal">验</span><span>江汉验关<small>AGENT ADMISSION</small></span></a><div class="top-right"><span class="tag">案例数据 · 交互体验</span><span class="edition">__TITLE__</span></div></header>
 <main>
 <section class="intro" id="intro">
   <div><p class="eyebrow">武汉 · 江汉关 · 东方茶港</p><h1>托付有界，<br>交付有据。</h1><p class="intro-copy">一批茶，先有约定，再经验收，最后留据。<br>一次 Agent 委托，也值得被这样认真对待。</p><p class="intro-note">茶港是我们的叙事灵感，非历史检验制度的复述。</p></div>
   <div class="art">__HARBOR__<span class="art-caption">江汉之滨 · 一次可信托付的旅程</span></div>
 </section>
-<div class="context"><span>本文件按演示节奏展示流程，使用构造样本，不调用模型或外部服务。</span><span id="mode-note">输入后才开始解析与展示。</span></div>
+<div class="harbor-band"><span>江汉之滨 · 两江汇流</span><span>约定如茶单</span><span>验收如复秤</span><span>证据如封样</span></div>
+<div class="context"><span>数据来源：构造案例 · 本地规则运算 · 不发起外部查询。</span><span id="mode-note">输入后才开始解析与展示。</span></div>
 <section class="workspace" id="workspace">
- <aside class="stages"><p class="eyebrow">一次托付的六个阶段</p><ol id="stages"></ol><div class="journey"><span id="act-label">等待委托</span><strong id="act-title">约定 → 验收 → 留据</strong><p id="act-copy">写下任务，观察每一步如何推进。</p></div><div id="sample-settings"><label for="scenario">演练情节</label><select id="scenario"></select><label class="check"><input type="checkbox" id="fallback" checked>允许一次备用切换</label></div></aside>
+ <aside class="stages"><p class="eyebrow">一次托付的六个阶段</p><ol id="stages"></ol><div class="journey"><span id="act-label">等待委托</span><strong id="act-title">约定 → 验收 → 留据</strong><p id="act-copy">写下任务，观察每一步如何推进。</p></div><div id="sample-settings"><label for="scenario">验收案例</label><select id="scenario"></select><label class="check"><input type="checkbox" id="fallback" checked>允许一次备用切换</label></div></aside>
  <div class="desk">
   <div class="desk-heading"><div><p class="eyebrow" id="desk-eyebrow">第一幕 / 约定</p><h2 id="desk-title">今天，要核对什么？</h2></div><span class="state-pill" id="state-pill">等待输入</span></div>
-  <form id="task-form"><label class="sr-only" for="prompt">研究任务</label><textarea id="prompt" rows="3" maxlength="4096" placeholder="请输入要核验的以太坊地址与 ETH 余额任务…"></textarea><div class="form-actions"><span class="hint" id="input-hint">仅处理一个地址的原生 ETH 余额。</span><button type="button" class="quiet" id="example">填入示例</button><button class="primary" id="submit" disabled>提交演练任务 ↗</button></div></form>
-  <div id="scope" class="scope" hidden><div class="section-row"><h3>本次委托范围</h3><span>待你确认的约定</span></div><dl id="scope-fields"></dl><div class="actions"><button id="approve" class="primary" disabled>批准本次演练</button><span class="hint">批准前不进入查询阶段。</span></div></div>
-  <div class="activity" id="activity" hidden aria-live="polite"><span class="pulse" id="pulse"></span><div><strong id="activity-title"></strong><p id="activity-detail"></p></div><span class="elapsed" id="elapsed">00:00</span></div>
+  <form id="task-form"><label class="sr-only" for="prompt">研究任务</label><textarea id="prompt" rows="3" maxlength="4096" placeholder="请输入要核验的以太坊地址与 ETH 余额任务…"></textarea><div class="form-actions"><span class="hint" id="input-hint">仅处理一个地址的原生 ETH 余额。</span><button type="button" class="quiet" id="example">填入示例</button><button class="primary" id="submit" disabled>提交委托 ↗</button></div></form>
+  <div id="scope" class="scope" hidden><div class="section-row"><h3>本次委托范围</h3><span>待你确认的约定</span></div><dl id="scope-fields"></dl><div class="actions"><button id="approve" class="primary" disabled>批准本次委托</button><span class="hint">批准前不进入查询阶段。</span></div></div>
+  <div class="activity" id="activity" hidden aria-live="polite"><span class="pulse" id="pulse"></span><div><strong id="activity-title"></strong><p id="activity-detail"></p></div></div>
   <div id="snapshot" class="snapshot" hidden><span class="mini-label">固定参考 · 构造样本</span><strong>区块 <span id="block-number"></span></strong><code id="block-hash"></code></div>
   <div id="attempts" class="attempts"></div>
   <div id="result" class="result" hidden><p class="eyebrow" id="result-label"></p><strong id="result-value"></strong><p id="result-note"></p></div>
-  <div id="evidence" class="evidence" hidden><div class="section-row"><h3>留下可复核的凭据</h3><span>本地演练报告</span></div><p class="hint">摘要只核对内容完整性；本报告不含服务签名或链上登记。</p><code id="digest"></code><div class="actions"><button id="verify">核对原件</button><button id="tamper">篡改副本试验</button><button id="download">下载演练证据 ↓</button></div><p id="integrity" role="status"></p><details><summary>查看演练报告</summary><pre id="report-json"></pre></details></div>
-  <div class="run-controls"><button id="stop" class="quiet danger" hidden>停止本次演练</button><button id="reset" class="quiet" hidden>新建空白任务</button><a id="alternate" href="__OTHER__">__OTHER_LABEL__ ↗</a></div>
+  <div id="evidence" class="evidence" hidden><div class="section-row"><h3>留下可复核的凭据</h3><span>案例报告</span></div><p class="hint">摘要只核对内容完整性；本报告不含服务签名或链上登记。</p><code id="digest"></code><div class="actions"><button id="verify">核对原件</button><button id="tamper">篡改副本试验</button><button id="download">下载案例证据 ↓</button></div><p id="integrity" role="status"></p><details><summary>查看案例报告</summary><pre id="report-json"></pre></details></div>
+  <div class="run-controls"><button id="stop" class="quiet danger" hidden>停止本次委托</button><button id="reset" class="quiet" hidden>新建空白任务</button><a id="alternate" href="__OTHER__">__OTHER_LABEL__ ↗</a></div>
  </div>
  <aside class="journal"><div class="section-row"><h3>执行记录</h3><span id="event-count">0 步</span></div><p id="journal-empty" class="empty">每一步完成后，<br>才留下对应记录。</p><ol id="events"></ol><p class="journal-note">显示可核查的操作进度与检查摘要，不展示或虚构模型内部思维。</p></aside>
 </section>
 <footer><span>江汉验关 · ETH WUHAN 2026</span><span>所托有界，所交有据。</span></footer>
 </main>
-<section class="cinema" id="cinema" hidden aria-label="定时演示播放器">
- <div class="caption"><span><span id="caption-chapter">序章 / 东方茶港</span><small class="film-label">离线演练 · SAMPLE</small></span><p id="caption-text">从一份约定到一次验收，让结论带着依据流转。</p></div>
- <div class="player"><button id="play" class="primary">开始播放 ▶</button><button id="replay">从头播放 ↺</button><label class="sr-only" for="seek">演示进度</label><input id="seek" type="range" min="0" max="110" step="0.1" value="0"><output id="timecode">00:00 / 01:50</output><label class="sr-only" for="speed">播放速度</label><select id="speed"><option value="1">1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select><button id="fullscreen" aria-label="切换全屏">全屏 ⛶</button></div>
- <nav class="chapters" aria-label="演示章节"><button data-time="0">序 · 茶港</button><button data-time="8">一 · 写下委托</button><button data-time="25">二 · 批准范围</button><button data-time="34">三 · 开始验收</button><button data-time="61">四 · 拒绝错块</button><button data-time="86">五 · 证据封存</button><button data-time="99">六 · 独立核对</button></nav>
-</section>
 <noscript>本演示需要启用 JavaScript。所有脚本已包含在文件中，不需要联网。</noscript>
 <script>__SCRIPT__</script>
 </body></html>

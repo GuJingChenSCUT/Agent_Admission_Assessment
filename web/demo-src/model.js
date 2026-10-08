@@ -1,6 +1,6 @@
 // Offline demonstration model. No network, model, wallet or production API calls.
 export const DEMO_ADDRESS = "0x2222222222222222222222222222222222222222";
-export const DEMO_PROMPT = `请核验 ${DEMO_ADDRESS} 在以太坊主网的原生 ETH 余额，使用执行时 finalized 区块；首选失败时允许切换一次备用服务。`;
+export const DEMO_PROMPT = `我在复核一份以太坊地址余额报表。请核验 ${DEMO_ADDRESS} 在执行时 finalized 区块的原生 ETH 余额；首选失败时最多切换一次备用，并保留验收依据供研究引用。`;
 export const DEMO_HASH = "0x" + "11".repeat(32);
 export const DEMO_WEI = "42125000000000000000";
 export const STAGES = [
@@ -151,7 +151,7 @@ export function executionEvents(spec, scenario) {
     add(
       3,
       3,
-      `检查演练服务 ${service} 的准入条件`,
+      `检查服务 ${service} 的准入条件`,
       "核对清单版本、能力声明及客户端依赖检查样本。",
       {
         attempt: { service, status: "CHECKING", checks: [], observation: null },
@@ -181,11 +181,11 @@ export function executionEvents(spec, scenario) {
       continue;
     }
     const admission = [
-      { label: "服务清单", status: "PASS", detail: "与批准版本一致 · 模拟" },
+      { label: "服务清单", status: "PASS", detail: "与批准版本一致 · 案例" },
       {
         label: "能力与依赖",
         status: "PASS",
-        detail: "演练样本通过；未查询 OSV",
+        detail: "样本通过；未查询 OSV",
       },
       {
         label: "远程部署来源",
@@ -196,7 +196,7 @@ export function executionEvents(spec, scenario) {
     add(
       3,
       3,
-      `演练服务 ${service} 准入检查完成`,
+      `服务 ${service} 准入检查完成`,
       "必需项通过，可选未验证项继续保留。",
       {
         attempt: {
@@ -211,8 +211,8 @@ export function executionEvents(spec, scenario) {
     add(
       3,
       4,
-      `向演练服务 ${service} 发起模拟调用`,
-      "消费一次演练调用预算，传入固定地址与区块哈希。",
+      `向服务 ${service} 发起案例调用`,
+      "消费一次调用预算，传入固定地址与区块哈希。",
       {
         calls,
         attempt: {
@@ -262,7 +262,7 @@ export function executionEvents(spec, scenario) {
     add(
       4,
       4,
-      `收到演练服务 ${service} 的交付样本`,
+      `收到服务 ${service} 的交付样本`,
       "已收到不代表已采用；下一步逐项核对范围、区块与金额。",
       {
         attempt: {
@@ -279,10 +279,10 @@ export function executionEvents(spec, scenario) {
       4,
       4,
       passed
-        ? `演练服务 ${service} 的结果通过验收`
-        : `拒绝演练服务 ${service} 的本次交付`,
+        ? `服务 ${service} 的结果通过验收`
+        : `拒绝服务 ${service} 的本次交付`,
       passed
-        ? "必需规则全部通过，可以采用该演练事实。"
+        ? "必需规则全部通过，可以采用该事实。"
         : verification.find((c) => c.status === "FAIL").detail + "。",
       {
         attempt: {
@@ -298,17 +298,17 @@ export function executionEvents(spec, scenario) {
         3,
         5,
         "整理验收证据",
-        "把范围、参考样本、尝试记录与限制写入本地演练报告。",
+        "把范围、参考样本、尝试记录与限制写入本地报告。",
       );
       add(
         3,
         5,
-        "本次演练完成",
+        "本次完成",
         "结果已经过样本规则核对，证据包现在可查看与下载。",
         {
           terminal: "SUCCEEDED",
           fact: { ...observation, service },
-          reason: "只采用本次必需检查通过的演练事实。",
+          reason: "只采用本次必需检查通过的事实。",
         },
       );
       return events;
