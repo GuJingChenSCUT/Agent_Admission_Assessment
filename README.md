@@ -11,13 +11,13 @@ pnpm install --frozen-lockfile
 pnpm start
 ```
 
-打开 http://127.0.0.1:8787 。默认 SAMPLE，界面中的地址、区块、余额与检查观测为构造数据；不调用模型、RPC、OSV、钱包或主网。原始离线原型在 /prototype.html 。
+打开 http://127.0.0.1:8787 。页面从空任务开始，只有提交后才出现任务信息。前端默认选择实际任务，明确请求 LIVE；后端实际执行尚未就绪时返回错误，不退回 SAMPLE。选择“流程演练”并主动输入或填入演练任务，才会使用构造数据；不调用模型、RPC、OSV、钱包或主网。服务端默认模式仍为 SAMPLE。原始离线原型在 /prototype.html 。
 
 可选配置复制 `.env.example` 为 `.env`。服务只监听本机回环地址，使用本地浏览器会话和 CSRF；不具备生产账户系统。重启后需新建浏览器会话，历史私有任务保留在本地数据库中，暂不提供跨会话恢复 UI。
 
 ## 已实现
 
-前端提供任务进度、候选验收结果、证据核对及可筛选的接入渠道目录。外部服务来源、当前状态和后续接入要求见 [接入说明](docs/external-integrations.md)。
+前端以“江汉关·东方茶港”为文化意象，采用本地华文中宋；未安装时回退到思源宋体或宋体。页面不预填 prompt，不预生成候选结果与证据，技术接入资料保留在开发文档中。外部网站初查见 [五个测试网站](docs/agent-site-observations-20261008.md)，PI 预留入口见 [PI API](docs/pi-api.md)。
 
 - Ethereum 原生 ETH / finalized 任务范围提案、补答、版本摘要与 nonce 批准。
 - SQLite WAL 短事务、幂等批准、停止 epoch、工作器代际隔离和中断隔离恢复。
@@ -27,6 +27,7 @@ pnpm start
 - 对齐设计 schema 的公开报告，JCS / Keccak-256 内容核对、篡改检测和下载。
 - EIP-712 自定义 EvidenceRegistry 合约源码与编译脚本；未部署、未审计。
 - 测试、CI、Agent TypeScript 接口边界与设计文档归档。
+- PI 草稿适配预留：会话/CSRF、输出 schema、用户地址约束、超时与取消；未接通真实 PI 服务。
 
 ## 当前阻断项
 

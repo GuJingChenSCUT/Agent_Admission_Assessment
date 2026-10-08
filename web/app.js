@@ -1,7 +1,6 @@
 let session = null,
   task = null,
-  reportEnvelope = null,
-  inventory = null;
+  reportEnvelope = null;
 let mutationBusy = false,
   reportBusy = false,
   evidenceBusy = false;
@@ -9,7 +8,6 @@ let viewEpoch = 0,
   pollEpoch = 0,
   reportEpoch = 0,
   refreshSequence = 0,
-  currentFilter = "all",
   approvalRequest = null;
 const $ = (id) => document.getElementById(id);
 const terminal = new Set(["SUCCEEDED", "FAILED", "QUARANTINED", "CANCELLED"]);
@@ -69,7 +67,7 @@ const errors = {
     "当前仅支持以太坊主网、原生 ETH、执行时 finalized 区块的只读余额查询。",
   INVALID_TASK_INPUT: "请输入 1–4096 字符的研究任务。",
   LIVE_MODEL_ADAPTER_NOT_CONFIGURED:
-    "LIVE 尚未完成接入，无法创建真实任务。请查看接入渠道。",
+    "实际任务暂不可用，请联系管理员配置执行服务。",
   SESSION_REQUIRED: "本地会话已失效，请刷新页面建立新会话。",
   CSRF_REQUIRED: "会话验证失败，请刷新页面后重试。",
   EVIDENCE_NOT_READY: "任务尚未生成证据，请稍后重新读取。",
@@ -154,14 +152,23 @@ async function api(path, options = {}) {
 }
 function syncControls() {
   const running = active.has(task?.status);
-  const canCreate = Boolean(session) && session.executionMode === "SAMPLE";
-  $("create").disabled = !canCreate || mutationBusy || running;
+  const canCreate = Boolean(session);
+  $("create").disabled =
+    !canCreate || mutationBusy || running || !$("intent").value.trim();
+  $("new-task").hidden = !task;
+  $("new-task").disabled = mutationBusy || running;
   $("create").textContent = running
     ? "请等待当前任务结束"
     : task
-      ? "生成新的任务范围 →"
-      : "生成任务范围 →";
-  for (const id of ["intent", "fallback", "scenario"])
+      ? "提交新的任务 →"
+      : "提交任务 →";
+  for (const id of [
+    "intent",
+    "fallback",
+    "scenario",
+    "execution-kind",
+    "fill-example",
+  ])
     $(id).disabled = !canCreate || mutationBusy || running;
   $("approve").disabled = mutationBusy || task?.status !== "AWAITING_APPROVAL";
   $("clarify").disabled = mutationBusy || task?.status !== "NEEDS_INPUT";
@@ -179,7 +186,9 @@ function resetEvidence() {
   reportEnvelope = null;
   reportBusy = false;
   evidenceBusy = false;
-  $("evidence-empty").hidden = false;
+  $("evidence").hidden = true;
+  $("evidence-nav").hidden = true;
+  $("evidence-empty").hidden = true;
   $("evidence-body").hidden = true;
   $("report").textContent = "";
   $("report-hash").textContent = "";
@@ -190,6 +199,10 @@ function resetEvidence() {
 }
 function renderTask(next) {
   task = next;
+  $("run-panel").hidden = false;
+  $("pipeline").hidden = false;
+  $("workspace-grid").classList.remove("idle");
+  $("budget").hidden = !task.runId;
   setStatus(
     "status",
     statusLabels[task.status] || task.status,
@@ -205,7 +218,6 @@ function renderTask(next) {
     (task.counters?.fallbacks || 0) +
     " / " +
     (task.spec?.limits?.maxFallbacks ?? 1);
-  $("run-empty").hidden = true;
   const stage = terminal.has(task.status)
     ? 3
     : active.has(task.status)
@@ -243,7 +255,7 @@ function renderTask(next) {
     );
   }
   $("providers").replaceChildren(
-    ...(task.spec?.candidateServiceIds || []).map((id) => {
+    ...(task.runId ? task.spec?.candidateServiceIds || [] : []).map((id) => {
       const attempt = task.attempts?.find((a) => a.serviceId === id),
         card = node("div", undefined, "provider"),
         row = node("div", undefined, "provider-heading");
@@ -336,6 +348,10 @@ async function loadEvidence() {
     const envelope = await api("/v1/tasks/" + id + "/evidence");
     if (id !== task?.taskId || epoch !== reportEpoch) return;
     reportEnvelope = envelope;
+    $("evidence").hidden = false;
+    $("evidence-nav").hidden = false;
+    $("signature-status").textContent = "未附签名";
+    $("anchor-status").textContent = "未附登记回执";
     $("evidence-empty").hidden = true;
     $("evidence-body").hidden = false;
     $("report").textContent = JSON.stringify(envelope, null, 2);
@@ -447,7 +463,10 @@ $("task-form").addEventListener("submit", (event) => {
       body: JSON.stringify({
         text: $("intent").value,
         allowFallback: $("fallback").checked,
-        scenario: $("scenario").value,
+        executionMode: $("execution-kind").value,
+        ...($("execution-kind").value === "SAMPLE"
+          ? { scenario: $("scenario").value }
+          : {}),
       }),
     });
     resetEvidence();
@@ -584,84 +603,6 @@ $("download").onclick = () => {
 $("scenario").onchange = () => {
   $("scenario-help").textContent = scenarioHelp[$("scenario").value];
 };
-function renderInventory(filter = currentFilter) {
-  currentFilter = filter;
-  document
-    .querySelectorAll("[data-filter]")
-    .forEach((el) =>
-      el.setAttribute("aria-pressed", String(el.dataset.filter === filter)),
-    );
-  if (!inventory) return;
-  const channels = inventory.channels.filter(
-    (c) => filter === "all" || c.stage === filter,
-  );
-  $("catalog-summary").textContent =
-    inventory.channels.length +
-    " 类接入能力 · LIVE 未就绪 · 当前显示 " +
-    channels.length +
-    " 类";
-  $("catalog-empty").hidden = channels.length !== 0;
-  $("integrations").replaceChildren(
-    ...channels.map((channel) => {
-      const card = node("article", undefined, "integration-card"),
-        heading = node("div", undefined, "card-heading");
-      heading.append(
-        node("span", channel.icon, "integration-icon"),
-        badge(channel.status, channel.stage === "adapter" ? "warn" : ""),
-      );
-      const details = node("details");
-      details.append(node("summary", "查看接入方式与下一步"));
-      const dl = node("dl");
-      dl.append(
-        ...definitionList({
-          协议: channel.transport,
-          接入: channel.setup,
-          下一步: channel.next,
-        }),
-      );
-      details.append(dl);
-      card.append(
-        heading,
-        node("h3", channel.title),
-        node("p", channel.description),
-        details,
-      );
-      if (channel.docs && channel.docs.startsWith("https://")) {
-        const link = node("a", "官方规范 ↗");
-        link.href = channel.docs;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        card.append(link);
-      }
-      return card;
-    }),
-  );
-  $("service-catalog").replaceChildren(
-    ...inventory.services.map((service) => {
-      const card = node("div", undefined, "service-entry"),
-        heading = node("div", undefined, "card-heading");
-      heading.append(
-        node("strong", service.name),
-        badge(service.status === "SAMPLE_FIXTURE" ? "构造数据" : "未验证"),
-      );
-      card.append(
-        heading,
-        node("code", service.id + " · " + service.operation),
-        node(
-          "p",
-          "来源：服务端配置 · Ethereum 1。" +
-            (service.endpointConfigured
-              ? "RPC 配置已填写，尚未联调。"
-              : "真实 RPC 尚未配置。"),
-        ),
-      );
-      return card;
-    }),
-  );
-}
-document
-  .querySelectorAll("[data-filter]")
-  .forEach((el) => (el.onclick = () => renderInventory(el.dataset.filter)));
 function activateNav(id) {
   document.querySelectorAll(".nav-link").forEach((el) => {
     const selected = el.hash === "#" + id;
@@ -683,72 +624,62 @@ const observer = new IntersectionObserver(
 document
   .querySelectorAll(".page-section")
   .forEach((el) => observer.observe(el));
-const deploymentKeys = {
-  mode: "运行模式",
-  database: "本地数据库",
-  model: "模型适配",
-  rpc: "RPC 数据",
-  dependencyScan: "依赖扫描",
-  registry: "证据登记",
-  publicSigning: "公开签名",
-  ethereumIdentity: "以太坊身份",
-  authentication: "访问方式",
-  production: "生产就绪",
+
+function updateMode() {
+  const sample = $("execution-kind").value === "SAMPLE";
+  $("scenario-control").hidden = !sample;
+  $("banner").hidden = !sample;
+  $("banner").textContent = sample
+    ? "流程演练 · 本次使用构造数据，不代表外部服务的真实观测。"
+    : "";
+  $("scenario-help").textContent = scenarioHelp[$("scenario").value];
+  syncControls();
+}
+$("intent").addEventListener("input", syncControls);
+$("execution-kind").addEventListener("change", updateMode);
+$("fill-example").onclick = () => {
+  $("intent").value =
+    "请核对 0x2222222222222222222222222222222222222222 的 ETH 余额，使用执行时 finalized 区块。";
+  syncControls();
+  $("intent").focus();
 };
-const deploymentValues = {
-  SAMPLE: "SAMPLE · 构造数据",
-  LIVE: "LIVE · 受阻",
-  SQLITE_WAL: "SQLite WAL 已启用",
-  BLOCKED_NOT_CONFIGURED: "尚未配置",
-  SAMPLE_FIXTURES: "构造数据",
-  NOT_VALIDATED: "尚未验证",
-  ADAPTER_ONLY: "仅适配器，待接入",
-  UNDEPLOYED: "未部署",
-  BLOCKED: "未接通",
-  NOT_IMPLEMENTED: "待实现",
-  LOCAL_SESSION_ONLY: "仅本地浏览器会话",
-  NOT_READY: "尚未就绪",
+$("new-task").onclick = () => {
+  if (mutationBusy || active.has(task?.status)) return;
+  viewEpoch++;
+  pollEpoch++;
+  task = null;
+  approvalRequest = null;
+  resetEvidence();
+  clearError();
+  $("intent").value = "";
+  $("answer").value = "";
+  $("execution-kind").value = "LIVE";
+  $("scenario").value = "normal";
+  $("fallback").checked = true;
+  $("scenario-control").open = false;
+  for (const id of ["run-panel", "pipeline", "scope", "clarification"])
+    $(id).hidden = true;
+  for (const id of [
+    "providers",
+    "events",
+    "amount",
+    "fact-meta",
+    "status",
+    "task-id",
+    "budget",
+  ])
+    $(id).replaceChildren();
+  $("workspace-grid").classList.add("idle");
+  updateMode();
+  $("intent").focus();
 };
 (async function init() {
   try {
     session = await api("/v1/session");
-    setStatus("connection", "本地服务已连接", "good");
-    $("banner").textContent =
-      session.executionMode === "SAMPLE"
-        ? "SAMPLE 演示环境 · 地址、区块、余额及检查观测均为构造数据。本次运行不调用外部 Agent、RPC、OSV 或钱包。"
-        : "LIVE 接入尚未完成 · 任务创建已禁用，请查看接入渠道与部署就绪明细。";
-    $("scenario-control").hidden = session.executionMode !== "SAMPLE";
+    setStatus("connection", "本地工作台", "good");
     syncControls();
-    const results = await Promise.allSettled([
-      api("/v1/deployment"),
-      api("/v1/integrations"),
-    ]);
-    if (results[0].status === "fulfilled")
-      $("deployment").replaceChildren(
-        ...definitionList(
-          Object.fromEntries(
-            Object.entries(results[0].value).map(([key, value]) => [
-              deploymentKeys[key] || key,
-              deploymentValues[value] || value,
-            ]),
-          ),
-        ),
-      );
-    else {
-      $("deployment").replaceChildren(node("dd", "部署状态读取失败"));
-      showError(results[0].reason);
-    }
-    if (results[1].status === "fulfilled") {
-      inventory = results[1].value;
-      renderInventory();
-    } else {
-      $("catalog-summary").textContent =
-        "接入目录读取失败，请重启更新后的后端并刷新页面。";
-      showError(results[1].reason);
-    }
   } catch (e) {
-    setStatus("connection", "本地服务未连接", "bad");
-    $("banner").textContent = "连接失败，请确认本地服务已启动，再刷新页面。";
+    setStatus("connection", "连接中断", "bad");
     showError(e);
   }
 })();

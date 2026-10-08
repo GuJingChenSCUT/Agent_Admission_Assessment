@@ -25,9 +25,11 @@ try {
     reducedMotion: "reduce",
   });
   const errors = [],
-    externalRequests = [];
+    externalRequests = [],
+    requests = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("request", (request) => {
+    requests.push({ url: request.url(), method: request.method() });
     if (!request.url().startsWith(base)) externalRequests.push(request.url());
   });
   await fs.mkdir("artifacts/ui", { recursive: true });
@@ -46,22 +48,52 @@ try {
       ),
       true,
     );
+
+  const waitConnected = () =>
+    page.waitForFunction(
+      () => document.getElementById("connection").textContent === "本地工作台",
+    );
+  const sampleInput =
+    "请核对 0x2222222222222222222222222222222222222222 的 ETH 余额，使用执行时 finalized 区块。";
   await page.goto(base);
-  await page.waitForSelector(".integration-card");
-  assert.equal(await page.locator(".integration-card").count(), 6);
+  await waitConnected();
+  assert.equal(await page.locator("#intent").inputValue(), "");
+  assert.equal(await page.locator("#create").isDisabled(), true);
+  assert.equal(await page.locator("#run-panel").isVisible(), false);
+  assert.equal(await page.locator("#evidence").isVisible(), false);
+  assert.equal(await page.locator("#pipeline").isVisible(), false);
+  assert.equal(await page.locator("#banner").isVisible(), false);
+  assert.equal(await page.locator("#providers").textContent(), "");
+  assert.equal(
+    requests.some(
+      (r) =>
+        r.method === "POST" ||
+        /integrations|deployment|tasks|model/.test(r.url),
+    ),
+    false,
+  );
+  assert.match(
+    await page
+      .locator("body")
+      .evaluate((el) => getComputedStyle(el).fontFamily),
+    /Huawen ZhongSong/,
+  );
   await noOverflow();
   await page.screenshot({ path: "artifacts/ui/desktop.png", fullPage: true });
-  await page.locator('[data-filter="adapter"]').click();
-  assert.equal(await page.locator(".integration-card").count(), 2);
-  await page.locator('[data-filter="planned"]').click();
-  assert.equal(await page.locator(".integration-card").count(), 4);
-  await page.locator('[data-filter="all"]').click();
-  await page
-    .locator("#connections")
-    .screenshot({ path: "artifacts/ui/connections.png" });
-
+  await page.locator("#story").screenshot({ path: "artifacts/ui/story.png" });
+  await page.fill("#intent", sampleInput);
+  await click("create");
+  await page.waitForFunction(() => !document.getElementById("error").hidden);
+  assert.match(await page.locator("#error").textContent(), /实际任务暂不可用/);
+  assert.equal(await page.locator("#run-panel").isVisible(), false);
+  assert.equal(await page.locator("#evidence").isVisible(), false);
+  await page.selectOption("#execution-kind", "SAMPLE");
+  await page.locator("#scenario-control summary").click();
+  await page.selectOption("#scenario", "stale_primary");
   await click("create");
   await status("待批准");
+  assert.equal(await page.locator("#providers").textContent(), "");
+  assert.equal(await page.locator("#evidence").isVisible(), false);
   await click("approve");
   await status("验收通过");
   await reportReady();
@@ -213,9 +245,12 @@ try {
 
   await page.setViewportSize({ width: 360, height: 800 });
   await page.goto(base);
-  await page.waitForSelector(".integration-card");
+  await waitConnected();
   await noOverflow();
   await page.screenshot({ path: "artifacts/ui/mobile.png", fullPage: true });
+  await page.selectOption("#execution-kind", "SAMPLE");
+  await page.locator("#scenario-control summary").click();
+  await click("fill-example");
   await click("create");
   await status("待批准");
   await noOverflow();
@@ -227,10 +262,15 @@ try {
     path: "artifacts/ui/mobile-result.png",
     fullPage: true,
   });
+  await click("new-task");
+  assert.equal(await page.locator("#intent").inputValue(), "");
+  assert.equal(await page.locator("#run-panel").isVisible(), false);
+  assert.equal(await page.locator("#evidence").isVisible(), false);
+  assert.equal(await page.locator("#banner").isVisible(), false);
   assert.deepEqual(errors, []);
   assert.deepEqual(externalRequests, []);
   console.log(
-    "UI PASS: desktop/mobile, 6 scenarios, fallback bounds, clarification, stop, stale refresh isolation, report download, tamper, late report isolation, no external requests.",
+    "UI PASS: empty start, explicit LIVE/SAMPLE, new task reset, local font, desktop/mobile, 6 scenarios, fallback bounds, clarification, stop, stale refresh isolation, report download, tamper, late report isolation, no external requests.",
   );
 
   const live = createApplication({
@@ -240,13 +280,14 @@ try {
   await new Promise((resolve) => live.server.listen(0, "127.0.0.1", resolve));
   try {
     await page.goto("http://127.0.0.1:" + live.server.address().port);
-    await page.waitForSelector(".integration-card");
+    await waitConnected();
     assert.equal(await page.locator("#create").isDisabled(), true);
     assert.equal(await page.locator("#scenario-control").isVisible(), false);
-    assert.match(
-      await page.locator("#banner").textContent(),
-      /LIVE 接入尚未完成/,
-    );
+    assert.equal(await page.locator("#banner").isVisible(), false);
+    await page.fill("#intent", sampleInput);
+    await click("create");
+    await page.waitForFunction(() => !document.getElementById("error").hidden);
+    assert.equal(await page.locator("#run-panel").isVisible(), false);
     console.log("UI PASS: LIVE blocked state accurately displayed.");
   } finally {
     live.server.closeAllConnections();

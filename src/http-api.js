@@ -10,6 +10,7 @@ import { buildPublicReport } from './evidence.js';
 import { validateDefinition } from './schema.js';
 import { parseStrictJson } from './strict-json.js';
 import { integrationInventory } from './integrations.js';
+import { extractModelDraft } from './model-api.js';
 
 const view = ({ owner, tickets, idempotency, ...task }) => task;
 function shape(body, allowed, required = []) {
@@ -20,8 +21,9 @@ async function bodyOf(req) {
   for await (const chunk of req) { size += chunk.length; if (size > 1024 * 1024) throw fault('BODY_TOO_LARGE', 413); chunks.push(chunk); }
   try { return parseStrictJson(Buffer.concat(chunks).length ? Buffer.concat(chunks) : '{}'); } catch { throw fault('INVALID_JSON', 400); }
 }
-export function createApplication({ store = new TaskStore(), mode = config.executionMode, stepMs } = {}) {
+export function createApplication({ store = new TaskStore(), mode = config.executionMode, stepMs, modelAdapter = null } = {}) {
   const sessions = new Map(), running = new Set();
+  const modelRequests = new Set();
   recoverInterrupted(store);
   const schedule = task => {
     if (running.has(task.taskId)) return;
@@ -55,12 +57,28 @@ export function createApplication({ store = new TaskStore(), mode = config.execu
       if (!session) throw fault('SESSION_REQUIRED', 401);
       if (req.method !== 'GET' && req.headers['x-csrf-token'] !== session.csrf) throw fault('CSRF_REQUIRED', 403);
       const owner = session.owner;
+      if (pathname === '/v1/model' && req.method === 'GET') return json(200, { provider: 'PI', adapterConfigured: typeof modelAdapter?.extract === 'function', capability: 'DRAFT_ONLY', canExecuteTools: false });
+      if (pathname === '/v1/model/drafts' && req.method === 'POST') {
+        const body = await bodyOf(req); shape(body, ['text', 'allowFallback'], ['text']);
+        if (typeof body.text !== 'string' || !body.text.trim() || body.text.length > 4096 || ('allowFallback' in body && typeof body.allowFallback !== 'boolean')) throw fault('INVALID_TASK_INPUT', 400);
+        if (modelRequests.has(owner)) throw fault('MODEL_REQUEST_IN_PROGRESS', 429);
+        modelRequests.add(owner);
+        const abort = new AbortController();
+        const disconnect = () => { if (!res.writableEnded) abort.abort(); };
+        res.once('close', disconnect);
+        try {
+          const draft = await extractModelDraft({ adapter: modelAdapter, text: body.text, allowFallback: body.allowFallback ?? true, signal: abort.signal });
+          return json(200, { provider: 'PI', draft, requiresApproval: true, executionStarted: false });
+        } finally { res.off('close', disconnect); modelRequests.delete(owner); }
+      }
       if (pathname === '/v1/integrations' && req.method === 'GET') return json(200, integrationInventory(mode));
       if (pathname === '/v1/deployment' && req.method === 'GET') return json(200, { mode, database: 'SQLITE_WAL', model: 'BLOCKED_NOT_CONFIGURED', rpc: mode === 'SAMPLE' ? 'SAMPLE_FIXTURES' : 'NOT_VALIDATED', dependencyScan: 'ADAPTER_ONLY', registry: 'UNDEPLOYED', publicSigning: 'BLOCKED', ethereumIdentity: 'NOT_IMPLEMENTED', authentication: 'LOCAL_SESSION_ONLY', production: 'NOT_READY' });
       if (pathname === '/v1/tasks' && req.method === 'POST') {
-        if (mode !== 'SAMPLE') throw fault('LIVE_MODEL_ADAPTER_NOT_CONFIGURED', 503);
-        const body = await bodyOf(req); shape(body, ['text','allowFallback','scenario'], ['text']);
-        if (typeof body.text !== 'string' || body.text.length < 1 || body.text.length > 4096 || ('allowFallback' in body && typeof body.allowFallback !== 'boolean')) throw fault('INVALID_TASK_INPUT', 400);
+        const body = await bodyOf(req); shape(body, ['text','allowFallback','scenario','executionMode'], ['text']);
+        if (typeof body.text !== 'string' || !body.text.trim() || body.text.length > 4096 || ('allowFallback' in body && typeof body.allowFallback !== 'boolean')) throw fault('INVALID_TASK_INPUT', 400);
+        if (body.executionMode !== undefined && !['LIVE','SAMPLE'].includes(body.executionMode)) throw fault('INVALID_EXECUTION_MODE', 400);
+        // An explicit real request must never inherit the server's SAMPLE default.
+        if ((body.executionMode ?? mode) !== 'SAMPLE' || mode !== 'SAMPLE') throw fault('LIVE_MODEL_ADAPTER_NOT_CONFIGURED', 503);
         const scenarios = ['normal','stale_primary','both_fail','reference_conflict','manifest_changed','optional_missing'];
         if (body.scenario && (mode !== 'SAMPLE' || !scenarios.includes(body.scenario))) throw fault('INVALID_SCENARIO', 400);
         const task = makeTask({ owner, text: body.text, allowFallback: body.allowFallback ?? true, mode, scenario: body.scenario || 'normal' });

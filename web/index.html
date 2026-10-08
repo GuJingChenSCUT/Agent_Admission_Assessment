@@ -3,74 +3,107 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <meta name="theme-color" content="#112c2a" />
-    <title>Agent Admission · 工具准入工作台</title>
+    <meta name="theme-color" content="#173e37" />
+    <title>江汉验关 · Agent Admission</title>
     <link rel="stylesheet" href="/style.css" />
     <script src="/app.js" defer></script>
   </head>
   <body>
-    <a class="skip-link" href="#workspace">跳至任务工作台</a>
+    <a class="skip-link" href="#workspace">跳至任务输入</a>
     <aside class="sidebar">
       <a class="brand" href="#workspace"
-        ><span class="brand-mark" aria-hidden="true">a·</span
-        ><span>Agent Admission<small>工具准入与数据验收</small></span></a
+        ><span class="brand-mark" aria-hidden="true">验</span
+        ><span>江汉验关<small>Agent Admission</small></span></a
       >
-      <p class="nav-caption">RESEARCH CONSOLE</p>
+      <p class="nav-caption">武汉 · 工具准入与数据验收</p>
       <nav aria-label="主导航">
         <a class="nav-link active" href="#workspace" aria-current="location"
-          ><span>01</span>任务工作台<span class="nav-arrow">↗</span></a
+          ><span>一</span>研究任务<span class="nav-arrow">↗</span></a
         >
-        <a class="nav-link" href="#evidence"
-          ><span>02</span>证据核对<span class="nav-arrow">↗</span></a
+        <a class="nav-link" id="evidence-nav" href="#evidence" hidden
+          ><span>二</span>验收记录<span class="nav-arrow">↗</span></a
         >
-        <a class="nav-link" href="#connections"
-          ><span>03</span>接入渠道<span class="nav-arrow">↗</span></a
+        <a class="nav-link" href="#story"
+          ><span>叙</span>茶港来信<span class="nav-arrow">↗</span></a
         >
       </nav>
       <div class="sidebar-bottom">
-        <div class="network-dot">Ethereum · Chain 1</div>
-        <p>范围先行，证据随后。<br />每次调用都有可追溯的边界。</p>
-        <a href="/prototype.html" target="_blank" rel="noopener"
-          >查看原始设计 ↗</a
-        ><small>ETH WUHAN 2026 · P0</small>
+        <div class="seal">有据<br />可验</div>
+        <p>所托有界，所交有据。<br />从江汉之滨，走向可信协作。</p>
+        <small>ETH WUHAN · 2026</small>
       </div>
     </aside>
     <main>
       <div class="topbar">
-        <span>工作空间 <span class="slash">/</span> 以太坊研究</span
-        ><span id="connection" class="pill">连接中</span>
+        <span>江汉验关 <span class="slash">/</span> 研究工作台</span
+        ><span id="connection" class="pill">正在连接</span>
       </div>
-      <header class="page-header">
-        <div>
-          <p class="eyebrow">TRUST THROUGH VERIFICATION</p>
-          <h1>让工具调用，经得起核对。</h1>
+      <header class="page-header harbor-header">
+        <div class="hero-copy">
+          <p class="eyebrow">江汉关 · 东方茶港 / 武汉叙事</p>
+          <h1>每一份托付，<br />都有据可验。</h1>
           <p class="muted">
-            定义研究范围，检查候选服务，留下可复核的验收记录。
+            从一份约定到一次验收。<br />为 Agent 核对工具的承诺与交付。
           </p>
+          <a class="text-link" href="#story">读一封茶港来信 ↗</a>
         </div>
-        <a class="text-link" href="#connections"
-          >外部服务如何接入 <span>↗</span></a
+        <svg
+          class="harbor-art"
+          viewBox="0 0 510 260"
+          role="img"
+          aria-labelledby="harbor-title"
         >
+          <title id="harbor-title">江汉关钟楼与江面舟船的原创线描意象</title>
+          <defs>
+            <pattern
+              id="tea-lines"
+              width="7"
+              height="7"
+              patternUnits="userSpaceOnUse"
+            >
+              <path d="M0 7L7 0" stroke="#b9b49b" stroke-width=".5" />
+            </pattern>
+          </defs>
+          <circle cx="350" cy="90" r="66" fill="#e8dfc3" />
+          <g
+            fill="none"
+            stroke="#486d5e"
+            stroke-width="1.4"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M24 203H487M35 218Q100 209 174 218T327 217T486 215M63 237Q129 226 210 237T397 234M339 250H462"
+            />
+            <path
+              d="M186 201V143H401V201M180 143H408L393 131H199ZM204 201V151M218 201V151M236 201V151M255 201V151M334 201V151M351 201V151M370 201V151M387 201V151"
+            />
+            <path
+              d="M268 200V105H319V200M263 105H324L317 94H270ZM274 94V59H313V94M270 59H317L308 45H279ZM279 45V34H308V45M287 34V18H300V34M293 18V8"
+            />
+            <circle cx="294" cy="77" r="12" />
+            <path
+              d="M294 68V77L302 82M281 119H306M281 127H306M283 142V166H304V142ZM284 200V180Q294 164 304 180V200M78 198H158L143 208H95ZM117 195V151L147 189H122M118 154L91 189H117"
+            />
+            <path
+              d="M423 200V181H471V200M419 181H475L450 164ZM438 182V200M453 182V200"
+            />
+            <path d="M48 174H73V199H48Z" fill="url(#tea-lines)" />
+            <path d="M47 184H74M59 174V200" />
+          </g>
+          <text
+            x="399"
+            y="63"
+            fill="#9c5a40"
+            font-size="17"
+            font-family="STZhongsong,serif"
+            writing-mode="tb"
+          >
+            江汉来信
+          </text>
+        </svg>
       </header>
-      <div id="banner" class="banner" role="status">正在连接本地服务…</div>
+      <div id="banner" class="banner" role="status" hidden></div>
       <div id="error" class="error" role="alert" hidden></div>
-      <section class="overview" aria-label="本次执行边界">
-        <div>
-          <span>数据范围</span><strong>Ethereum <small>原生 ETH</small></strong>
-        </div>
-        <div>
-          <span>验收基准</span
-          ><strong>Finalized <small>固定区块</small></strong>
-        </div>
-        <div>
-          <span>执行上限</span
-          ><strong>2 次调用 <small>最多切换 1 次</small></strong>
-        </div>
-        <div>
-          <span>证据可见性</span
-          ><strong>仅当前会话 <small>未发布到链上</small></strong>
-        </div>
-      </section>
       <section
         id="workspace"
         class="page-section"
@@ -78,69 +111,70 @@
       >
         <div class="section-heading">
           <div>
-            <p class="eyebrow">01 / WORKSPACE</p>
-            <h2 id="workspace-title">一次查询，一条证据链</h2>
+            <p class="eyebrow">一 / 写下委托</p>
+            <h2 id="workspace-title">今天，需要核对什么？</h2>
           </div>
-          <span class="muted small">只读操作 · 需批准后执行</span>
+          <button id="new-task" class="quiet" hidden>新建任务</button>
         </div>
-        <ol class="pipeline" id="pipeline" aria-label="任务进度">
-          <li data-stage="0" class="current"><span>1</span>定义范围</li>
+        <ol class="pipeline" id="pipeline" aria-label="任务进度" hidden>
+          <li data-stage="0"><span>1</span>定义范围</li>
           <li data-stage="1"><span>2</span>批准执行</li>
           <li data-stage="2"><span>3</span>准入与验收</li>
           <li data-stage="3"><span>4</span>生成证据</li>
         </ol>
-        <div class="workspace-grid">
+        <div class="workspace-grid idle" id="workspace-grid">
           <section class="card task-card" aria-labelledby="task-title">
             <div class="card-heading">
-              <h3 id="task-title">定义这次查询</h3>
-              <span class="tag">READ ONLY</span>
+              <h3 id="task-title">研究任务</h3>
+              <span class="tag">所托有界</span>
             </div>
             <form id="task-form">
-              <label for="intent">研究任务</label
+              <label class="sr-only" for="intent">输入研究任务</label
               ><textarea
                 id="intent"
                 rows="4"
                 maxlength="4096"
                 required
+                placeholder="写下你的研究问题，以及希望核对的数据或服务。"
                 aria-describedby="intent-help"
-              >
-请核对 0x2222222222222222222222222222222222222222 的 ETH 余额，使用执行时 finalized 区块。</textarea>
+              ></textarea>
               <p id="intent-help" class="field-help">
-                输入一个以太坊地址。目前支持原生 ETH 余额查询。
+                提交后先核对任务范围，再决定是否执行。
               </p>
-              <label class="check"
-                ><input type="checkbox" id="fallback" checked /><span
-                  >允许切换备用服务<small
-                    >首选未通过时，在同一地址、区块和预算内再尝试一次。</small
-                  ></span
-                ></label
-              >
-              <div id="scenario-control">
-                <label for="scenario"
-                  >演示场景 <span class="label-note">SAMPLE</span></label
+              <div class="composer-options">
+                <label for="execution-kind">运行方式</label
+                ><select id="execution-kind">
+                  <option value="LIVE">实际任务</option>
+                  <option value="SAMPLE">流程演练</option></select
+                ><label class="check"
+                  ><input type="checkbox" id="fallback" checked /><span
+                    >允许切换一次备用服务</span
+                  ></label
+                >
+              </div>
+              <details id="scenario-control" hidden>
+                <summary>演练设置</summary>
+                <label for="scenario">演练场景</label
                 ><select id="scenario" aria-describedby="scenario-help">
-                  <option value="stale_primary">
-                    首选返回旧区块 → 切换备用
-                  </option>
-                  <option value="normal">正常查询 · 首选通过</option>
+                  <option value="normal">正常查询</option>
+                  <option value="stale_primary">首选返回旧区块</option>
                   <option value="both_fail">两个服务均未通过</option>
-                  <option value="reference_conflict">
-                    参考来源冲突 · 隔离结果
-                  </option>
+                  <option value="reference_conflict">参考来源冲突</option>
                   <option value="manifest_changed">首选服务清单发生变化</option>
                   <option value="optional_missing">远程来源证明缺失</option>
                 </select>
-                <p id="scenario-help" class="field-help">
-                  观察系统如何拒绝过期数据，并在批准范围内切换服务。
-                </p>
-              </div>
+                <p id="scenario-help" class="field-help"></p>
+                <button type="button" id="fill-example" class="quiet">
+                  填入一份演练任务
+                </button>
+              </details>
               <button
                 id="create"
                 type="submit"
                 class="primary full-width"
                 disabled
               >
-                生成任务范围 →
+                提交任务 →
               </button>
             </form>
             <form id="clarification" class="inset" hidden>
@@ -160,38 +194,31 @@
                 <span id="revision" class="tag"></span>
               </div>
               <dl id="fields"></dl>
-              <p class="field-help">
-                批准仅适用于当前版本与所示范围。原始响应保存在本机。
-              </p>
+              <p class="field-help">批准仅适用于当前版本与所示范围。</p>
               <button id="approve" class="primary full-width">
                 批准本次范围并执行 →
               </button>
             </div>
           </section>
-          <section class="card run-card" aria-labelledby="run-title">
+          <section
+            class="card run-card"
+            id="run-panel"
+            aria-labelledby="run-title"
+            hidden
+          >
             <div class="card-heading">
               <h3 id="run-title">运行与验收</h3>
-              <span id="status" class="pill" role="status">尚未创建</span>
+              <span id="status" class="pill" role="status"></span>
             </div>
-            <p id="task-id" class="mono muted small">等待新的研究任务</p>
-            <p id="budget" class="budget">
-              候选 0 / 2 · 调用 0 / 2 · 切换 0 / 1
-            </p>
-            <div id="run-empty" class="empty-state">
-              <span class="empty-symbol" aria-hidden="true">◎</span>
-              <h4>从一个可核对的问题开始</h4>
-              <p>
-                生成范围并批准后，这里将显示<br />服务准入、结果验收与切换记录。
-              </p>
-            </div>
+            <p id="task-id" class="mono muted small"></p>
+            <p id="budget" class="budget" hidden></p>
             <div
               id="providers"
               class="providers"
               aria-label="候选服务状态"
             ></div>
             <div id="fact" class="result" hidden>
-              <span id="fact-label">已验收结果</span
-              ><strong id="amount"></strong>
+              <span id="fact-label"></span><strong id="amount"></strong>
               <p id="fact-meta"></p>
             </div>
             <p id="outcome" class="outcome" aria-live="polite" hidden></p>
@@ -211,36 +238,32 @@
         id="evidence"
         class="page-section"
         aria-labelledby="evidence-title"
+        hidden
       >
         <div class="section-heading">
           <div>
-            <p class="eyebrow">02 / EVIDENCE</p>
-            <h2 id="evidence-title">结论之外，保留依据</h2>
+            <p class="eyebrow">二 / 留下依据</p>
+            <h2 id="evidence-title">这次交付，有据可查</h2>
           </div>
           <button id="load-evidence" disabled>重新读取证据</button>
         </div>
         <div class="card">
-          <div class="evidence-grid">
-            <div class="evidence-item">
-              <span class="number-label">01 · 内容完整性</span
-              ><strong id="integrity" role="status">尚未核对</strong>
-              <p>核对报告内容与保存的摘要是否一致。</p>
-            </div>
-            <div class="evidence-item">
-              <span class="number-label">02 · 签名主体</span
-              ><strong>未连接签名器</strong>
-              <p>当前报告没有经过签名主体确认。</p>
-            </div>
-            <div class="evidence-item">
-              <span class="number-label">03 · 链上登记</span
-              ><strong>尚未部署</strong>
-              <p>BOT Chain 677 尚无可核验登记记录。</p>
-            </div>
-          </div>
-          <div id="evidence-empty" class="empty-inline">
-            完成或停止一次已批准的任务后，在这里读取证据。
-          </div>
+          <div id="evidence-empty" hidden>正在读取本次证据…</div>
           <div id="evidence-body" hidden>
+            <div class="evidence-grid">
+              <div class="evidence-item">
+                <span class="number-label">内容完整性</span
+                ><strong id="integrity" role="status"></strong>
+              </div>
+              <div class="evidence-item">
+                <span class="number-label">签名</span
+                ><strong id="signature-status"></strong>
+              </div>
+              <div class="evidence-item">
+                <span class="number-label">链上登记</span
+                ><strong id="anchor-status"></strong>
+              </div>
+            </div>
             <div class="report-id">
               <span>报告摘要</span><code id="report-hash"></code>
             </div>
@@ -255,79 +278,52 @@
               <summary>查看原始报告 JSON</summary>
               <pre id="report"></pre>
             </details>
+            <p class="evidence-note">
+              摘要一致说明内容未变化；数据真实性、签名与链上登记分别核对。篡改测试只修改副本。
+            </p>
           </div>
-          <p class="evidence-note">
-            摘要一致仅说明内容未变化；数据真实性、签名与链上登记需要分别验证。篡改测试只修改副本。
-          </p>
         </div>
       </section>
       <section
-        id="connections"
-        class="page-section"
-        aria-labelledby="connections-title"
+        id="story"
+        class="page-section story-section"
+        aria-labelledby="story-title"
       >
-        <div class="section-heading">
+        <div class="story-heading">
+          <span class="story-seal" aria-hidden="true">江汉</span>
           <div>
-            <p class="eyebrow">03 / CONNECTIONS</p>
-            <h2 id="connections-title">外部 Agent 与工具，从哪里来？</h2>
+            <p class="eyebrow">文化灵感 / 东方茶港</p>
+            <h2 id="story-title">借一座茶港，讲清一次验收。</h2>
           </div>
-          <span class="pill">接入能力目录</span>
         </div>
-        <p class="section-intro">
-          前端通过本地控制 API
-          提交任务。后端发现候选、检查权限与能力，取得批准后才调用外部服务。当前版本使用构造数据演示此流程。
+        <p class="story-lead">
+          我们借汉口茶港的交易意象，想象一份托付的旅程：先约定哪一批茶，再核对交来的货，最后留下能复验的凭据。今天，Agent
+          委托工具办事，也需要这样的认真。
         </p>
-        <div class="connection-flow" aria-label="服务调用路径">
-          <div>
-            <span>01</span><strong>前端工作台</strong
-            ><small>任务提案与人工批准</small>
-          </div>
-          <b aria-hidden="true">→</b>
-          <div>
-            <span>02</span><strong>后端控制与准入</strong
-            ><small>固定范围、检查与调用预算</small>
-          </div>
-          <b aria-hidden="true">→</b>
-          <div>
-            <span>03</span><strong>受限调用网关</strong
-            ><small>单次授权，接入已配置服务</small>
-          </div>
-          <b aria-hidden="true">→</b>
-          <div>
-            <span>04</span><strong>结果验收</strong
-            ><small>拒绝异常，保存证据</small>
-          </div>
+        <div class="story-acts">
+          <article>
+            <span>第一幕 · 约定</span>
+            <h3>要的是这一批。</h3>
+            <p>对应明确的任务范围与固定区块。交付真实，也须符合本次约定。</p>
+          </article>
+          <article>
+            <span>第二幕 · 验收</span>
+            <h3>交来之后，再核对。</h3>
+            <p>逐项比对承诺与结果；必要证据不足时，不采用该结果。</p>
+          </article>
+          <article>
+            <span>第三幕 · 留据</span>
+            <h3>换个人，仍可复核。</h3>
+            <p>保存观测与规则，核对报告是否被改动，让结论带着依据流转。</p>
+          </article>
         </div>
-        <div class="catalog-bar">
-          <p id="catalog-summary" class="muted small">正在读取接入状态…</p>
-          <div class="filters" role="group" aria-label="筛选接入能力">
-            <button data-filter="all" aria-pressed="true">全部</button
-            ><button data-filter="adapter" aria-pressed="false">
-              已有适配器</button
-            ><button data-filter="planned" aria-pressed="false">待实现</button>
-          </div>
-        </div>
-        <div id="integrations" class="integration-grid"></div>
-        <p id="catalog-empty" class="empty-inline" hidden>
-          此分类暂无接入能力。
+        <p class="story-note">
+          以上为产品叙事类比，非对历史茶叶检验制度的复述。
         </p>
-        <div class="card section">
-          <h3>本次候选服务</h3>
-          <p class="field-help">
-            这是配置清单，不是互联网搜索结果。填写 RPC 地址不会自动启用 LIVE。
-          </p>
-          <div id="service-catalog" class="service-catalog"></div>
-        </div>
-        <details id="readiness" class="card section readiness">
-          <summary>查看部署就绪明细</summary>
-          <dl id="deployment"></dl>
-        </details>
       </section>
       <footer>
-        <span>Agent Admission Assessment</span
-        ><span
-          >Ethereum 数据链 1 · 设计登记链 BOT 677 · 本地演示不产生主网交易</span
-        >
+        <span>江汉验关 · Agent Admission</span
+        ><span>武汉 · ETH WUHAN 2026</span>
       </footer>
     </main>
   </body>
