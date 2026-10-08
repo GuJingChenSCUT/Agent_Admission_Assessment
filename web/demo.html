@@ -1,0 +1,2329 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#173e37"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'sha256-mWN3KIz19s/35I6WX0mSw06gUXy58AufyHGw6NrWibY='; img-src data:; connect-src 'none'; base-uri 'none'; form-action 'none'"><title>交互演练 · 江汉验关</title><style>@font-face {
+  font-family: Huawen;
+  src: local("STZhongsong"), local("华文中宋");
+  font-display: swap;
+}
+:root {
+  --paper: #f6f3e9;
+  --ink: #203f35;
+  --green: #2b5c49;
+  --muted: #737c70;
+  --line: #dcded0;
+  --gold: #a17b41;
+  --red: #a0523d;
+  --font: Huawen, STZhongsong, "华文中宋", "Noto Serif SC", SimSun, serif;
+  color-scheme: light;
+  font-synthesis: none;
+}
+* {
+  box-sizing: border-box;
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--paper);
+  font: 15px/1.75 var(--font);
+}
+[hidden] {
+  display: none !important;
+}
+button,
+textarea,
+select,
+input {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: #fffdf6;
+  color: var(--ink);
+  padding: 9px 15px;
+  font-size: 14px;
+}
+button:hover:enabled {
+  background: #eaf0e2;
+  border-color: #9cad91;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.primary {
+  background: var(--green);
+  border-color: var(--green);
+  color: white;
+}
+.primary:hover:enabled {
+  background: #204b3b;
+}
+.quiet {
+  background: transparent;
+}
+.danger {
+  color: var(--red);
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible,
+summary:focus-visible {
+  outline: 3px solid #acb99a;
+  outline-offset: 4px;
+}
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+h1,
+h2,
+h3,
+strong {
+  font-weight: 400;
+}
+.topbar {
+  height: 88px;
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 5vw;
+}
+.brand {
+  display: flex;
+  gap: 13px;
+  align-items: center;
+  font-size: 23px;
+}
+.brand small {
+  display: block;
+  font:
+    9px/1.4 Georgia,
+    serif;
+  letter-spacing: 2px;
+}
+.seal {
+  background: var(--green);
+  color: var(--paper);
+  font-size: 31px;
+  line-height: 48px;
+  width: 44px;
+  text-align: center;
+  border-radius: 4px;
+}
+.top-right {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+.tag {
+  font-size: 12px;
+  padding: 5px 10px;
+  border: 1px solid #c9c2aa;
+  color: #816640;
+  border-radius: 3px;
+}
+.edition {
+  font-size: 13px;
+  color: var(--muted);
+}
+main {
+  max-width: 1570px;
+  margin: auto;
+  padding: 0 5vw;
+}
+.intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: center;
+  gap: 60px;
+  padding: 40px 0 28px;
+}
+.eyebrow {
+  font-size: 12px;
+  letter-spacing: 1.4px;
+  color: var(--gold);
+  margin-bottom: 12px;
+}
+h1 {
+  font-size: clamp(32px, 3.5vw, 49px);
+  line-height: 1.45;
+  letter-spacing: 2px;
+}
+.intro-copy {
+  margin-top: 20px;
+  line-height: 1.9;
+  color: #596c5d;
+  font-size: 16px;
+}
+.intro-note {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.art {
+  max-width: 450px;
+  justify-self: end;
+  position: relative;
+}
+.art svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.art-caption {
+  display: block;
+  text-align: right;
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 2px;
+  margin-top: 8px;
+}
+.context {
+  border-top: 1px solid var(--line);
+  padding: 14px 0;
+  color: var(--muted);
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+}
+.workspace {
+  display: grid;
+  grid-template-columns: 170px minmax(0, 1fr) 235px;
+  gap: 24px;
+  padding: 20px 0 30px;
+  align-items: start;
+}
+.stages {
+  padding-top: 7px;
+}
+.stages .eyebrow {
+  font-size: 11px;
+}
+.stages ol {
+  list-style: none;
+  margin: 20px 0 24px;
+  padding: 0;
+}
+.stages li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  position: relative;
+  font-size: 14px;
+  color: #849082;
+}
+.step-index {
+  width: 25px;
+  height: 25px;
+  border: 1px solid #d3d9ca;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  flex-shrink: 0;
+  background: var(--paper);
+}
+.stages li:not(:last-child):after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  top: 38px;
+  height: 11px;
+  border-left: 1px solid var(--line);
+}
+.stages li.active {
+  color: var(--green);
+}
+.stages li.active .step-index {
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+  box-shadow: 0 0 0 5px #dfe7d7;
+}
+.stages li.done {
+  color: #43684c;
+}
+.stages li.done .step-index {
+  background: #e4eadb;
+}
+.journey {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+}
+.journey span {
+  color: var(--gold);
+  font-size: 11px;
+  display: block;
+}
+.journey strong {
+  display: block;
+  margin: 8px 0;
+  font-size: 15px;
+}
+.journey p {
+  font-size: 12px;
+  color: var(--muted);
+}
+#sample-settings {
+  margin-top: 26px;
+}
+label {
+  font-size: 12px;
+  color: var(--muted);
+}
+select {
+  max-width: 100%;
+  width: 100%;
+  border: 1px solid var(--line);
+  padding: 8px;
+  border-radius: 4px;
+  background: #fafaf2;
+  font-size: 12px;
+  color: var(--ink);
+  margin: 7px 0;
+}
+.check {
+  display: flex;
+  gap: 7px;
+  align-items: flex-start;
+  margin-top: 8px;
+}
+.check input {
+  accent-color: var(--green);
+  margin-top: 5px;
+}
+.desk {
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fffef8;
+  padding: 25px;
+  box-shadow: 0 12px 35px #253b2210;
+}
+.desk-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 19px;
+}
+.desk-heading .eyebrow {
+  margin-bottom: 4px;
+}
+h2 {
+  font-size: 23px;
+}
+h3 {
+  font-size: 16px;
+}
+.state-pill {
+  font-size: 12px;
+  color: var(--muted);
+  white-space: nowrap;
+  background: #f1f0e7;
+  padding: 3px 9px;
+  border-radius: 3px;
+}
+.state-pill.running {
+  color: var(--green);
+  background: #eaf1e4;
+}
+.state-pill.failed {
+  color: var(--red);
+  background: #faebe0;
+}
+textarea {
+  width: 100%;
+  display: block;
+  resize: vertical;
+  min-height: 120px;
+  border: 1px solid #d4ddc9;
+  border-radius: 5px;
+  padding: 15px;
+  background: #f9faf3;
+  color: var(--ink);
+  line-height: 1.9;
+  font-size: 15px;
+  overflow-wrap: anywhere;
+}
+textarea:disabled {
+  opacity: 1;
+  color: var(--ink);
+}
+textarea::placeholder {
+  color: #8b9586;
+}
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-top: 13px;
+  flex-wrap: wrap;
+}
+.form-actions .hint {
+  flex: 1;
+  min-width: 160px;
+  font-size: 11px;
+}
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+.scope {
+  background: #f4f5eb;
+  border: 1px solid #d8dfca;
+  padding: 17px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+.section-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.section-row > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+dl {
+  margin: 12px 0;
+  display: grid;
+  grid-template-columns: 75px minmax(0, 1fr);
+  gap: 5px;
+  font-size: 12px;
+}
+dt {
+  color: var(--muted);
+}
+dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.activity {
+  margin-top: 20px;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  border-left: 2px solid var(--green);
+  background: #eff4e9;
+  padding: 15px;
+}
+.activity strong {
+  font-size: 15px;
+}
+.activity p {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.pulse {
+  width: 9px;
+  height: 9px;
+  flex-shrink: 0;
+  background: var(--green);
+  border-radius: 50%;
+  margin-top: 8px;
+  animation: pulse 1.6s ease-in-out infinite;
+}
+.elapsed {
+  font:
+    11px/2 Georgia,
+    serif;
+  margin-left: auto;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.snapshot {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 5px;
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+}
+.mini-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+.snapshot strong {
+  font-size: 12px;
+}
+code {
+  font:
+    11px/1.8 Consolas,
+    monospace;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+.snapshot code {
+  grid-column: 1/-1;
+}
+.attempts {
+  display: grid;
+  gap: 12px;
+  margin-top: 16px;
+}
+.attempt {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 14px;
+}
+.attempt-heading {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+}
+.badge {
+  font-size: 11px;
+  padding: 2px 7px;
+  background: #edf1e5;
+  color: var(--green);
+  border-radius: 3px;
+}
+.badge.FAIL,
+.badge.FAILED,
+.badge.REJECTED {
+  background: #f8e8dc;
+  color: var(--red);
+}
+.badge.NOT_CHECKED,
+.badge.INCONCLUSIVE {
+  background: #f4eedf;
+  color: #8a703f;
+}
+.check-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 2px 8px;
+  border-top: 1px solid #ebeddf;
+  margin-top: 8px;
+  padding-top: 7px;
+  font-size: 12px;
+}
+.check-row p {
+  grid-column: 1/-1;
+  color: var(--muted);
+  font-size: 11px;
+}
+.observation {
+  margin-top: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.result {
+  margin-top: 20px;
+  padding: 20px;
+  background: #eaf1e1;
+  border: 1px solid #cddcbc;
+  border-radius: 5px;
+}
+.result.failure {
+  background: #f6eee1;
+  border-color: #e1d5bd;
+}
+.result .eyebrow {
+  font-size: 11px;
+}
+.result strong {
+  font-size: 28px;
+  line-height: 1.4;
+  display: block;
+  overflow-wrap: anywhere;
+}
+.result p:last-child {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 10px;
+}
+.evidence {
+  margin-top: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 18px;
+}
+.evidence > .hint {
+  margin: 8px 0;
+}
+.evidence > code {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--green);
+}
+.evidence button {
+  font-size: 12px;
+  padding: 7px 9px;
+}
+#integrity {
+  font-size: 13px;
+  margin: 12px 0;
+  color: var(--green);
+}
+#integrity.bad {
+  color: var(--red);
+}
+details {
+  font-size: 12px;
+}
+summary {
+  cursor: pointer;
+}
+pre {
+  white-space: pre-wrap;
+  word-break: break-all;
+  font:
+    11px/1.6 Consolas,
+    monospace;
+  max-height: 220px;
+  overflow: auto;
+  background: #f3f3eb;
+  padding: 10px;
+}
+.run-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+  margin-top: 19px;
+}
+.run-controls > a {
+  font-size: 11px;
+  color: var(--muted);
+  margin-left: auto;
+}
+.journal {
+  padding-top: 8px;
+  position: sticky;
+  top: 20px;
+}
+.journal .section-row {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 13px;
+}
+.journal ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 620px;
+  overflow: auto;
+  scrollbar-width: thin;
+}
+.journal li {
+  padding: 13px 0;
+  border-bottom: 1px solid #e4e3d7;
+}
+.journal time {
+  font:
+    10px/1.5 Georgia,
+    serif;
+  color: var(--gold);
+}
+.journal strong {
+  display: block;
+  font-size: 12px;
+  margin-top: 4px;
+}
+.journal li p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-top: 3px;
+}
+.empty {
+  color: #879080;
+  font-size: 13px;
+  line-height: 2.1;
+  margin: 28px 0;
+}
+.journal-note {
+  font-size: 10px;
+  color: var(--muted);
+  margin-top: 18px;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+footer {
+  display: flex;
+  justify-content: space-between;
+  padding: 25px 0;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--muted);
+}
+.cinema {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background: #173e37;
+  color: #f7f3e5;
+  padding: 15px 5vw 10px;
+  box-shadow: 0 -6px 30px #203d3222;
+  z-index: 20;
+}
+.caption {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+  border-bottom: 1px solid #a3b29b40;
+  padding-bottom: 12px;
+}
+.caption > span {
+  color: #d2bd8f;
+  font-size: 12px;
+  min-width: 115px;
+}
+.caption p {
+  font-size: 17px;
+}
+.film-label { display: block; font-size: 9px; color: #b8c6ad; margin-top: 2px; }
+.player {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  padding-top: 12px;
+}
+.player button {
+  background: #254d42;
+  border-color: #66816f;
+  color: #faf9ed;
+  font-size: 12px;
+  white-space: nowrap;
+  padding: 6px 11px;
+}
+.player .primary {
+  background: #e7dfbc;
+  color: #233e34;
+  border-color: #e7dfbc;
+}
+.player input[type="range"] {
+  flex: 1;
+  min-width: 50px;
+  accent-color: #c4caa1;
+}
+.player select {
+  width: 65px;
+  background: #254d42;
+  border-color: #66816f;
+  color: white;
+  margin: 0;
+  padding: 5px;
+}
+.player output {
+  font:
+    12px/1.5 Georgia,
+    serif;
+  white-space: nowrap;
+}
+.chapters {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  padding-top: 9px;
+}
+.chapters button {
+  border: 0;
+  background: none;
+  color: #c0cdbb;
+  padding: 3px;
+  font-size: 11px;
+}
+.chapters button.selected {
+  color: #e6c98c;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+body[data-mode="film"] {
+  padding-bottom: 195px;
+}
+body[data-mode="film"] .intro {
+  padding-top: 26px;
+  padding-bottom: 22px;
+}
+body[data-mode="film"] .intro h1 {
+  font-size: 39px;
+}
+body[data-mode="film"] #prompt {
+  min-height: 112px;
+}
+body[data-mode="film"] .workspace {
+  scroll-margin-top: 18px;
+}
+body[data-mode="film"] .journal ol {
+  max-height: 450px;
+}
+body[data-mode="film"] .scope,
+body[data-mode="film"] .activity,
+body[data-mode="film"] .result,
+body[data-mode="film"] .evidence {
+  scroll-margin-top: 24px;
+  scroll-margin-bottom: 220px;
+}
+.film-emphasis {
+  box-shadow: 0 0 0 3px #b5bd99 !important;
+  transition: box-shadow 0.3s;
+}
+.no-motion * {
+  animation: none !important;
+  scroll-behavior: auto !important;
+}
+.journal li p {
+  overflow-wrap: anywhere;
+}
+.art {
+  width: 100%;
+}
+body[data-mode="film"].paused .pulse {
+  animation-play-state: paused;
+}
+@media (min-width: 1121px) {
+  .stages {
+    position: sticky;
+    top: 20px;
+  }
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+    box-shadow: 0 0 0 0 #50754c20;
+  }
+  50% {
+    opacity: 1;
+    box-shadow: 0 0 0 5px #50754c15;
+  }
+}
+@media (min-width: 1650px) {
+  .workspace {
+    grid-template-columns: 190px minmax(0, 1fr) 270px;
+    gap: 32px;
+  }
+  .desk {
+    padding: 30px;
+  }
+}
+@media (max-width: 1120px) {
+  .workspace {
+    grid-template-columns: 145px minmax(0, 1fr);
+    gap: 20px;
+  }
+  .journal {
+    grid-column: 2;
+    position: static;
+  }
+  .journal ol {
+    max-height: 240px;
+  }
+  .intro {
+    gap: 30px;
+  }
+  .edition {
+    display: none;
+  }
+  .player {
+    gap: 9px;
+  }
+  .chapters {
+    gap: 12px;
+  }
+}
+@media (max-width: 720px) {
+  .topbar {
+    height: 73px;
+    padding: 0 20px;
+  }
+  .brand {
+    font-size: 19px;
+  }
+  .brand small {
+    font-size: 8px;
+  }
+  .seal {
+    font-size: 27px;
+    width: 37px;
+    line-height: 41px;
+  }
+  .tag {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
+  main {
+    padding: 0 20px;
+  }
+  .intro {
+    grid-template-columns: 1fr;
+    gap: 5px;
+    padding-top: 27px;
+  }
+  .intro h1,
+  body[data-mode="film"] .intro h1 {
+    font-size: 32px;
+  }
+  .intro-copy {
+    font-size: 14px;
+  }
+  .art {
+    width: 80%;
+    max-width: 320px;
+  }
+  .context {
+    flex-direction: column;
+    gap: 5px;
+    font-size: 11px;
+  }
+  .workspace {
+    grid-template-columns: 1fr;
+    padding-top: 12px;
+    gap: 18px;
+  }
+  .stages {
+    padding: 0;
+  }
+  .stages .eyebrow,
+  .journey {
+    display: none;
+  }
+  .stages ol {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 5px;
+    margin: 0;
+  }
+  .stages li {
+    font-size: 11px;
+    padding: 7px 0;
+    gap: 6px;
+  }
+  .stages li:after {
+    display: none;
+  }
+  #sample-settings {
+    margin: 15px 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+  }
+  #sample-settings select {
+    width: auto;
+    max-width: 100%;
+    flex: 1;
+    min-width: 165px;
+  }
+  #sample-settings .check {
+    margin: 0;
+  }
+  .desk {
+    padding: 19px 15px;
+  }
+  .desk-heading {
+    gap: 8px;
+  }
+  h2 {
+    font-size: 19px;
+  }
+  .state-pill {
+    font-size: 10px;
+  }
+  .form-actions {
+    gap: 7px;
+  }
+  .form-actions .hint {
+    flex-basis: 100%;
+  }
+  .form-actions button {
+    flex: 1;
+    font-size: 12px;
+  }
+  .journal {
+    grid-column: auto;
+  }
+  .result strong {
+    font-size: 25px;
+  }
+  .scope {
+    padding: 13px;
+  }
+  dl {
+    grid-template-columns: 61px 1fr;
+    font-size: 11px;
+  }
+  .activity {
+    padding: 12px;
+  }
+  .activity strong {
+    font-size: 14px;
+  }
+  .elapsed {
+    display: none;
+  }
+  .caption {
+    display: block;
+    padding-bottom: 9px;
+  }
+  .caption p {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .caption > span {
+    font-size: 10px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .cinema {
+    padding: 12px 16px;
+  }
+  .player {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 9px;
+  }
+  .player input[type="range"] {
+    order: 5;
+    flex-basis: calc(100% - 100px);
+  }
+  .player output {
+    order: 6;
+    font-size: 10px;
+  }
+  .player select {
+    margin-left: auto;
+  }
+  .player button {
+    padding: 5px 8px;
+    font-size: 11px;
+  }
+  .chapters {
+    overflow-x: auto;
+    justify-content: flex-start;
+    white-space: nowrap;
+    gap: 14px;
+  }
+  .chapters button {
+    font-size: 10px;
+  }
+  .run-controls > a {
+    flex-basis: 100%;
+    margin: 4px 0 0;
+  }
+  body[data-mode="film"] {
+    padding-bottom: 210px;
+  }
+  .snapshot {
+    grid-template-columns: 1fr;
+  }
+  .snapshot code {
+    grid-column: 1;
+  }
+  .actions {
+    gap: 7px;
+  }
+  .actions .hint {
+    flex-basis: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+</style></head>
+<body data-mode="interactive">
+<header class="topbar"><a class="brand" href="#"><span class="seal">验</span><span>江汉验关<small>AGENT ADMISSION</small></span></a><div class="top-right"><span class="tag">离线模拟 · SAMPLE</span><span class="edition">交互演练</span></div></header>
+<main>
+<section class="intro" id="intro">
+  <div><p class="eyebrow">武汉 · 江汉关 · 东方茶港</p><h1>托付有界，<br>交付有据。</h1><p class="intro-copy">一批茶，先有约定，再经验收，最后留据。<br>一次 Agent 委托，也值得被这样认真对待。</p><p class="intro-note">茶港是我们的叙事灵感，非历史检验制度的复述。</p></div>
+  <div class="art"><svg
+          class="harbor-art"
+          viewBox="0 0 510 260"
+          role="img"
+          aria-labelledby="harbor-title"
+        >
+          <title id="harbor-title">江汉关钟楼与江面舟船的原创线描意象</title>
+          <defs>
+            <pattern
+              id="tea-lines"
+              width="7"
+              height="7"
+              patternUnits="userSpaceOnUse"
+            >
+              <path d="M0 7L7 0" stroke="#b9b49b" stroke-width=".5" />
+            </pattern>
+          </defs>
+          <circle cx="350" cy="90" r="66" fill="#e8dfc3" />
+          <g
+            fill="none"
+            stroke="#486d5e"
+            stroke-width="1.4"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M24 203H487M35 218Q100 209 174 218T327 217T486 215M63 237Q129 226 210 237T397 234M339 250H462"
+            />
+            <path
+              d="M186 201V143H401V201M180 143H408L393 131H199ZM204 201V151M218 201V151M236 201V151M255 201V151M334 201V151M351 201V151M370 201V151M387 201V151"
+            />
+            <path
+              d="M268 200V105H319V200M263 105H324L317 94H270ZM274 94V59H313V94M270 59H317L308 45H279ZM279 45V34H308V45M287 34V18H300V34M293 18V8"
+            />
+            <circle cx="294" cy="77" r="12" />
+            <path
+              d="M294 68V77L302 82M281 119H306M281 127H306M283 142V166H304V142ZM284 200V180Q294 164 304 180V200M78 198H158L143 208H95ZM117 195V151L147 189H122M118 154L91 189H117"
+            />
+            <path
+              d="M423 200V181H471V200M419 181H475L450 164ZM438 182V200M453 182V200"
+            />
+            <path d="M48 174H73V199H48Z" fill="url(#tea-lines)" />
+            <path d="M47 184H74M59 174V200" />
+          </g>
+          <text
+            x="399"
+            y="63"
+            fill="#9c5a40"
+            font-size="17"
+            font-family="STZhongsong,serif"
+            writing-mode="tb"
+          >
+            江汉来信
+          </text>
+        </svg><span class="art-caption">江汉之滨 · 一次可信托付的旅程</span></div>
+</section>
+<div class="context"><span>本文件按演示节奏展示流程，使用构造样本，不调用模型或外部服务。</span><span id="mode-note">输入后才开始解析与展示。</span></div>
+<section class="workspace" id="workspace">
+ <aside class="stages"><p class="eyebrow">一次托付的六个阶段</p><ol id="stages"></ol><div class="journey"><span id="act-label">等待委托</span><strong id="act-title">约定 → 验收 → 留据</strong><p id="act-copy">写下任务，观察每一步如何推进。</p></div><div id="sample-settings"><label for="scenario">演练情节</label><select id="scenario"></select><label class="check"><input type="checkbox" id="fallback" checked>允许一次备用切换</label></div></aside>
+ <div class="desk">
+  <div class="desk-heading"><div><p class="eyebrow" id="desk-eyebrow">第一幕 / 约定</p><h2 id="desk-title">今天，要核对什么？</h2></div><span class="state-pill" id="state-pill">等待输入</span></div>
+  <form id="task-form"><label class="sr-only" for="prompt">研究任务</label><textarea id="prompt" rows="3" maxlength="4096" placeholder="请输入要核验的以太坊地址与 ETH 余额任务…"></textarea><div class="form-actions"><span class="hint" id="input-hint">仅处理一个地址的原生 ETH 余额。</span><button type="button" class="quiet" id="example">填入示例</button><button class="primary" id="submit" disabled>提交演练任务 ↗</button></div></form>
+  <div id="scope" class="scope" hidden><div class="section-row"><h3>本次委托范围</h3><span>待你确认的约定</span></div><dl id="scope-fields"></dl><div class="actions"><button id="approve" class="primary" disabled>批准本次演练</button><span class="hint">批准前不进入查询阶段。</span></div></div>
+  <div class="activity" id="activity" hidden aria-live="polite"><span class="pulse" id="pulse"></span><div><strong id="activity-title"></strong><p id="activity-detail"></p></div><span class="elapsed" id="elapsed">00:00</span></div>
+  <div id="snapshot" class="snapshot" hidden><span class="mini-label">固定参考 · 构造样本</span><strong>区块 <span id="block-number"></span></strong><code id="block-hash"></code></div>
+  <div id="attempts" class="attempts"></div>
+  <div id="result" class="result" hidden><p class="eyebrow" id="result-label"></p><strong id="result-value"></strong><p id="result-note"></p></div>
+  <div id="evidence" class="evidence" hidden><div class="section-row"><h3>留下可复核的凭据</h3><span>本地演练报告</span></div><p class="hint">摘要只核对内容完整性；本报告不含服务签名或链上登记。</p><code id="digest"></code><div class="actions"><button id="verify">核对原件</button><button id="tamper">篡改副本试验</button><button id="download">下载演练证据 ↓</button></div><p id="integrity" role="status"></p><details><summary>查看演练报告</summary><pre id="report-json"></pre></details></div>
+  <div class="run-controls"><button id="stop" class="quiet danger" hidden>停止本次演练</button><button id="reset" class="quiet" hidden>新建空白任务</button><a id="alternate" href="demo-film.html">观看定时演示 ↗</a></div>
+ </div>
+ <aside class="journal"><div class="section-row"><h3>执行记录</h3><span id="event-count">0 步</span></div><p id="journal-empty" class="empty">每一步完成后，<br>才留下对应记录。</p><ol id="events"></ol><p class="journal-note">显示可核查的操作进度与检查摘要，不展示或虚构模型内部思维。</p></aside>
+</section>
+<footer><span>江汉验关 · ETH WUHAN 2026</span><span>所托有界，所交有据。</span></footer>
+</main>
+<section class="cinema" id="cinema" hidden aria-label="定时演示播放器">
+ <div class="caption"><span><span id="caption-chapter">序章 / 东方茶港</span><small class="film-label">离线演练 · SAMPLE</small></span><p id="caption-text">从一份约定到一次验收，让结论带着依据流转。</p></div>
+ <div class="player"><button id="play" class="primary">开始播放 ▶</button><button id="replay">从头播放 ↺</button><label class="sr-only" for="seek">演示进度</label><input id="seek" type="range" min="0" max="110" step="0.1" value="0"><output id="timecode">00:00 / 01:50</output><label class="sr-only" for="speed">播放速度</label><select id="speed"><option value="1">1×</option><option value="1.5">1.5×</option><option value="2">2×</option></select><button id="fullscreen" aria-label="切换全屏">全屏 ⛶</button></div>
+ <nav class="chapters" aria-label="演示章节"><button data-time="0">序 · 茶港</button><button data-time="8">一 · 写下委托</button><button data-time="25">二 · 批准范围</button><button data-time="34">三 · 开始验收</button><button data-time="61">四 · 拒绝错块</button><button data-time="86">五 · 证据封存</button><button data-time="99">六 · 独立核对</button></nav>
+</section>
+<noscript>本演示需要启用 JavaScript。所有脚本已包含在文件中，不需要联网。</noscript>
+<script>"use strict";
+(()=>{
+// Offline demonstration model. No network, model, wallet or production API calls.
+const DEMO_ADDRESS = "0x2222222222222222222222222222222222222222";
+const DEMO_PROMPT = `请核验 ${DEMO_ADDRESS} 在以太坊主网的原生 ETH 余额，使用执行时 finalized 区块；首选失败时允许切换一次备用服务。`;
+const DEMO_HASH = "0x" + "11".repeat(32);
+const DEMO_WEI = "42125000000000000000";
+const STAGES = [
+  "范围解析",
+  "批准确认",
+  "固定基准",
+  "准入检查",
+  "调用验收",
+  "证据封存",
+];
+const SCENARIOS = {
+  stale_primary: "首选区块不符 → 备用通过",
+  normal: "首选正常 → 直接通过",
+  wrong_primary: "首选金额不符 → 备用通过",
+  both_fail: "两家金额均不符 → 停止采用",
+  reference_conflict: "参考来源冲突 → 隔离",
+  rate_limited: "首选限流 → 备用通过",
+  manifest_changed: "首选清单变化 → 准入拒绝",
+};
+function parseDemoPrompt(text, allowFallback = true) {
+  const input = text.trim();
+  if (!input || input.length > 4096)
+    return { ok: false, error: "请输入 1–4096 字符的任务。" };
+  if (
+    /(https?:|erc[-\s]?20|usdt|usdc|transfer|转账|发送交易|solana|polygon|bitcoin|bnb|bot\s*chain|arbitrum|optimism|sepolia|base\b|其他链|历史|昨天|yesterday|latest|pending)/i.test(
+      input,
+    )
+  )
+    return {
+      ok: false,
+      error:
+        "当前演示仅支持以太坊主网、原生 ETH、执行时 finalized 区块的只读余额核验。",
+    };
+  const addresses = [
+    ...new Set(
+      (input.match(/\b0x[0-9a-fA-F]{40}(?![0-9a-fA-F])/g) || []).map((a) =>
+        a.toLowerCase(),
+      ),
+    ),
+  ];
+  if (!addresses.length)
+    return {
+      ok: false,
+      error:
+        "尚未识别到完整地址。请补充一个 0x 开头、40 位十六进制字符的地址。",
+    };
+  if (addresses.length > 1)
+    return { ok: false, error: "识别到多个地址。请明确本次核验的一个地址。" };
+  if (!/(余额|balance)/i.test(input))
+    return {
+      ok: false,
+      error: "请明确要求“查询 ETH 余额”，避免把其他地址任务误解为余额核验。",
+    };
+  const fallback =
+    allowFallback &&
+    !/(不(?:要|允许)?切换|禁用备用|不要备用|仅用首选|只用首选|no\s+fallback)/i.test(
+      input,
+    );
+  return {
+    ok: true,
+    spec: {
+      address: addresses[0],
+      chain: "Ethereum mainnet · 1",
+      asset: "ETH",
+      snapshotPolicy: "FINALIZED_AT_RUN",
+      allowFallback: fallback,
+      maxProviderCalls: fallback ? 2 : 1,
+      maxFallbacks: fallback ? 1 : 0,
+    },
+  };
+}
+function validateDemoObservation(spec, observation) {
+  const scope = observation.address === spec.address;
+  const block = observation.blockHash === DEMO_HASH;
+  return [
+    {
+      label: "查询地址",
+      status: scope ? "PASS" : "FAIL",
+      detail: scope ? "与批准地址一致" : "地址不一致",
+    },
+    {
+      label: "区块哈希",
+      status: block ? "PASS" : "FAIL",
+      detail: block ? "与固定参考区块一致" : "交付区块与本次约定不符",
+    },
+    {
+      label: "余额一致性",
+      status:
+        !scope || !block
+          ? "NOT_CHECKED"
+          : observation.balanceWei === DEMO_WEI
+            ? "PASS"
+            : "FAIL",
+      detail:
+        !scope || !block
+          ? "范围不一致，跳过金额比较"
+          : observation.balanceWei === DEMO_WEI
+            ? "与两份参考样本一致"
+            : "与同区块参考金额不一致",
+    },
+  ];
+}
+function executionEvents(spec, scenario) {
+  if (!Object.hasOwn(SCENARIOS, scenario)) throw Error("UNKNOWN_DEMO_SCENARIO");
+  const events = [];
+  let at = 0,
+    calls = 0,
+    switches = 0;
+  const add = (seconds, stage, title, detail, patch = {}) => {
+    at += seconds;
+    events.push({ at: at * 1000, stage, title, detail, ...patch });
+  };
+  add(
+    0,
+    2,
+    "读取两份参考样本",
+    "对照主网标识与 finalized 头；当前使用构造样本。",
+  );
+  add(3, 2, "对齐参考区块", "分别核对同一高度的区块哈希，避免跨区块比较。");
+  if (scenario === "reference_conflict") {
+    add(3, 2, "参考来源发生冲突", "两份样本的哈希不一致，无法建立比较基准。", {
+      terminal: "QUARANTINED",
+      reason: "参考证据不足；未调用候选服务。",
+      referenceConflict: true,
+    });
+    return events;
+  }
+  add(3, 2, "固定本次验收基准", "后续候选沿用同一地址、同一 blockHash。", {
+    snapshot: {
+      blockNumber: "24500000",
+      blockHash: DEMO_HASH,
+      balanceWei: DEMO_WEI,
+      source: "SYNTHETIC_SAMPLE",
+    },
+  });
+  const candidates = spec.allowFallback ? ["A", "B"] : ["A"];
+  for (const service of candidates) {
+    if (service === "B") {
+      switches++;
+      add(
+        3,
+        3,
+        "切换已批准的备用服务",
+        "重新做准入检查；地址与参考区块保持不变。",
+        { switches },
+      );
+    }
+    add(
+      3,
+      3,
+      `检查演练服务 ${service} 的准入条件`,
+      "核对清单版本、能力声明及客户端依赖检查样本。",
+      {
+        attempt: { service, status: "CHECKING", checks: [], observation: null },
+      },
+    );
+    if (scenario === "manifest_changed" && service === "A") {
+      add(
+        3,
+        3,
+        "首选服务清单变化",
+        "本次授权绑定的版本不一致；在业务调用前拒绝。",
+        {
+          attempt: {
+            service,
+            status: "REJECTED",
+            checks: [
+              {
+                label: "清单版本",
+                status: "FAIL",
+                detail: "与批准时的摘要不一致",
+              },
+            ],
+            observation: null,
+          },
+        },
+      );
+      continue;
+    }
+    const admission = [
+      { label: "服务清单", status: "PASS", detail: "与批准版本一致 · 模拟" },
+      {
+        label: "能力与依赖",
+        status: "PASS",
+        detail: "演练样本通过；未查询 OSV",
+      },
+      {
+        label: "远程部署来源",
+        status: "NOT_CHECKED",
+        detail: "可选项，缺少来源证明",
+      },
+    ];
+    add(
+      3,
+      3,
+      `演练服务 ${service} 准入检查完成`,
+      "必需项通过，可选未验证项继续保留。",
+      {
+        attempt: {
+          service,
+          status: "ELIGIBLE",
+          checks: admission,
+          observation: null,
+        },
+      },
+    );
+    calls++;
+    add(
+      3,
+      4,
+      `向演练服务 ${service} 发起模拟调用`,
+      "消费一次演练调用预算，传入固定地址与区块哈希。",
+      {
+        calls,
+        attempt: {
+          service,
+          status: "RUNNING",
+          checks: admission,
+          observation: null,
+        },
+      },
+    );
+    if (scenario === "rate_limited" && service === "A") {
+      add(
+        4,
+        4,
+        "首选服务返回限流",
+        "本次可用性不足，记录为 INCONCLUSIVE，不归类为数据造假。",
+        {
+          attempt: {
+            service,
+            status: "INCONCLUSIVE",
+            checks: [
+              ...admission,
+              {
+                label: "响应可用性",
+                status: "INCONCLUSIVE",
+                detail: "RATE_LIMITED · 故障注入",
+              },
+            ],
+            observation: null,
+          },
+        },
+      );
+      continue;
+    }
+    const observation = {
+      address: spec.address,
+      blockHash:
+        scenario === "stale_primary" && service === "A"
+          ? "0x" + "55".repeat(32)
+          : DEMO_HASH,
+      balanceWei:
+        scenario === "both_fail" ||
+        (scenario === "wrong_primary" && service === "A")
+          ? "42125000000000000001"
+          : DEMO_WEI,
+    };
+    add(
+      4,
+      4,
+      `收到演练服务 ${service} 的交付样本`,
+      "已收到不代表已采用；下一步逐项核对范围、区块与金额。",
+      {
+        attempt: {
+          service,
+          status: "VERIFYING",
+          checks: admission,
+          observation,
+        },
+      },
+    );
+    const verification = validateDemoObservation(spec, observation),
+      passed = verification.every((c) => c.status === "PASS");
+    add(
+      4,
+      4,
+      passed
+        ? `演练服务 ${service} 的结果通过验收`
+        : `拒绝演练服务 ${service} 的本次交付`,
+      passed
+        ? "必需规则全部通过，可以采用该演练事实。"
+        : verification.find((c) => c.status === "FAIL").detail + "。",
+      {
+        attempt: {
+          service,
+          status: passed ? "PASSED" : "FAILED",
+          checks: [...admission, ...verification],
+          observation,
+        },
+      },
+    );
+    if (passed) {
+      add(
+        3,
+        5,
+        "整理验收证据",
+        "把范围、参考样本、尝试记录与限制写入本地演练报告。",
+      );
+      add(
+        3,
+        5,
+        "本次演练完成",
+        "结果已经过样本规则核对，证据包现在可查看与下载。",
+        {
+          terminal: "SUCCEEDED",
+          fact: { ...observation, service },
+          reason: "只采用本次必需检查通过的演练事实。",
+        },
+      );
+      return events;
+    }
+  }
+  add(
+    3,
+    5,
+    "保留失败记录，停止采用",
+    "获准候选已耗尽；本次没有可采用的余额。",
+    {
+      terminal: scenario === "rate_limited" ? "QUARANTINED" : "FAILED",
+      reason: "保留检查记录，不输出通过的余额。",
+    },
+  );
+  return events;
+}
+
+const $ = (id) => document.getElementById(id);
+const film = document.body.dataset.mode === "film";
+const labels = {
+  IDLE: "等待输入",
+  PLANNING: "解析范围中",
+  NEEDS_INPUT: "待补充信息",
+  AWAITING_APPROVAL: "等待批准",
+  RUNNING: "演练进行中",
+  SUCCEEDED: "演练验收通过",
+  FAILED: "演练验收未通过",
+  QUARANTINED: "演练已隔离",
+  CANCELLED: "演练已停止",
+  CHECKING: "准入检查中",
+  ELIGIBLE: "准入通过",
+  VERIFYING: "逐项验收中",
+  PASSED: "结果通过",
+  REJECTED: "准入拒绝",
+  INCONCLUSIVE: "证据不足",
+  PASS: "通过",
+  FAIL: "未通过",
+  NOT_CHECKED: "未检查",
+};
+const terminal = new Set(["SUCCEEDED", "FAILED", "QUARANTINED", "CANCELLED"]);
+let state,
+  interactiveClock = 0,
+  schedule = [],
+  nextEvent = 0,
+  activeClock = false;
+let playing = false,
+  filmTime = 0,
+  rate = 1,
+  lastFrame = performance.now(),
+  lastFilmKey = "",
+  runEpoch = 0,
+  reportKey = "",
+  currentDigest = null,
+  digestEpoch = 0;
+let initializedAt = new Date().toISOString();
+const hashCache = new Map();
+function fresh() {
+  return {
+    status: "IDLE",
+    stage: -1,
+    prompt: "",
+    spec: null,
+    scenario: "stale_primary",
+    history: [],
+    attempts: [],
+    calls: 0,
+    switches: 0,
+    snapshot: null,
+    fact: null,
+    title: "",
+    detail: "",
+    reason: "",
+    elapsed: 0,
+    report: null,
+    tampered: false,
+    verified: false,
+  };
+}
+const time = (ms) => {
+  const n = Math.max(0, Math.floor(ms / 1000));
+  return (
+    String(Math.floor(n / 60)).padStart(2, "0") +
+    ":" +
+    String(n % 60).padStart(2, "0")
+  );
+};
+function el(tag, text, className) {
+  const node = document.createElement(tag);
+  if (text !== undefined) node.textContent = text;
+  if (className) node.className = className;
+  return node;
+}
+function badge(status) {
+  return el("span", labels[status] || status, "badge " + status);
+}
+function appendHistory(target, event) {
+  target.history.push({
+    at: event.at,
+    title: event.title,
+    detail: event.detail,
+  });
+}
+function apply(target, event) {
+  target.stage = event.stage;
+  target.title = event.title;
+  target.detail = event.detail;
+  appendHistory(target, event);
+  if (event.snapshot) target.snapshot = event.snapshot;
+  if (event.attempt) {
+    const index = target.attempts.findIndex(
+      (a) => a.service === event.attempt.service,
+    );
+    if (index < 0) target.attempts.push(event.attempt);
+    else target.attempts[index] = event.attempt;
+  }
+  if (event.calls !== undefined) target.calls = event.calls;
+  if (event.switches !== undefined) target.switches = event.switches;
+  if (event.terminal) {
+    target.status = event.terminal;
+    target.reason = event.reason;
+    target.fact = event.fact || null;
+    target.report = makeReport(target);
+  }
+}
+function makeReport(target) {
+  return {
+    schema: "jianghan-offline-demo/v1",
+    executionMode: "SAMPLE",
+    source: "SYNTHETIC_SAMPLE",
+    productionReport: false,
+    createdAt: initializedAt,
+    scenario: target.scenario,
+    prompt: target.prompt,
+    scope: target.spec,
+    result: target.status,
+    snapshot: target.snapshot,
+    attempts: target.attempts,
+    acceptedFact: target.fact,
+    counters: { calls: target.calls, switches: target.switches },
+    trace: target.history,
+    limitations: [
+      "离线构造样本，未调用模型、RPC、OSV 或钱包。",
+      "逐阶段动画用于解释工作流，不是模型内部思维记录。",
+      "本报告不是生产 API 的 PublicReport；不能作为真实服务信誉证据。",
+      "未附服务签名、密码学状态证明或链上登记。",
+    ],
+  };
+}
+async function digest(report) {
+  if (!globalThis.crypto?.subtle) return null;
+  const bytes = new TextEncoder().encode(JSON.stringify(report));
+  return [...new Uint8Array(await crypto.subtle.digest("SHA-256", bytes))]
+    .map((x) => x.toString(16).padStart(2, "0"))
+    .join("");
+}
+function renderEvidence(target) {
+  $("evidence").hidden = !target.report;
+  if (!target.report) {
+    if (reportKey) {
+      reportKey = "";
+      currentDigest = null;
+      digestEpoch++;
+    }
+    return;
+  }
+  const key = JSON.stringify(target.report);
+  if (key !== reportKey) {
+    reportKey = key;
+    currentDigest = null;
+    const epoch = ++digestEpoch;
+    $("report-json").textContent = JSON.stringify(target.report, null, 2);
+    $("digest").textContent = "正在计算本地 SHA-256 摘要…";
+    const promise = hashCache.get(key) || digest(target.report);
+    hashCache.set(key, promise);
+    if (hashCache.size > 10) hashCache.delete(hashCache.keys().next().value);
+    promise.then((value) => {
+      if (epoch !== digestEpoch || key !== reportKey) return;
+      currentDigest = value;
+      $("digest").textContent = value
+        ? "SHA-256  " + value
+        : "当前浏览器不支持本地摘要计算。";
+      $("verify").disabled = film || !value;
+      $("tamper").disabled = film || !value;
+    });
+  }
+  $("verify").disabled = film || !currentDigest;
+  $("tamper").disabled = film || !currentDigest;
+  $("download").disabled = film;
+  $("integrity").className = target.tampered ? "bad" : "";
+  $("integrity").textContent = target.tampered
+    ? "篡改副本的摘要不一致 · 原件保留"
+    : target.verified
+      ? "原件摘要一致 · 完整性核对通过"
+      : "";
+}
+function render(target) {
+  state = target;
+  if ($("prompt").value !== target.prompt) $("prompt").value = target.prompt;
+  const busy = ["PLANNING", "RUNNING"].includes(target.status),
+    locked = film || !["IDLE", "NEEDS_INPUT"].includes(target.status);
+  $("prompt").disabled = locked;
+  $("scenario").disabled = locked;
+  $("fallback").disabled = locked;
+  $("example").disabled = locked;
+  $("submit").disabled = locked || !target.prompt.trim();
+  $("submit").textContent =
+    target.status === "NEEDS_INPUT" ? "补充后重新解析 ↗" : "提交演练任务 ↗";
+  $("state-pill").textContent = labels[target.status];
+  $("state-pill").className =
+    "state-pill" +
+    (busy
+      ? " running"
+      : ["FAILED", "QUARANTINED"].includes(target.status)
+        ? " failed"
+        : "");
+  $("activity").hidden = target.status === "IDLE";
+  $("pulse").hidden = !busy;
+  $("activity-title").textContent = target.title;
+  $("activity-detail").textContent = target.detail;
+  $("elapsed").textContent = time(target.elapsed);
+  $("stop").hidden =
+    film ||
+    !["PLANNING", "RUNNING", "AWAITING_APPROVAL"].includes(target.status);
+  $("reset").hidden = film || target.status === "IDLE";
+  $("input-hint").textContent =
+    target.status === "NEEDS_INPUT"
+      ? target.detail
+      : "仅处理一个地址的原生 ETH 余额。";
+  $("stages").replaceChildren(
+    ...STAGES.map((name, i) => {
+      const item = el(
+        "li",
+        undefined,
+        i === target.stage ? "active" : i < target.stage ? "done" : "",
+      );
+      item.append(
+        el("span", i < target.stage ? "✓" : String(i + 1), "step-index"),
+        el("span", name),
+      );
+      if (i === target.stage) item.setAttribute("aria-current", "step");
+      return item;
+    }),
+  );
+  const act =
+    target.stage < 0 ? -1 : target.stage < 2 ? 0 : target.stage < 5 ? 1 : 2;
+  $("act-label").textContent =
+    ["第一幕 / 约定", "第二幕 / 验收", "第三幕 / 留据"][act] || "等待委托";
+  $("act-title").textContent =
+    ["要的是这一批。", "交来之后，再核对。", "换个人，仍可复核。"][act] ||
+    "约定 → 验收 → 留据";
+  $("act-copy").textContent =
+    [
+      "把地址、区块策略与调用上限写清楚。",
+      "交付真实，也须符合本次约定。",
+      "结论与依据一同保存，变化能够被发现。",
+    ][act] || "写下任务，观察每一步如何推进。";
+  $("desk-eyebrow").textContent = [
+    "第一幕 / 约定",
+    "第二幕 / 验收",
+    "第三幕 / 留据",
+  ][Math.max(act, 0)];
+  $("desk-title").textContent =
+    target.status === "IDLE"
+      ? "今天，要核对什么？"
+      : terminal.has(target.status)
+        ? "这份委托，有了记录。"
+        : target.status === "AWAITING_APPROVAL"
+          ? "先确认，再执行。"
+          : "让每一步都有依据。";
+  $("scope").hidden =
+    !target.spec || target.status === "RUNNING" || terminal.has(target.status);
+  if (target.spec) {
+    const entries = {
+      地址: target.spec.address,
+      网络: target.spec.chain,
+      资产: "原生 ETH · 只读",
+      区块策略: "执行时 finalized · 固定区块哈希",
+      候选: target.spec.allowFallback
+        ? "演练服务 A → 演练服务 B"
+        : "仅演练服务 A",
+      预算: `最多 ${target.spec.maxProviderCalls} 次业务调用 · ${target.spec.maxFallbacks} 次切换`,
+    };
+    $("scope-fields").replaceChildren(
+      ...Object.entries(entries).flatMap(([k, v]) => [
+        el("dt", k),
+        el("dd", v),
+      ]),
+    );
+  }
+  $("approve").disabled = film || target.status !== "AWAITING_APPROVAL";
+  $("snapshot").hidden = !target.snapshot;
+  if (target.snapshot) {
+    $("block-number").textContent = target.snapshot.blockNumber;
+    $("block-hash").textContent = target.snapshot.blockHash;
+  }
+  $("attempts").replaceChildren(
+    ...target.attempts.map((a) => {
+      const box = el("article", undefined, "attempt"),
+        heading = el("div", undefined, "attempt-heading");
+      heading.append(el("strong", "演练服务 " + a.service), badge(a.status));
+      box.append(heading);
+      for (const c of a.checks) {
+        const row = el("div", undefined, "check-row");
+        row.append(el("span", c.label), badge(c.status), el("p", c.detail));
+        box.append(row);
+      }
+      if (a.observation)
+        box.append(
+          el(
+            "p",
+            `交付 hash：${a.observation.blockHash.slice(0, 18)}… · ${a.observation.balanceWei} wei`,
+            "observation",
+          ),
+        );
+      return box;
+    }),
+  );
+  $("result").hidden = !terminal.has(target.status);
+  $("result").className =
+    "result" + (target.status === "SUCCEEDED" ? "" : " failure");
+  $("result-label").textContent =
+    target.status === "SUCCEEDED"
+      ? "SAMPLE · 已验收的构造数据"
+      : "SAMPLE · 本次没有可采用结果";
+  $("result-value").textContent = target.fact
+    ? "42.125 ETH"
+    : labels[target.status];
+  $("result-note").textContent =
+    target.reason +
+    (target.spec
+      ? ` 已消费 ${target.calls}/${target.spec.maxProviderCalls} 次业务调用，切换 ${target.switches}/${target.spec.maxFallbacks} 次。`
+      : "");
+  $("journal-empty").hidden = target.history.length > 0;
+  $("event-count").textContent = target.history.length + " 步";
+  const eventList = $("events"),
+    atBottom =
+      eventList.scrollHeight - eventList.scrollTop - eventList.clientHeight <
+      60;
+  eventList.replaceChildren(
+    ...target.history.map((item) => {
+      const li = el("li");
+      li.append(
+        el("time", time(item.at)),
+        el("strong", item.title),
+        el("p", item.detail),
+      );
+      return li;
+    }),
+  );
+  if (atBottom || film) eventList.scrollTop = eventList.scrollHeight;
+  renderEvidence(target);
+}
+function reset() {
+  runEpoch++;
+  activeClock = false;
+  schedule = [];
+  nextEvent = 0;
+  interactiveClock = 0;
+  initializedAt = new Date().toISOString();
+  $("scenario").value = "stale_primary";
+  $("fallback").checked = true;
+  render(fresh());
+}
+function startPlan() {
+  if (!["IDLE", "NEEDS_INPUT"].includes(state.status)) return;
+  runEpoch++;
+  const prompt = $("prompt").value,
+    parsed = parseDemoPrompt(prompt, $("fallback").checked);
+  state = fresh();
+  state.prompt = prompt;
+  state.scenario = $("scenario").value;
+  state.status = "PLANNING";
+  interactiveClock = 0;
+  nextEvent = 0;
+  activeClock = true;
+  schedule = [
+    {
+      at: 0,
+      stage: 0,
+      title: "正在识别任务范围",
+      detail: "读取输入中的地址、资产与只读操作要求。",
+    },
+  ];
+  if (!parsed.ok)
+    schedule.push({
+      at: 2200,
+      stage: 0,
+      title: "需要补充或调整任务",
+      detail: parsed.error,
+      planningError: true,
+    });
+  else
+    schedule.push(
+      {
+        at: 2000,
+        stage: 0,
+        title: "已识别一个以太坊地址",
+        detail: parsed.spec.address,
+      },
+      {
+        at: 4000,
+        stage: 0,
+        title: "已整理查询约束",
+        detail: `原生 ETH · finalized · ${parsed.spec.allowFallback ? "允许一次备用切换" : "不允许备用切换"}。`,
+      },
+      {
+        at: 6200,
+        stage: 1,
+        title: "范围已整理，等待批准",
+        detail: "请确认地址、候选与预算；批准后才进入演练查询。",
+        plannedSpec: parsed.spec,
+      },
+    );
+  advanceInteractive();
+  render(state);
+}
+function advanceInteractive() {
+  while (
+    nextEvent < schedule.length &&
+    schedule[nextEvent].at <= interactiveClock
+  ) {
+    const event = schedule[nextEvent++];
+    apply(state, event);
+    if (event.plannedSpec) {
+      state.spec = event.plannedSpec;
+      state.status = "AWAITING_APPROVAL";
+      activeClock = false;
+    }
+    if (event.planningError) {
+      state.status = "NEEDS_INPUT";
+      activeClock = false;
+    }
+    if (event.terminal) activeClock = false;
+    state.elapsed = interactiveClock;
+    render(state);
+  }
+}
+function approveDemo() {
+  if (state.status !== "AWAITING_APPROVAL") return;
+  const offset = interactiveClock;
+  state.status = "RUNNING";
+  schedule = executionEvents(state.spec, state.scenario).map((event) => ({
+    ...event,
+    at: event.at + offset,
+  }));
+  nextEvent = 0;
+  activeClock = true;
+  appendHistory(state, {
+    at: offset,
+    title: "本次演练范围已批准",
+    detail: "绑定本次范围，开始执行构造样本的验收流程。",
+  });
+  advanceInteractive();
+}
+function stopDemo() {
+  if (!["PLANNING", "AWAITING_APPROVAL", "RUNNING"].includes(state.status))
+    return;
+  runEpoch++;
+  activeClock = false;
+  schedule = [];
+  state.status = "CANCELLED";
+  state.fact = null;
+  state.reason = "已停止后续模拟步骤；原有调用计数保留。";
+  state.title = "停止已生效";
+  state.detail = state.reason;
+  state.attempts = state.attempts.map((a) =>
+    ["RUNNING", "CHECKING", "VERIFYING"].includes(a.status)
+      ? { ...a, status: "CANCELLED" }
+      : a,
+  );
+  appendHistory(state, {
+    at: interactiveClock,
+    title: state.title,
+    detail: state.detail,
+  });
+  if (state.spec) state.report = makeReport(state);
+  render(state);
+}
+async function integrityCheck(tamper) {
+  if (!state.report || !currentDigest) return;
+  const epoch = runEpoch,
+    key = reportKey,
+    originalDigest = currentDigest,
+    copy = JSON.parse(JSON.stringify(state.report));
+  if (tamper) copy.limitations.push("演练副本被修改。");
+  const observed = await digest(copy);
+  if (epoch !== runEpoch || key !== reportKey) return;
+  state.tampered = tamper && observed !== originalDigest;
+  state.verified = !tamper && observed === originalDigest;
+  renderEvidence(state);
+}
+function download() {
+  if (!state.report) return;
+  const data = {
+    report: state.report,
+    integrity: {
+      algorithm: "SHA-256",
+      digest: currentDigest,
+      encoding: "UTF-8 JSON.stringify(report)",
+    },
+  };
+  const url = URL.createObjectURL(
+      new Blob([JSON.stringify(data, null, 2)], { type: "application/json" }),
+    ),
+    link = el("a");
+  link.href = url;
+  link.download = "江汉验关-离线演练证据.json";
+  document.body.append(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+const filmExecution = executionEvents(
+  parseDemoPrompt(DEMO_PROMPT).spec,
+  "stale_primary",
+);
+const captions = [
+  [
+    0,
+    "序章 / 东方茶港",
+    "一份茶港的托付，先有约定，再经验收，最后留下凭据。",
+    "intro",
+  ],
+  [
+    8,
+    "第一幕 / 写下委托",
+    "从一个明确的问题开始：这个地址，在指定区块有多少 ETH？",
+    "workspace",
+  ],
+  [
+    18,
+    "第一幕 / 解析范围",
+    "先识别地址，再核对资产与权限。把用户的话整理成可批准的范围。",
+    "workspace",
+  ],
+  [
+    25,
+    "第一幕 / 人工批准",
+    "地址、区块策略、候选与预算都写清楚；先确认，再执行。",
+    "scope",
+  ],
+  [
+    34,
+    "脚本演示 / 点击批准",
+    "定时脚本模拟批准动作。此文件全程使用样本，不产生外部调用。",
+    "scope",
+  ],
+  [
+    38,
+    "第二幕 / 固定基准",
+    "两份参考样本对齐同一个 finalized 区块。此后，所有候选沿用同一基准。",
+    "activity",
+  ],
+  [
+    47,
+    "第二幕 / 工具准入",
+    "先核对服务清单和能力。未验证的来源仍标记为未检查。",
+    "attempts",
+  ],
+  [
+    57,
+    "第二幕 / 检查交付",
+    "收到响应，不代表结果可用。接着核对地址、区块与金额。",
+    "attempts",
+  ],
+  [
+    61,
+    "第二幕 / 拒绝错块",
+    "茶是真的，也可能不是订的那一批。区块不符，直接拒绝，不跨块比金额。",
+    "attempts",
+  ],
+  [
+    64,
+    "第二幕 / 有界切换",
+    "在原批准范围内换用备用服务。换服务，不换地址，也不换区块。",
+    "attempts",
+  ],
+  [
+    77,
+    "第二幕 / 再次验收",
+    "备用交付逐项通过，才进入可采用的事实。失败记录也会保留下来。",
+    "attempts",
+  ],
+  [
+    84,
+    "第三幕 / 证据封存",
+    "把这次范围、尝试与规则一起保存。每个结论，都能找到它的依据。",
+    "activity",
+  ],
+  [
+    90,
+    "第三幕 / 查看证据",
+    "42.125 ETH 是本片的构造样本结果。报告持续标注 SAMPLE 与能力边界。",
+    "result",
+  ],
+  [
+    94,
+    "第三幕 / 核对原件",
+    "在本地重新计算报告摘要，确认原件的内容完整性。",
+    "evidence",
+  ],
+  [
+    99,
+    "第三幕 / 改动可被发现",
+    "现在只改一份副本。摘要随内容改变，篡改被检出，原件仍然保留。",
+    "evidence",
+  ],
+  [
+    105,
+    "终章 / 所交有据",
+    "江汉验关：让 Agent 的每一次委托，都经过验收，留下依据。",
+    "result",
+  ],
+];
+function filmState(seconds) {
+  const target = fresh();
+  target.elapsed = seconds * 1000;
+  if (seconds < 8) return target;
+  const length = Math.min(
+    DEMO_PROMPT.length,
+    Math.floor(((seconds - 8) / 10) * DEMO_PROMPT.length),
+  );
+  target.prompt = DEMO_PROMPT.slice(0, length);
+  if (seconds < 18) return target;
+  target.prompt = DEMO_PROMPT;
+  target.status = "PLANNING";
+  const planning = [
+    {
+      at: 18000,
+      stage: 0,
+      title: "正在识别任务范围",
+      detail: "读取输入中的地址与余额意图。",
+    },
+    {
+      at: 20000,
+      stage: 0,
+      title: "已识别一个以太坊地址",
+      detail: DEMO_ADDRESS,
+    },
+    {
+      at: 22000,
+      stage: 0,
+      title: "已整理查询约束",
+      detail: "原生 ETH · finalized · 最多两次业务调用与一次切换。",
+    },
+  ];
+  for (const event of planning)
+    if (event.at <= seconds * 1000) apply(target, event);
+  if (seconds >= 24) {
+    target.spec = parseDemoPrompt(DEMO_PROMPT).spec;
+    target.stage = 1;
+    target.status = "AWAITING_APPROVAL";
+    target.title = "范围已整理，等待批准";
+    target.detail = "先确认授权范围，再执行任务。";
+    appendHistory(target, {
+      at: 24000,
+      title: target.title,
+      detail: target.detail,
+    });
+  }
+  if (seconds >= 34) {
+    target.title = "脚本正在演示批准动作";
+    target.detail = "定时版使用固定演示脚本，无外部调用。";
+    appendHistory(target, {
+      at: 34000,
+      title: "演练范围已由脚本批准",
+      detail: target.detail,
+    });
+  }
+  if (seconds >= 38) {
+    target.status = "RUNNING";
+    for (const event of filmExecution) {
+      if (event.at + 38000 > seconds * 1000) break;
+      apply(target, { ...event, at: event.at + 38000 });
+    }
+  }
+  return target;
+}
+let checkedFilmEpoch = -1;
+async function filmIntegrity(kind) {
+  const epoch = runEpoch;
+  if (!state.report || checkedFilmEpoch === epoch) return;
+  checkedFilmEpoch = epoch;
+  const original = state.report,
+    copy = JSON.parse(JSON.stringify(original));
+  if (kind === "tamper") copy.limitations.push("演示脚本修改副本。");
+  const [a, b] = await Promise.all([digest(original), digest(copy)]);
+  if (epoch !== runEpoch || !state.report) return;
+  if (!a || !b) {
+    $("integrity").textContent = "此浏览器不支持本地摘要计算。";
+    return;
+  }
+  state.verified = kind === "verify" && a === b;
+  state.tampered = kind === "tamper" && a !== b;
+  renderEvidence(state);
+}
+function renderFilm(force = false) {
+  document.body.classList.toggle("paused", !playing);
+  $("elapsed").textContent = time(filmTime * 1000);
+  $("seek").value = String(filmTime);
+  $("timecode").textContent = time(filmTime * 1000) + " / 01:50";
+  $("play").textContent = playing
+    ? "暂停 ❚❚"
+    : filmTime >= 110
+      ? "重播 ▶"
+      : "开始播放 ▶";
+  const target = filmState(filmTime),
+    caption = captions.filter((c) => c[0] <= filmTime).at(-1);
+  const key = [
+    target.prompt,
+    target.history.length,
+    caption[0],
+    filmTime >= 94,
+    filmTime >= 99,
+  ].join("|");
+  if (force || key !== lastFilmKey) {
+    const captionChanged = lastFilmKey.split("|").at(-3) !== String(caption[0]);
+    lastFilmKey = key;
+    runEpoch++;
+    checkedFilmEpoch = -1;
+    render(target);
+    $("caption-chapter").textContent = caption[1];
+    $("caption-text").textContent = caption[2];
+    document.querySelectorAll(".chapters button").forEach((button) => {
+      const times = [...document.querySelectorAll(".chapters button")].map(
+        (b) => Number(b.dataset.time),
+      );
+      const active =
+        Number(button.dataset.time) ===
+        times.filter((t) => t <= filmTime).at(-1);
+      button.classList.toggle("selected", active);
+    });
+    document
+      .querySelectorAll(".film-emphasis")
+      .forEach((n) => n.classList.remove("film-emphasis"));
+    if (filmTime >= 34 && filmTime < 38)
+      $("approve").classList.add("film-emphasis");
+    if (captionChanged || force) {
+      const focus = $(caption[3]);
+      if (focus && !focus.hidden)
+        focus.scrollIntoView({ block: "start", behavior: "instant" });
+    }
+  }
+  if (filmTime >= 94) void filmIntegrity(filmTime >= 99 ? "tamper" : "verify");
+}
+function seek(value) {
+  filmTime = Math.max(0, Math.min(110, value));
+  lastFrame = performance.now();
+  renderFilm(true);
+}
+$("task-form").addEventListener("submit", (e) => {
+  e.preventDefault();
+  if (!film) startPlan();
+});
+$("prompt").addEventListener("input", () => {
+  if (!film) {
+    state.prompt = $("prompt").value;
+    $("submit").disabled = !state.prompt.trim();
+  }
+});
+$("example").onclick = () => {
+  if (film) return;
+  $("prompt").value = DEMO_PROMPT;
+  state.prompt = DEMO_PROMPT;
+  $("submit").disabled = false;
+  $("prompt").focus();
+};
+$("approve").onclick = approveDemo;
+$("stop").onclick = stopDemo;
+$("reset").onclick = () => {
+  reset();
+  $("prompt").focus();
+};
+$("verify").onclick = () => void integrityCheck(false);
+$("tamper").onclick = () => void integrityCheck(true);
+$("download").onclick = download;
+for (const [value, label] of Object.entries(SCENARIOS)) {
+  const option = el("option", label);
+  option.value = value;
+  $("scenario").append(option);
+}
+if (film) {
+  $("cinema").hidden = false;
+  $("sample-settings").hidden = true;
+  $("mode-note").textContent = "定时脚本 · 01:50 · 字幕演示";
+  $("example").hidden = true;
+  $("submit").hidden = true;
+  $("input-hint").textContent = "定时脚本将演示输入、确认与验收。";
+  $("play").onclick = () => {
+    if (filmTime >= 110) seek(0);
+    playing = !playing;
+    lastFrame = performance.now();
+    renderFilm();
+  };
+  $("replay").onclick = () => {
+    playing = true;
+    seek(0);
+  };
+  $("seek").oninput = () => seek(Number($("seek").value));
+  $("speed").onchange = () => {
+    rate = Number($("speed").value);
+  };
+  document
+    .querySelectorAll(".chapters button")
+    .forEach(
+      (button) => (button.onclick = () => seek(Number(button.dataset.time))),
+    );
+  $("fullscreen").onclick = async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {
+      $("fullscreen").textContent = "请用 F11 全屏";
+    }
+  };
+  document.addEventListener("keydown", (event) => {
+    if (
+      ["INPUT", "TEXTAREA", "SELECT", "BUTTON", "A"].includes(
+        event.target.tagName,
+      )
+    )
+      return;
+    if (event.code === "Space") {
+      event.preventDefault();
+      $("play").click();
+    }
+    if (event.code === "ArrowRight") {
+      event.preventDefault();
+      seek(filmTime + 5);
+    }
+    if (event.code === "ArrowLeft") {
+      event.preventDefault();
+      seek(filmTime - 5);
+    }
+  });
+  document.addEventListener("visibilitychange", () => {
+    if (document.hidden) {
+      playing = false;
+      renderFilm();
+    }
+    lastFrame = performance.now();
+  });
+  state = fresh();
+  renderFilm(true);
+  if (new URLSearchParams(location.search).get("autoplay") === "1")
+    playing = true;
+} else reset();
+function tick(now) {
+  const delta = Math.min(Math.max(0, now - lastFrame), 250);
+  lastFrame = now;
+  if (!document.hidden) {
+    if (film && playing) {
+      filmTime = Math.min(110, filmTime + (delta / 1000) * rate);
+      if (filmTime >= 110) playing = false;
+      renderFilm();
+    }
+    if (!film && activeClock) {
+      interactiveClock += delta;
+      state.elapsed = interactiveClock;
+      advanceInteractive();
+      $("elapsed").textContent = time(interactiveClock);
+    }
+  }
+  requestAnimationFrame(tick);
+}
+requestAnimationFrame(tick);
+
+})();</script>
+</body></html>

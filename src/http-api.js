@@ -49,10 +49,12 @@ export function createApplication({ store = new TaskStore(), mode = config.execu
       }
       if (!pathname.startsWith('/v1/')) {
         if (req.method !== 'GET' && req.method !== 'HEAD') throw fault('METHOD_NOT_ALLOWED', 405);
-        const files = { '/': ['index.html','text/html'], '/app.js': ['app.js','text/javascript'], '/style.css': ['style.css','text/css'], '/prototype.html': ['prototype.html','text/html'] };
+        const files = { '/': ['index.html','text/html'], '/app.js': ['app.js','text/javascript'], '/style.css': ['style.css','text/css'], '/prototype.html': ['prototype.html','text/html'], '/demo.html': ['demo.html','text/html'], '/demo-film.html': ['demo-film.html','text/html'] };
         const entry = files[pathname]; if (!entry) throw fault('NOT_FOUND', 404);
         const bytes = await fs.readFile(new URL('../web/' + entry[0], import.meta.url));
-        res.writeHead(200, { 'content-type': entry[1] + '; charset=utf-8', 'x-content-type-options': 'nosniff', 'content-security-policy': "default-src 'self'; script-src 'self' " + (pathname === '/prototype.html' ? "'unsafe-inline'" : '') + "; style-src 'self' 'unsafe-inline'; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'" });
+        const demoScript = pathname === '/demo.html' || pathname === '/demo-film.html' ? bytes.toString('utf8').match(/<script>([\s\S]*?)<\/script>/)?.[1] : null;
+        const scriptPolicy = demoScript ? "'sha256-" + crypto.createHash('sha256').update(demoScript).digest('base64') + "'" : pathname === '/prototype.html' ? "'unsafe-inline'" : '';
+        res.writeHead(200, { 'content-type': entry[1] + '; charset=utf-8', 'x-content-type-options': 'nosniff', 'content-security-policy': "default-src 'self'; script-src 'self' " + scriptPolicy + "; style-src 'self' 'unsafe-inline'; connect-src " + (demoScript ? "'none'" : "'self'") + "; frame-ancestors 'none'; base-uri 'none'" });
         return res.end(req.method === 'HEAD' ? undefined : bytes);
       }
       const sid = (req.headers.cookie || '').match(/(?:^|;\s*)aa_session=([a-f0-9]{48})(?:;|$)/)?.[1], session = sessions.get(sid);

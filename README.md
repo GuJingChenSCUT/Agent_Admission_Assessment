@@ -15,6 +15,10 @@ pnpm start
 
 可选配置复制 `.env.example` 为 `.env`。服务只监听本机回环地址，使用本地浏览器会话和 CSRF；不具备生产账户系统。重启后需新建浏览器会话，历史私有任务保留在本地数据库中，暂不提供跨会话恢复 UI。
 
+## 离线演示
+
+双击 `web/demo.html` 可进行逐阶段交互演练；`web/demo-film.html` 是带字幕和播放控制的 1 分 50 秒定时演示。均为独立 HTML，使用明确标注的构造样本，无外部请求；正式服务器也提供 `/demo.html` 与 `/demo-film.html`。操作、情节和边界见 [演示说明](docs/demo-guide.md)。修改源码后执行 `pnpm build:demos`。
+
 ## 已实现
 
 前端以“江汉关·东方茶港”为文化意象，采用本地华文中宋；未安装时回退到思源宋体或宋体。页面不预填 prompt，不预生成候选结果与证据，技术接入资料保留在开发文档中。外部网站初查见 [五个测试网站](docs/agent-site-observations-20261008.md)，PI 预留入口见 [PI API](docs/pi-api.md)。
