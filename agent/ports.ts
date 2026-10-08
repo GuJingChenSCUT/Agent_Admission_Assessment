@@ -38,7 +38,7 @@ export interface ModelTools {
 export interface RestrictedRpcTransport {
   call(
     sourceId: string,
-    method: "eth_chainId" | "eth_getBlockByNumber" | "eth_getBalance",
+    method: "eth_chainId" | "eth_getBlockByNumber" | "eth_getBlockByHash" | "eth_getBalance",
     params: readonly unknown[],
     signal?: AbortSignal,
   ): Promise<{ result: unknown; rawBytes: Uint8Array }>;

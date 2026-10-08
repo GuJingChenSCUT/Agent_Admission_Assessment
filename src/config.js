@@ -11,7 +11,7 @@ const intEnv = (name, fallback) => {
 export const config = Object.freeze({
   port: intEnv('AA_PORT', 8787),
   dataDir: path.resolve(process.env.AA_DATA_DIR || '.data'),
-  executionMode: (process.env.AA_EXECUTION_MODE || 'SAMPLE').toUpperCase(),
+  executionMode: (process.env.AA_EXECUTION_MODE || 'LIVE').toUpperCase(),
   maxBodyBytes: intEnv('AA_MAX_BODY_BYTES', 1024 * 1024),
   references: Object.freeze([
     { sourceId: 'ref_a', operatorId: 'operator_a', url: process.env.AA_REFERENCE_RPC_A || '' },

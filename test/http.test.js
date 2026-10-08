@@ -39,7 +39,7 @@ test('HTTP: LIVE mode fails closed instead of using SAMPLE fixtures', async t =>
   const response = await fetch(`http://127.0.0.1:${app.server.address().port}/v1/session`);
   const session = await response.json(); const cookie = response.headers.get('set-cookie').split(';')[0];
   const task = await fetch(`http://127.0.0.1:${app.server.address().port}/v1/tasks`, { method: 'POST', headers: { cookie, 'content-type': 'application/json', 'x-csrf-token': session.csrfToken }, body: JSON.stringify({ text: '核对 0x2222222222222222222222222222222222222222 的 ETH 余额' }) });
-  assert.equal(task.status, 503); assert.equal((await task.json()).error, 'LIVE_MODEL_ADAPTER_NOT_CONFIGURED');
+  assert.equal(task.status, 503); assert.equal((await task.json()).error, 'LIVE_RUNTIME_NOT_CONFIGURED');
 });
 
 test('HTTP: integration inventory requires session and never exposes endpoints or claims LIVE readiness', async t => {

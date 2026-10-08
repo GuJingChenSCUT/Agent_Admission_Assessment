@@ -21,14 +21,16 @@ async function bodyOf(req) {
   for await (const chunk of req) { size += chunk.length; if (size > 1024 * 1024) throw fault('BODY_TOO_LARGE', 413); chunks.push(chunk); }
   try { return parseStrictJson(Buffer.concat(chunks).length ? Buffer.concat(chunks) : '{}'); } catch { throw fault('INVALID_JSON', 400); }
 }
-export function createApplication({ store = new TaskStore(), mode = config.executionMode, stepMs, modelAdapter = null } = {}) {
+export function createApplication({ store = new TaskStore(), mode = config.executionMode, stepMs, modelAdapter = null, liveRuntime = null } = {}) {
   const sessions = new Map(), running = new Set();
   const modelRequests = new Set();
+  const controllers = new Map();
   recoverInterrupted(store);
   const schedule = task => {
     if (running.has(task.taskId)) return;
     running.add(task.taskId);
-    setImmediate(() => runTask(task, store, { stepMs }).catch(() => console.error('Worker persistence failure; inspect local database')).finally(() => running.delete(task.taskId)));
+    const controller = new AbortController(); controllers.set(task.taskId, controller);
+    setImmediate(() => runTask(task, store, { stepMs, liveRuntime, signal: controller.signal }).catch(() => console.error('Worker persistence failure; inspect local database')).finally(() => { running.delete(task.taskId); controllers.delete(task.taskId); }));
   };
   for (const task of store.list()) if (task.status === 'QUEUED') schedule(task);
   const server = http.createServer(async (req, res) => {
@@ -43,7 +45,7 @@ export function createApplication({ store = new TaskStore(), mode = config.execu
       if (pathname === '/v1/session' && req.method === 'GET') {
         let sid = (req.headers.cookie || '').match(/(?:^|;\s*)aa_session=([a-f0-9]{48})(?:;|$)/)?.[1];
         if (!sid || !sessions.has(sid)) { sid = crypto.randomBytes(24).toString('hex'); sessions.set(sid, { owner: crypto.randomUUID(), csrf: crypto.randomBytes(24).toString('hex') }); }
-        return json(200, { csrfToken: sessions.get(sid).csrf, executionMode: mode, authentication: 'LOCAL_BROWSER_SESSION', model: 'NOT_CONFIGURED' }, { 'set-cookie': 'aa_session=' + sid + '; HttpOnly; SameSite=Strict; Path=/' });
+        return json(200, { csrfToken: sessions.get(sid).csrf, executionMode: mode, authentication: 'LOCAL_BROWSER_SESSION', model: modelAdapter ? 'ADAPTER_CONFIGURED' : 'NOT_CONFIGURED' }, { 'set-cookie': 'aa_session=' + sid + '; HttpOnly; SameSite=Strict; Path=/' });
       }
       if (!pathname.startsWith('/v1/')) {
         if (req.method !== 'GET' && req.method !== 'HEAD') throw fault('METHOD_NOT_ALLOWED', 405);
@@ -71,18 +73,20 @@ export function createApplication({ store = new TaskStore(), mode = config.execu
           return json(200, { provider: 'PI', draft, requiresApproval: true, executionStarted: false });
         } finally { res.off('close', disconnect); modelRequests.delete(owner); }
       }
-      if (pathname === '/v1/integrations' && req.method === 'GET') return json(200, integrationInventory(mode));
-      if (pathname === '/v1/deployment' && req.method === 'GET') return json(200, { mode, database: 'SQLITE_WAL', model: 'BLOCKED_NOT_CONFIGURED', rpc: mode === 'SAMPLE' ? 'SAMPLE_FIXTURES' : 'NOT_VALIDATED', dependencyScan: 'ADAPTER_ONLY', registry: 'UNDEPLOYED', publicSigning: 'BLOCKED', ethereumIdentity: 'NOT_IMPLEMENTED', authentication: 'LOCAL_SESSION_ONLY', production: 'NOT_READY' });
+      if (pathname === '/v1/integrations' && req.method === 'GET') return json(200, integrationInventory(mode, liveRuntime));
+      if (pathname === '/v1/deployment' && req.method === 'GET') return json(200, { mode, database: 'SQLITE_WAL', model: modelAdapter ? 'ADAPTER_CONFIGURED' : 'NOT_CONFIGURED', parser: 'DETERMINISTIC_SCOPE_PARSER', rpc: liveRuntime?.ready ? 'CONFIGURED_CHECKED_PER_APPROVED_RUN' : 'NOT_CONFIGURED', dependencyScan: liveRuntime?.ready ? 'OSV_PER_LIVE_RUN' : 'ADAPTER_ONLY', registry: 'UNDEPLOYED', publicSigning: 'BLOCKED', ethereumIdentity: 'NOT_IMPLEMENTED', authentication: 'LOCAL_SESSION_ONLY', production: 'NOT_READY' });
       if (pathname === '/v1/tasks' && req.method === 'POST') {
         const body = await bodyOf(req); shape(body, ['text','allowFallback','scenario','executionMode'], ['text']);
         if (typeof body.text !== 'string' || !body.text.trim() || body.text.length > 4096 || ('allowFallback' in body && typeof body.allowFallback !== 'boolean')) throw fault('INVALID_TASK_INPUT', 400);
         if (body.executionMode !== undefined && !['LIVE','SAMPLE'].includes(body.executionMode)) throw fault('INVALID_EXECUTION_MODE', 400);
         // An explicit real request must never inherit the server's SAMPLE default.
-        if ((body.executionMode ?? mode) !== 'SAMPLE' || mode !== 'SAMPLE') throw fault('LIVE_MODEL_ADAPTER_NOT_CONFIGURED', 503);
+        const requestedMode = body.executionMode ?? mode;
+        if (requestedMode === 'LIVE' && !liveRuntime?.ready) throw fault('LIVE_RUNTIME_NOT_CONFIGURED', 503);
         const scenarios = ['normal','stale_primary','both_fail','reference_conflict','manifest_changed','optional_missing'];
-        if (body.scenario && (mode !== 'SAMPLE' || !scenarios.includes(body.scenario))) throw fault('INVALID_SCENARIO', 400);
-        const task = makeTask({ owner, text: body.text, allowFallback: body.allowFallback ?? true, mode, scenario: body.scenario || 'normal' });
+        if ('scenario' in body && (requestedMode !== 'SAMPLE' || !scenarios.includes(body.scenario))) throw fault('INVALID_SCENARIO', 400);
+        const task = makeTask({ owner, text: body.text, allowFallback: body.allowFallback ?? true, mode: requestedMode, scenario: body.scenario || 'normal' });
         if (task.draft.intentType === 'UNSUPPORTED') throw fault('UNSUPPORTED_SCOPE', 422);
+        if (requestedMode === 'LIVE') liveRuntime.bindTask(task);
         renewApproval(task); addEvent(task, 'TASK_CREATED', task.spec ? '待批准的只读范围已生成。' : task.draft.clarification);
         store.put(task); return json(201, view(task));
       }
@@ -98,7 +102,7 @@ export function createApplication({ store = new TaskStore(), mode = config.execu
         if (evidenceRoute[2] === 'public-preview' && req.method === 'GET') return json(200, { ...task.report, publication: { status: 'NOT_REQUESTED', reason: 'SIGNER_NOT_CONFIGURED' } });
         if (evidenceRoute[2] === 'publications' && req.method === 'POST') throw fault('SIGNER_NOT_CONFIGURED', 503);
       }
-      const match = pathname.match(/^\/v1\/tasks\/(tsk_[a-f0-9]+)(?:\/(clarifications|approve|stop|events|evidence|public-preview|artifacts)(?:\/(art_[a-f0-9]+))?)?$/);
+      const match = pathname.match(/^\/v1\/tasks\/(tsk_[a-f0-9]+)(?:\/(clarifications|approve|stop|events|evidence|evidence-bundle|public-preview|artifacts)(?:\/(art_[a-f0-9]+))?)?$/);
       if (!match) throw fault('NOT_FOUND', 404);
       const [, taskId, action, artifactId] = match, task = store.get(taskId, owner);
       if (!task) throw fault('TASK_NOT_FOUND', 404);
@@ -106,18 +110,27 @@ export function createApplication({ store = new TaskStore(), mode = config.execu
         if (!action) return json(200, view(task));
         if (action === 'events') { const after = Number(url.searchParams.get('after') || 0); if (!Number.isSafeInteger(after) || after < 0) throw fault('INVALID_CURSOR', 400); return json(200, { taskId, events: task.events.filter(e => e.sequence > after) }); }
         if (action === 'artifacts') { const artifact = store.artifact(taskId, owner, artifactId); if (!artifact) throw fault('ARTIFACT_NOT_FOUND', 404); return json(200, artifact); }
+        if (action === 'evidence-bundle') {
+          if (!task.report) throw fault('EVIDENCE_NOT_READY', 409);
+          const ids = [...new Set([...(task.artifactRefs || []), ...task.attempts.flatMap(a => a.checks.flatMap(c => c.evidenceRefs))])];
+          return json(200, { ...task.report, artifactAssurance: 'Private original observations; SHA-256 checks byte equality, not authenticity.', artifacts: ids.map(id => store.artifact(taskId, owner, id)), networkCounts: task.networkCounts || null });
+        }
         if (['evidence','public-preview'].includes(action)) { if (!task.report) throw fault('EVIDENCE_NOT_READY', 409); return json(200, task.report); }
       }
       if (req.method !== 'POST') throw fault('METHOD_NOT_ALLOWED', 405);
       const body = await bodyOf(req);
       if (action === 'approve') {
         shape(body, ['revision','specHash','approvalNonce'], ['revision','specHash','approvalNonce']);
-        const updated = store.mutate(taskId, owner, t => approve(t, body, req.headers['idempotency-key']));
+        const updated = store.mutate(taskId, owner, t => {
+          if (t.status === 'AWAITING_APPROVAL' && running.size >= 2) throw fault('RUN_CAPACITY_REACHED', 429);
+          return approve(t, body, req.headers['idempotency-key']);
+        });
         if (updated.result) schedule(updated.task); return json(202, view(updated.task));
       }
       if (action === 'clarifications') { shape(body, ['revision','text'], ['revision','text']); if (typeof body.text !== 'string' || body.text.length > 4096) throw fault('INVALID_CLARIFICATION', 400); return json(200, view(store.mutate(taskId, owner, t => clarify(t, body)).task)); }
       if (action === 'stop') {
         shape(body, []); const updated = store.mutate(taskId, owner, t => { stop(t); if (t.status === 'CANCELLED' && t.spec) t.report = buildPublicReport(t); });
+        controllers.get(taskId)?.abort();
         if (updated.task.status === 'STOP_REQUESTED' && !running.has(taskId)) schedule(updated.task);
         return json(TERMINAL_STATUSES.includes(updated.task.status) ? 200 : 202, view(updated.task));
       }
@@ -125,5 +138,5 @@ export function createApplication({ store = new TaskStore(), mode = config.execu
     } catch (error) { return json(error.status || 500, { error: error.status ? error.message : 'INTERNAL_ERROR' }); }
   });
   server.requestTimeout = 15_000; server.headersTimeout = 10_000;
-  return { server, store, running };
+  return { server, store, running, abortAll: () => { for (const controller of controllers.values()) controller.abort(); } };
 }

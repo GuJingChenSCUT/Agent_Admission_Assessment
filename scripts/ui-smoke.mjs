@@ -114,10 +114,11 @@ try {
   await click("download");
   const download = await downloadPromise;
   assert.match(download.suggestedFilename(), /^rpt_tsk_.*\.json$/);
-  assert.equal(
-    await fs.readFile(await download.path(), "utf8"),
-    originalReport,
-  );
+  const downloaded = JSON.parse(await fs.readFile(await download.path(), "utf8"));
+  const original = JSON.parse(originalReport);
+  assert.deepEqual(downloaded.report, original.report);
+  assert.equal(downloaded.reportHash, original.reportHash);
+  assert.ok(downloaded.artifacts.length >= 2);
   await page.locator("#workspace").screenshot({ path: "artifacts/ui/run.png" });
 
   await page.selectOption("#scenario", "both_fail");

@@ -50,6 +50,8 @@ const ruleLabels = {
   response_scope: "查询范围一致性",
   snapshot_match: "区块一致性",
   balance_match: "余额一致性",
+  reference_consensus: "参考来源交叉核对",
+  execution_complete: "执行完整性",
 };
 const reasonLabels = {
   DATA_SNAPSHOT_MISMATCH: "返回区块与固定参考区块不一致",
@@ -61,13 +63,23 @@ const reasonLabels = {
   CROSS_BLOCK_COMPARISON_SKIPPED: "区块不同，已跳过金额比较",
   PROVENANCE_NOT_AVAILABLE: "缺少远程部署来源证明",
   PROVIDER_RESPONSE_UNKNOWN: "未取得完整服务响应",
+  RATE_LIMITED: "服务限流，本次无法完成核验",
+  UPSTREAM_TIMEOUT: "上游查询超时",
+  UPSTREAM_UNAVAILABLE: "上游服务不可用",
+  RPC_REMOTE_ERROR: "服务拒绝当前 RPC 查询",
+  REFERENCE_HASH_CONFLICT: "参考来源的区块哈希不一致",
+  REFERENCE_HEAD_SKEW: "参考来源的 finalized 高度相差超过 32 个区块",
+  LIVE_BINDING_CHANGED: "服务配置或依赖版本已改变，请新建任务",
+  KNOWN_ADVISORY_FOUND: "生产依赖存在已知漏洞记录",
+  ADVISORY_SOURCE_UNAVAILABLE: "未能取得完整漏洞记录",
+  REQUEST_ABORTED: "请求已取消或超过运行时限",
 };
 const errors = {
   UNSUPPORTED_SCOPE:
     "当前仅支持以太坊主网、原生 ETH、执行时 finalized 区块的只读余额查询。",
   INVALID_TASK_INPUT: "请输入 1–4096 字符的研究任务。",
-  LIVE_MODEL_ADAPTER_NOT_CONFIGURED:
-    "实际任务暂不可用，请联系管理员配置执行服务。",
+  LIVE_RUNTIME_NOT_CONFIGURED: "实际任务暂不可用，请联系管理员配置执行服务。",
+  RUN_CAPACITY_REACHED: "当前运行名额已满，请稍后再次批准。",
   SESSION_REQUIRED: "本地会话已失效，请刷新页面建立新会话。",
   CSRF_REQUIRED: "会话验证失败，请刷新页面后重试。",
   EVIDENCE_NOT_READY: "任务尚未生成证据，请稍后重新读取。",
@@ -81,12 +93,22 @@ const scenarioHelp = {
   optional_missing:
     "必需检查通过，远程来源证明保留为未检查，不伪装为全部已验证。",
 };
-const serviceName = (id) =>
-  id === "svc_primary"
-    ? "首选数据服务"
-    : id === "svc_backup"
-      ? "备用数据服务"
-      : id;
+const serviceName = (id) => {
+  const label =
+    id === "svc_primary"
+      ? "首选数据服务"
+      : id === "svc_backup"
+        ? "备用数据服务"
+        : id;
+  const operator =
+    task?.mode === "LIVE" &&
+    task.serviceBindings?.find((s) => s.id === id)?.operatorId;
+  const known = {
+    "rpc_ethereum-rpc_publicnode_com": "PublicNode",
+    rpc_eth_drpc_org: "dRPC",
+  };
+  return operator ? label + " · " + (known[operator] || operator) : label;
+};
 const tone = (value) =>
   ["SUCCEEDED", "PASSED", "PASS"].includes(value)
     ? "good"
@@ -289,9 +311,14 @@ function renderTask(next) {
         .padStart(18, "0")
         .replace(/0+$/, "");
     $("amount").textContent =
-      (wei / 10n ** 18n).toString() + (fraction ? "." + fraction : "") + " ETH";
+      (fraction.length > 8 ? "≈ " : "") +
+      (wei / 10n ** 18n).toLocaleString("en-US") +
+      (fraction ? "." + fraction.slice(0, 8) : "") +
+      " ETH";
     $("fact-label").textContent =
-      task.mode === "SAMPLE" ? "SAMPLE 已验收结果 · 构造数据" : "已验收结果";
+      task.mode === "SAMPLE"
+        ? "SAMPLE 已验收结果 · 构造数据"
+        : "LIVE 已验收结果 · RPC 交叉核对";
     $("fact-meta").textContent =
       serviceName(fact.serviceId) +
       " · 区块 " +
@@ -319,7 +346,14 @@ function renderTask(next) {
   $("event-count").textContent = events.length + " 条";
   $("events").replaceChildren(
     ...events.map((event) => {
-      const li = node("li", event.message),
+      const li = node(
+          "li",
+          event.message +
+            (event.details?.code
+              ? " 原因：" +
+                (reasonLabels[event.details.code] || event.details.code)
+              : ""),
+        ),
         at = new Date(event.at);
       li.append(
         node(
@@ -585,20 +619,36 @@ async function verifyReport(tamper) {
 }
 $("verify").onclick = () => void verifyReport(false);
 $("tamper").onclick = () => void verifyReport(true);
-$("download").onclick = () => {
+$("download").onclick = async () => {
   if (!reportEnvelope) return;
-  const url = URL.createObjectURL(
-    new Blob([JSON.stringify(reportEnvelope, null, 2)], {
-      type: "application/json",
-    }),
-  );
-  const link = node("a");
-  link.href = url;
-  link.download = reportEnvelope.report.reportId + ".json";
-  document.body.append(link);
-  link.click();
-  link.remove();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  const id = task.taskId,
+    epoch = reportEpoch;
+  evidenceBusy = true;
+  syncControls();
+  clearError();
+  try {
+    const bundle = await api("/v1/tasks/" + id + "/evidence-bundle");
+    if (id !== task?.taskId) return;
+    const url = URL.createObjectURL(
+      new Blob([JSON.stringify(bundle, null, 2)], {
+        type: "application/json",
+      }),
+    );
+    const link = node("a");
+    link.href = url;
+    link.download = reportEnvelope.report.reportId + ".json";
+    document.body.append(link);
+    link.click();
+    link.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  } catch (e) {
+    if (id === task?.taskId) showError(e);
+  } finally {
+    if (epoch === reportEpoch) {
+      evidenceBusy = false;
+      syncControls();
+    }
+  }
 };
 $("scenario").onchange = () => {
   $("scenario-help").textContent = scenarioHelp[$("scenario").value];

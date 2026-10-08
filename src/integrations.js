@@ -1,8 +1,8 @@
 import { config } from "./config.js";
 
 // Inventory only: never fetch endpoints, expose credentials, or imply a health check.
-export function integrationInventory(mode) {
-  return {
+export function integrationInventory(mode, liveRuntime = null) {
+  const result = {
     executionMode: mode,
     liveReady: false,
     channels: [
@@ -95,4 +95,12 @@ export function integrationInventory(mode) {
       chainId: "1",
     })),
   };
+  if (liveRuntime?.ready) {
+    result.liveReady = true;
+    result.readinessMeaning = 'Configuration accepted; availability and acceptance checked only after task approval.';
+    Object.assign(result.channels.find(c => c.id === 'rpc'), { stage: 'implemented', status: '按任务验收', description: '批准后查询真实以太坊 RPC，对齐 finalized 区块并按固定哈希核验余额。', setup: '管理员配置参考与候选 RPC；默认 PublicNode 与 dRPC 同时承担两个角色。', next: '参考与候选可能重叠；每次任务保留观测，失败不沿用旧通过记录。' });
+    Object.assign(result.channels.find(c => c.id === 'osv'), { stage: 'implemented', status: '按任务查询', description: '真实查询 pnpm 锁定的生产依赖及传递依赖；保留 OSV 原件与时间。', setup: '后端受控出口查询 api.osv.dev；不安装或执行依赖脚本。', next: '已知漏洞阻断；不可用则隔离；不证明远程部署或依赖绝对安全。' });
+    result.services = liveRuntime.services.map((s, i) => ({ id: s.id, name: i ? '备用数据服务' : '首选数据服务', source: 'SERVER_CONFIG', transport: 'HTTP_RPC', endpointConfigured: true, status: 'CHECKED_PER_APPROVED_RUN', operation: 'eth_getBalance', chainId: '1' }));
+  }
+  return result;
 }

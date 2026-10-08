@@ -560,7 +560,7 @@ dd {
 }
 .result strong {
   display: block;
-  font-size: 34px;
+  font-size: 28px;
   overflow-wrap: anywhere;
   font-variant-numeric: tabular-nums;
 }

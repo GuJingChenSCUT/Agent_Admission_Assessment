@@ -1,6 +1,6 @@
 # API 说明（本地 MVP）
 
-服务只监听 `127.0.0.1`。浏览器先 `GET /v1/session`，服务返回 HttpOnly `aa_session` cookie 和一次性 CSRF token；后续非 GET 请求必须带 `x-csrf-token`。当前会话 owner 由服务端随机派生，浏览器不能在 JSON 中指定 owner。
+服务只监听 `127.0.0.1`。浏览器先 `GET /v1/session`，服务返回 HttpOnly `aa_session` cookie 和会话级 CSRF token；后续非 GET 请求必须带 `x-csrf-token`。当前会话 owner 由服务端随机派生，浏览器不能在 JSON 中指定 owner。
 
 ## TaskSpec
 
@@ -22,11 +22,14 @@
 | POST | `/v1/tasks/:id/stop` | 不经过模型；持久化 stop epoch |
 | GET | `/v1/tasks/:id/events?after=N` | 脱敏、单调 sequence 事件 |
 | GET | `/v1/tasks/:id/evidence` | 终态 PublicReport envelope |
+| GET | `/v1/tasks/:id/evidence-bundle` | owner 受控下载：报告、原件 base64/SHA-256、网络计数；不返回凭据 |
 | GET | `/v1/tasks/:id/artifacts/:artifactId` | owner 受控原始响应，返回 base64 和摘要 |
 | POST | `/v1/public/evidence/verify` | 分别核对 schema、内容摘要、签名与链上状态 |
 | POST | `/v1/evidence/:reportId/publications` | 当前返回 `503 SIGNER_NOT_CONFIGURED`，不会广播 |
 
 批准 body 必须精确绑定当前 `revision`、`specHash`、短期 `approvalNonce`；同一幂等键与请求摘要重复会返回原运行，不同请求摘要返回冲突。内部 ticket 不经过浏览器、模型或公开报告。
+
+LIVE 创建/补答只解析范围、固定本地配置与锁文件，不访问外部。批准后查询 RPC 与 OSV；不得携带 `scenario`。未配置 LIVE runtime 时返回 503；同时最多两个运行，容量满时批准返回 429。RPC 限流、超时、来源冲突进入 `QUARANTINED` 或在原批准范围内切换，不生成演练结果。停止会持久化状态并触发 AbortSignal；不能撤回远端已处理的只读请求。
 
 ## 状态
 

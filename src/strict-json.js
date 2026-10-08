@@ -1,14 +1,14 @@
 // Validate structural limits and duplicate keys before JSON.parse loses information.
-export function parseStrictJson(bytes, maxDepth = 32) {
+export function parseStrictJson(bytes, maxDepth = 32, { maxBytes = 1024 * 1024, maxStringLength = 65536 } = {}) {
   const text = typeof bytes === 'string' ? bytes : new TextDecoder('utf-8', { fatal: true }).decode(bytes);
-  if (Buffer.byteLength(text) > 1024 * 1024) throw new Error('JSON_TOO_LARGE');
+  if (Buffer.byteLength(text) > maxBytes) throw new Error('JSON_TOO_LARGE');
   let i = 0;
   const ws = () => { while (/\s/.test(text[i] || '') && i < text.length) i++; };
   function str() {
     const start = i++;
     while (i < text.length) {
       if (text[i] === '\\') { i += 2; continue; }
-      if (text[i++] === '"') { const value = JSON.parse(text.slice(start, i)); if (value.length > 65536 || /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/u.test(value)) throw new Error('INVALID_JSON_STRING'); return value; }
+      if (text[i++] === '"') { const value = JSON.parse(text.slice(start, i)); if (value.length > maxStringLength || /[\uD800-\uDBFF](?![\uDC00-\uDFFF])|(?<![\uD800-\uDBFF])[\uDC00-\uDFFF]/u.test(value)) throw new Error('INVALID_JSON_STRING'); return value; }
     }
     throw new Error('INVALID_JSON');
   }

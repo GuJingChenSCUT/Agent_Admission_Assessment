@@ -29,7 +29,7 @@ interface PiDraftAdapter {
 
 实现放在服务端，启动时注入。当前 `src/server.js` 没有注入真实实现，因此入口保持未配置。默认 10 秒超时、断连取消、每会话最多一个并行请求；适配器必须尊重 signal 和输出上限，处理远端响应大小及鉴权。底层错误会脱敏。草稿需符合 schema，不能新增或猜测地址，不能把以太坊 ETH 范围扩大，不能擅自启用备用切换。现阶段仍以保守的本地范围规则核对模型输出。
 
-成功响应形如：`{provider:"PI", draft:TaskDraft, requiresApproval:true, executionStarted:false}`。此响应仅是草稿。模型接通后，还需完成独立 RPC / 工具准入集成，才能开放实际执行。前端实际任务明确提交 `executionMode:"LIVE"`，不会因服务器默认 SAMPLE 而生成演练结果。
+成功响应形如：`{provider:"PI", draft:TaskDraft, requiresApproval:true, executionStarted:false}`。此响应仅是草稿。独立的 LIVE RPC / 工具准入链路现已实现；当前使用确定性范围解析，不依赖 PI 才能执行只读余额任务。前端实际任务明确提交 `executionMode:"LIVE"`，不会生成演练结果。
 
 ## 仍需确认的信息
 

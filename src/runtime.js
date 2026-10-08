@@ -3,7 +3,6 @@ import { setTimeout as delay } from 'node:timers/promises';
 import { config } from './config.js';
 import { addEvent, hashCanonical, makeRuleCheck, mandatoryChecksPass, transition, TERMINAL_STATUSES } from './domain.js';
 import { buildPublicReport } from './evidence.js';
-import { resolveLiveSnapshot, readProviderBalance } from './reference.js';
 import { verifyProviderResponse } from './verifier.js';
 import { Gateway } from './gateway.js';
 
@@ -64,10 +63,15 @@ export async function runTask(initial, store, options = {}) {
       fn(task); return true;
     }).result;
   }
+  let live;
   try {
     await pause(); if (!fenced(() => {})) return read();
-    const before = read(); if (before.mode === 'LIVE') throw new Error('LIVE_MODEL_ADAPTER_NOT_CONFIGURED');
-    const snapshot = before.mode === 'SAMPLE' ? sampleSnapshot(before.scenario) : await (options.resolveSnapshot || resolveLiveSnapshot)(before.spec.address);
+    const before = read();
+    if (before.mode === 'LIVE') {
+      if (!options.liveRuntime) throw new Error('LIVE_RUNTIME_NOT_CONFIGURED');
+      live = options.liveRuntime.open(before, store, options.signal);
+    }
+    const snapshot = before.mode === 'SAMPLE' ? sampleSnapshot(before.scenario) : await live.resolveSnapshot(before.spec.address);
     if (!fenced(task => { task.snapshot = snapshot; addEvent(task, 'REFERENCE_FIXED', '固定 finalized 区块，后续候选沿用同一 hash。'); })) return read();
     const services = before.spec.candidateServiceIds;
     for (let index = 0; index < services.length; index++) {
@@ -76,11 +80,15 @@ export async function runTask(initial, store, options = {}) {
         if (task.counters.fallbacks >= task.spec.limits.maxFallbacks) throw new Error('FALLBACK_BUDGET_EXHAUSTED');
         task.counters.fallbacks++; addEvent(task, 'FALLBACK_SELECTED', '在原授权范围内切换备用，地址与参考区块不变。');
       })) return read();
-      const service = config.services.find(item => item.id === services[index]); let attemptId;
+      const service = (live?.services || config.services).find(item => item.id === services[index]); let attemptId;
       if (!fenced(task => {
         if (task.counters.checks >= task.spec.limits.maxCandidateChecks) throw new Error('CHECK_BUDGET_EXHAUSTED');
         task.counters.checks++; task.phase = 'ADMISSION'; attemptId = 'att_' + crypto.randomBytes(12).toString('hex');
-        task.attempts.push({ attemptId, serviceId: service.id, manifestHash: service.manifestHash, status: 'CHECKING', decision: 'QUARANTINE', providerCallConsumed: false, checks: admission(task, service), responseDigest: null, observation: null, startedAt: new Date().toISOString(), finishedAt: null });
+        task.attempts.push({ attemptId, serviceId: service.id, manifestHash: service.manifestHash, status: 'CHECKING', decision: 'QUARANTINE', providerCallConsumed: false, checks: [], responseDigest: null, observation: null, startedAt: new Date().toISOString(), finishedAt: null });
+      })) return read();
+      const checks = live ? await live.admission(read(), service) : admission(read(), service);
+      if (!fenced(task => {
+        task.attempts.find(a => a.attemptId === attemptId).checks = checks;
         addEvent(task, 'ADMISSION_CHECKED', '已生成分项准入检查；声明与未验证项分别记录。', { serviceId: service.id });
       })) return read();
       if (!mandatoryChecksPass(read().attempts.find(a => a.attemptId === attemptId).checks)) {
@@ -97,17 +105,18 @@ export async function runTask(initial, store, options = {}) {
       })) return read();
       await pause(); if (!fenced(() => {})) return read();
       let response;
-      try { response = read().mode === 'SAMPLE' ? sampleResponse(read(), service.id) : await (options.readBalance || readProviderBalance)(service, parameters[0], snapshot); }
-      catch {
+      try { response = read().mode === 'SAMPLE' ? sampleResponse(read(), service.id) : await live.readBalance(service, parameters[0], snapshot); }
+      catch (error) {
         if (!fenced(task => {
           const a = task.attempts.find(a => a.attemptId === attemptId); a.status = 'INCONCLUSIVE'; a.decision = 'QUARANTINE'; a.finishedAt = new Date().toISOString();
-          a.checks.push(makeRuleCheck('response_available', 'INCONCLUSIVE', true, 'PROVIDER_RESPONSE_UNKNOWN', 'complete response', null));
+          a.checks.push(makeRuleCheck('response_available', 'INCONCLUSIVE', true, error.code || 'PROVIDER_RESPONSE_UNKNOWN', 'complete response', null));
         })) return read(); continue;
       }
       const raw = response.rawBytes ? Buffer.from(response.rawBytes) : Buffer.from(JSON.stringify(response));
       const digest = '0x' + crypto.createHash('sha256').update(raw).digest('hex'), artifactId = store.saveArtifact(taskId, raw, digest);
       if (!fenced(task => {
         task.phase = 'VERIFY'; const a = task.attempts.find(a => a.attemptId === attemptId), verified = verifyProviderResponse({ task, snapshot, service, response });
+        task.artifactRefs ||= []; if (!task.artifactRefs.includes(artifactId)) task.artifactRefs.push(artifactId);
         a.checks.push(...verified.checks); for (const check of verified.checks) check.evidenceRefs = [artifactId]; a.responseDigest = digest;
         a.observation = { bindingKind: response.observation.kind || 'REQUEST_BOUND', requestHash: hashCanonical({ method: 'eth_getBalance', params: parameters }), requestedBlockHash: snapshot.blockHash, providerDeclaredBlockHash: response.observation.kind === 'PROVIDER_DECLARED' ? response.observation.blockHash : null, responseDigest: digest, parsedBalanceWei: response.balanceWei };
         a.finishedAt = new Date().toISOString(); a.status = verified.passed ? 'PASSED' : 'FAILED'; a.decision = verified.decision;
@@ -127,10 +136,14 @@ export async function runTask(initial, store, options = {}) {
       if (task.leaseGeneration !== generation) return;
       if (task.status === 'STOP_REQUESTED') return cancel(task);
       if (TERMINAL_STATUSES.includes(task.status)) return;
+      for (const a of task.attempts) if (['RUNNING', 'CHECKING'].includes(a.status)) {
+        a.status = 'INCONCLUSIVE'; a.decision = 'QUARANTINE'; a.finishedAt = new Date().toISOString();
+        a.checks.push(makeRuleCheck('execution_complete', 'INCONCLUSIVE', true, 'EXECUTION_INTERRUPTED', 'completed checks', null));
+      }
       addEvent(task, 'WORKER_INCONCLUSIVE', '运行未能形成可用事实。', { code: /^[A-Z0-9_]{3,80}$/.test(error.message) ? error.message : 'UNCLASSIFIED_ERROR' });
       complete(task, 'QUARANTINED', '检查异常，未转换为通过。');
     });
-  }
+  } finally { live?.finish(); }
   return read();
 }
 

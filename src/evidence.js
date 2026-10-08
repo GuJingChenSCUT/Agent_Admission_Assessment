@@ -4,7 +4,7 @@ import { validateDefinition } from './schema.js';
 export function buildPublicReport(task) {
   if (!task.spec) return null;
   const subjects = task.spec.candidateServiceIds.map(id => {
-    const svc = config.services.find(s => s.id === id);
+    const svc = (task.serviceBindings || config.services).find(s => s.id === id);
     return { serviceId: id, namespace: task.mode === 'SAMPLE' ? 'agent-admission:sample:v1' : 'agent-admission:v1',
       transport: 'HTTP_RPC', serviceOrigin: task.mode === 'SAMPLE' ? 'https://' + id + '.example.invalid' : null,
       manifestHash: svc.manifestHash, ethereumIdentity: null, identityStatus: 'NOT_CHECKED' };
@@ -16,7 +16,13 @@ export function buildPublicReport(task) {
     attempts: structuredClone(task.attempts), acceptedFact: structuredClone(task.acceptedFact),
     observedAt: new Date().toISOString(), expiresAt: new Date(Date.now() + 3600_000).toISOString(),
     limitations: [
-      ...(task.mode === 'SAMPLE' ? ['Synthetic SAMPLE data: no model, RPC, OSV, wallet or mainnet call occurred.'] : ['Live integration is incomplete.']),
+      ...(task.mode === 'SAMPLE' ? ['Synthetic SAMPLE data: no model, RPC, OSV, wallet or mainnet call occurred.'] : [
+        'LIVE uses a deterministic scope parser; PI is not involved. Reference consensus, probes and OSV observations are recorded only when reached.',
+        'Reference and candidate RPCs may share operators; defaults use PublicNode and dRPC for both roles. Operator labels do not prove infrastructure independence.',
+        'Dependency checks cover the pinned pnpm production closure only; installed byte integrity, Node runtime and remote server code are not attested.',
+        'Service manifests are local administrator statements, not provider-signed declarations. Endpoint credentials are excluded.',
+        'Absence of known OSV advisories at query time is not proof of safety.'
+      ]),
       'Remote deployment provenance and Ethereum identity are not verified.',
       'RPC cross-checking is not a cryptographic state proof.',
       'A content hash proves equality, not truth; no signature or registry confirmation is attached.',
